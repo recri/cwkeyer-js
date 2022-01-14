@@ -1,0 +1,12 @@
+* Thu Jan 13 07:50:19 PM EST 2022 Copy keyer.js
+* Thu Jan 13 07:50:32 PM EST 2022 Install ubuntu npm
+* Thu Jan 13 07:51:28 PM EST 2022 npm run start
+	loads the keyer.js web page with a local development
+	server
+* Thu Jan 13 08:06:28 PM EST 2022 found some uncommitted changes
+	microphone stuff
+	
+	
+* Thu Jan 13 08:06:28 PM EST 2022 started renaming
+	created a clean repo for cwkeyer.js
+	modified index.html

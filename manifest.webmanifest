@@ -1,7 +1,7 @@
 {
-  "name": "Keyer",
-  "short_name": "Keyer",
-  "description": "Morse Code App",
+  "name": "CWKeyer",
+  "short_name": "CWKeyer",
+  "description": "Morse Code Keyer Control",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#1d62a7",

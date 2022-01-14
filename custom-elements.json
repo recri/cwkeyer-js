@@ -2,7 +2,7 @@
   "version": 2,
   "tags": [
     {
-      "name": "keyer-js",
+      "name": "cwkeyer-js",
       "description": "An application for keying morse code",
       "properties": [
         { "name": "title", "type": "String", "default": "Keyer",

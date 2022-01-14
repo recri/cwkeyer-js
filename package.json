@@ -49,9 +49,9 @@
   "lint-staged": {
     "*.js": []
   },
-  "name": "keyer-js",
+  "name": "cwkeyer-js",
   "version": "0.0.0",
-  "description": "Webcomponent keyer-js following open-wc recommendations",
+  "description": "Webcomponent cwkeyer-js following open-wc recommendations",
   "author": "Roger E Critchlow Jr",
   "license": "GPL-3",
   "dependencies": {
