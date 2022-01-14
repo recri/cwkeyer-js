@@ -78,7 +78,7 @@ export class Keyer extends KeyerEvent {
     this.scope.addSource('kbd-ramp', this.output.ask, false);
     this.scope.addSource('manual', this.input.ramp, false);
     this.scope.addSource('keyboard', this.output.ramp, false);
-
+    this.microphone.enabled().then(() => this.scope.addSource('microphone', this.microphone.audioSource, false));
     this.table = this.output.table;
     this.outputDecoder.table = this.table;
     this.inputDecoder.table = this.table;

@@ -19,10 +19,29 @@ import { KeyerEvent } from './KeyerEvent.js';
 
 // this would decode morse heard on the microphone input
 export class KeyerMicrophone extends KeyerEvent {
-  // constructor(context) {
-  // super(context);
-  // }
+
+  constructor(context) {
+    super(context);
+    this.audioSource = null;
+    if (navigator.getUserMedia) {
+      this.promise = navigator.getUserMedia (
+	{ audio: true, video: false },
+        stream => { 
+	  console.log(`getUserMedia returned ${stream}`);
+	  this.audioSource = this.context.createMediaStreamSource(stream);
+	  console.log(`createMediaStreamSource returned ${this.audioSource}`);
+	},
+        err => console.log(`Error initializing user media stream: ${err}`)
+      );    
+    } else {
+      console.log(`no navigator.getUserMedia found`);
+    }
+  }
+
+  async enabled() { if (this.promise) await this.promise; return this.audioSource !== null; }
+
 }
+
 // Local Variables: 
 // mode: JavaScript
 // js-indent-level: 2

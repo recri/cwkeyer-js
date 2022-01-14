@@ -379,7 +379,7 @@ export class KeyerJs extends LitElement {
   get midiAvailable() { return this.keyer.midiSource.midiAvailable; }
   
   get midiNotes() { return this.keyer.midiSource.notes; }
-  
+
   // keyboard keyer properties
   set pitch(v) { this.keyer.output.pitch = v; }
 
