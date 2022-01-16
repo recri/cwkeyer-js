@@ -1,7 +1,7 @@
-* Keyer.js
+* CWKeyer.js
 [![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
-[![Online at ...](...)](...)
-Morse code in a web page.  
+[![Online at cwkeyer.elf.org](...)](...)
+Morse code keyer controller in a web page.
 Click the start button and type letters at the page to hear them in Morse.
 Scroll down to find the controls for words/minute timing, pitch, envelope shaping, key input alternatives, and keyer options.
 Best used with an iambic paddle interfaced through a MIDI interface, the page listens for MIDI NoteOn and NoteOff to trigger the iambic keyer.

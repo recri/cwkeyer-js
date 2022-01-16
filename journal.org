@@ -9,4 +9,20 @@
 	
 * Thu Jan 13 08:06:28 PM EST 2022 started renaming
 	created a clean repo for cwkeyer.js
-	modified index.html
+	rehomed this repo to the new repo
+* Thu Jan 13 08:23:39 PM EST 2022 first commits
+	committed old modifications
+	modified LICENSE, index.html, package.json, custom-elements.json, manifest.webmanifest
+	commited
+	added this journal.org to the repo
+* Thu Jan 13 08:24:24 PM EST 2022
+	do I want to keep the audio component of the app?
+	the whole point is to make the CWKeyer make sound
+* Thu Jan 13 08:48:24 PM EST 2022 npm run start:build
+	also works, the rolled up code is in dist
+	lighthouse complained about lack of service worker
+	when checking the 'npm run start' version.
+* Fri Jan 14 03:55:33 PM EST 2022 building out MIDI
+	map of control changes and notes emitted by hasak.
+	Planning a revision of the NRPN set.
+	

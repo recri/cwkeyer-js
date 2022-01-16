@@ -21,6 +21,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { keyerLogo } from './keyer-logo.js';
 import { Keyer } from './Keyer.js';
+import { CWKeyer } from './CWKeyer.js';
 
 //
 // prefix global constant functions and data
@@ -587,6 +588,7 @@ export class KeyerJs extends LitElement {
   constructor() {
     super();
     this.keyer = null;
+    this.cwkeyer = null;
     // only initialize the properties neede for startup
     this.displayAbout = false;
     this.displayLicense = false;
@@ -610,7 +612,8 @@ export class KeyerJs extends LitElement {
     
     // build the keyer
     this.keyer = new Keyer(context);
-
+    this.cwkeyer = new CWKeyer(context);
+    
     // load some constants into the instance
     // shift keys which can be used as key simulators
     // in truth, if I ignored repeats, then any key would work
@@ -630,12 +633,13 @@ export class KeyerJs extends LitElement {
     
     // this.keyer.outputDecoder.on('letter', (ltr, code) => console.log(`output '${ltr}' '${code}'`));
     this.keyer.inputDecoder.on('letter', (ltr) =>  this.onkeyed(ltr));
-    this.keyer.output.on('sent', ltr => this.onsent(ltr));
-    this.keyer.output.on('unsent', ltr => this.onunsent(ltr));
-    this.keyer.output.on('skipped', ltr => this.onskipped(ltr));
+    this.keyer.output.on('sent', (ltr) => this.onsent(ltr));
+    this.keyer.output.on('unsent', (ltr) => this.onunsent(ltr));
+    this.keyer.output.on('skipped', (ltr) => this.onskipped(ltr));
 
     this.keyer.midiSource.on('midi:notes', () => this.requestUpdate('midiNotes', []));
-    
+    this.keyer.midiSource.on('midi:message', (name, data) => this.cwkeyer.onmidimessage(name, data));
+
     document.addEventListener('keydown', (e) => this.keyer.input.keyboardKey(e, true));
     document.addEventListener('keyup', (e) => this.keyer.input.keyboardKey(e, false));
   }
@@ -1067,7 +1071,7 @@ export class KeyerJs extends LitElement {
     case 'displayAbout':
       return html`
 	<p>
-	  <b>Keyer.js</b> implements a morse code keyer in a web page.
+	  <b>CWKeyer.js</b> implements a morse code keyer in a web page.
 	  The text window translates typed text into morse code which 
 	  plays on the browser's audio output.
 	  Keyboard keys and MIDI notes can be interpreted as switch 
@@ -1093,7 +1097,7 @@ export class KeyerJs extends LitElement {
     case 'displayLicense':
       return html`
 	<p>
-	  keyer.js - a progressive web app for morse code
+	  cwkeyer.js - a progressive web app for morse code
 	</p><p>
 	  Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
 	</p><p>
@@ -1115,14 +1119,14 @@ export class KeyerJs extends LitElement {
     case 'displayColophon':
       return html`
 	<p>
-	  keyer.js was written with emacs on a laptop running Ubuntu.
+	  cwkeyer.js was written with emacs on a laptop running Ubuntu.
 	</p><p>
-	  The algorithms in keyer.js were developed for <a href="https://github.com/recri/keyer">keyer</a>,
+	  The algorithms in cwkeyer.js were developed for <a href="https://github.com/recri/keyer">keyer</a>,
 	  a collection of software defined radio software built using Jack, Tcl, and C.
 	</p><p>
 	  The polymer project, the PWA starter kit, open-wc, lit-element, lit-html, web audio, web MIDI.
 	</p><p>
-	  The source for <a href="https://github.com/recri/keyer.js">keyer.js</a>
+	  The source for <a href="https://github.com/recri/cwkeyer.js">cwkeyer.js</a>
 	</p>
 	`;
     default: 
@@ -1263,7 +1267,7 @@ export class KeyerJs extends LitElement {
     return html`
       <main>
         <div class="logo">${keyerLogo}</div>
-        <div><h1>keyer.js</h1></div>
+        <div><h1>cwkeyer.js</h1></div>
 	${this.keyer === null ? startup() : main()}
 	${this.controlRender('displayAbout')}
 	${this.controlRender('displayLicense')}

@@ -19,7 +19,7 @@ import { KeyerEvent } from './KeyerEvent.js';
 import { KeyerOutput } from './KeyerOutput.js';
 import { KeyerDecode } from './KeyerDecode.js';
 import { KeyerInput } from './KeyerInput.js';
-import { KeyerMidiSource } from './KeyerMidiSource.js';
+// import { KeyerMidiSource } from './KeyerMidiSource.js';
 import { KeyerMicrophone } from './KeyerMicrophone.js';
 import { KeyerScope } from './KeyerScope.js';
 
@@ -31,25 +31,21 @@ const USE_DETIMER = false;  // decode from transitions
 // combine inputs and outputs
 export class Keyer extends KeyerEvent {
 
-  constructor(context) {
+  constructor(context, midiSource) {
     super(context);
-
-
     this.output = new KeyerOutput(this.context);
     this.outputDecoder = new KeyerDecode(this.context);
     this.input = new KeyerInput(this.context);
     this.inputDecoder = new KeyerDecode(this.context);
-    this.midiSource = new KeyerMidiSource(this.context);
+    this.midiSource = midiSource; // new KeyerMidiSource(this.context);
     this.midiSource.on('midi:event', (type, note) => this.input.onmidi(type, note));
     this.microphone = new KeyerMicrophone(this.context);
     this.scope = new KeyerScope(this.context);
-    
     // decode from transitions
     // output decoder wiring
     this.output.connect(this.context.destination);
     // this.output.on('element', (elt, timeEnded) => this.outputDecoder.onelement(elt, timeEnded));
     this.output.on('transition', (onoff, time) => this.outputDecoder.ontransition(onoff, time));
-
     // input decoder wiring
     if (USE_DETONER) {
       this.input.on('change:pitch', pitch => this.inputDecoder.onchangepitch(pitch));

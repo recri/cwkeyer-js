@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
+    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore --rule 'no-console: off'",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
     "format:prettier": "prettier \"**/*.js\" --write --ignore-path .gitignore",
@@ -55,6 +55,7 @@
   "author": "Roger E Critchlow Jr",
   "license": "GPL-3",
   "dependencies": {
+    "caniuse-lite": "^1.0.30001299",
     "lit-element": "^3.0.0-pre.1",
     "lit-html": "^1.0.0"
   }

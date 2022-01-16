@@ -32,36 +32,53 @@ export class KeyerMidiSource extends KeyerEvent {
   constructor(context) {
     super(context);
     this.midiAvailable = false;
-    this.midiAccess = null; // global MIDIAccess object
-    this.notesCache = [];   // device:notes received
-    this.notesList = [];    // cache of device:notes list
-    this.namesList = [];    // cache of device names list
+    this.midiAccess = null;	// global MIDIAccess object
+    this.notesCache = [];	// device:notes received
+    this.notesList = [];	// cache of device:notes list
+    this.controlsCache = [];	// per name list of controls
+    this.controlsList = [];	// cache of device:controls list
+    this.namesList = [];	// cache of device names list
     this.rawNamesList = [];
     this.refresh();
   }
 
+  cacheNote(note) {
+    if (this.notesCache[note] === undefined) {
+      // console.log(`adding midi:note ${note} to notesCache`);
+      this.notesCache[note] = true;
+      this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
+      this.emit('midi:notes');
+    }
+  }
+
+  cacheControl(note) {
+    if (this.controlsCache[note] === undefined) {
+      this.controlsCache[note] = true;
+      this.controlsList = ['None'].concat(Array.from(Object.keys(this.controlsCache)).sort())
+      this.emit('midi:controls');
+    }
+  }
+  
   onmidimessage(name, e) { 
     // accumulate the NoteOn/NoteOff events seen channel:note
     if (e.data.length === 3) {
+      this.emit('midi:message', name, e.data);
       const note = `${name}:${1+(e.data[0]&0x0F)}:${e.data[1]}`; // device:channel:note 
-      let event = null;
       switch (e.data[0] & 0xf0) {
       case 0x90:		// note on
-	event = e.data[2] !== 0;
+	this.cacheNote(note);
+	this.emit('midi:event', note, e.data[2] !== 0);
 	break;
       case 0x80:		// note off
-	event = false;
+	this.cacheNote(note);
+	this.emit('midi:event', note, false);
         break;
+      case 0xB0:
+	this.cacheControl(note);
+	break;
       default:
-        return;
+	break
       }
-      if (this.notesCache[note] === undefined) {
-	// console.log(`adding midi:note ${note} to notesCache`);
-	this.notesCache[note] = true;
-	this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
-	this.emit('midi:notes');
-      }
-      this.emit('midi:event', note, event);
     }
   }
   
@@ -80,20 +97,26 @@ export class KeyerMidiSource extends KeyerEvent {
 
   get notes() { return this.notesList; }
 
+  get controls() { return this.controlsList; }
+  
   // filter the notesCache for loss/gain of devices
   rebind() {
-    const { notesCache } = this;
+    const { notesCache, controlsCache } = this;
     this.notesCache = []
+    this.controlsCache = []
     this.inputs.forEach(input => {
       const name = this.shorten(input.name);
-      // console.log(`rebind ${name}`);
+      // console.log(`rebind ${input.name} to ${name}`);
       notesCache.forEach(note => { if (note.startsWith(name)) this.notesCache[note] = true; });
+      controlsCache.forEach(note => { if (note.startsWith(name)) this.controlsCache[note] = true; });
       input.onmidimessage = e => this.onmidimessage(name, e)
     });
     this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
-    this.rawNamesList = ['none'].concat(this.midiAccess ? this.inputs.map(input => input.name) : []);
+    this.controlsList = ['None'].concat(Array.from(Object.keys(this.controlsCache)).sort())
+    this.rawNamesList = ['None'].concat(this.midiAccess ? this.inputs.map(input => input.name) : []);
     this.namesList = this.rawNamesList.map(name => this.shorten(name));
     this.emit('midi:notes');
+    this.emit('midi:controls');
     this.emit('midi:names');
   }
 
@@ -118,7 +141,7 @@ export class KeyerMidiSource extends KeyerEvent {
         .requestMIDIAccess({ sysex: false })
         .then((...args) => this.onMIDISuccess(...args), (...args) => this.onMIDIFailure(...args));
     } else {
-      // console.log("no navigator.requestMIDIAccess found");
+      console.log("no navigator.requestMIDIAccess found");
     }
   }
 
