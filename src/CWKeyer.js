@@ -17,6 +17,7 @@
 // 
 import { KeyerEvent } from './KeyerEvent.js';
 import { CWKeyerChannel } from './CWKeyerChannel.js';
+import { CWKeyerHasak } from './CWKeyerHasak.js';
 
 // toplevel management of CWKeyer midi events
 // delegate to the channels manager for the device name
@@ -31,9 +32,14 @@ export class CWKeyer extends KeyerEvent {
   }
 
   onmidimessage(midi, msg) {
-    const chan = `${midi}:${1+(msg[0]&0x0f)}`;
-    if (! {}.hasOwnProperty.call(this._devices, chan)) {
-      this._devices[chan] = new CWKeyerChannel(this.context, chan);
+    const channel = 1+(msg[0]&0x0f);
+    const chan = `${midi}:${channel}`;
+    if (! this._devices[chan]) {
+      if (midi.match(/.*hasak.*/)) {
+	this._devices[chan] = new CWKeyerHasak(this.context, midi, channel, chan);
+      }	else {
+	this._devices[chan] = new CWKeyerChannel(this.context, midi, channel, chan);
+      }
       this._names.push(chan);
       if (this._name === null) this._name = chan;
     }

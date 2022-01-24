@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // 
-import { html } from 'lit-element';
+import { html } from 'lit';
 
 export const keyerLogo = html`
   <svg width="512px" height="128px" viewBox="0 192 512 128"

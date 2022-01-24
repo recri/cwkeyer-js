@@ -21,10 +21,11 @@ import { KeyerEvent } from './KeyerEvent.js';
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<","~"] }] */
 export class CWKeyerChannel extends KeyerEvent {
 
-  constructor(context, name, channel) {
+  constructor(context, midi, channel, chan) {
     super(context);
-    this.name = name;
-    this.channel = channel;
+    this._midi = midi;		// midi device name
+    this._channel = channel;	// midi channel number
+    this._chan = chan;		// ${midi}:${channel}
     this._notes = {};		// note state map
     this._nrpns = {};		// nrpn state map
     this._nrpn = 0;		// nrpn assembly

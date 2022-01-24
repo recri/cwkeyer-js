@@ -1,6 +1,7 @@
 ## editors
 /.idea
 /.vscode
+*~
 
 ## system files
 .DS_Store
@@ -20,5 +21,6 @@
 /dist/
 /out-tsc/
 
-# emacs detritus
-*~
+storybook-static
+custom-elements.json
+

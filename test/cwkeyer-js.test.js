@@ -1,13 +1,12 @@
-import { html, fixture, expect } from '@open-wc/testing';
+import { html } from 'lit';
+import { fixture, expect } from '@open-wc/testing';
 
 import '../src/cwkeyer-js.js';
 
-describe('CWKeyerJs', () => {
+describe('CwkeyerJs', () => {
   let element;
   beforeEach(async () => {
-    element = await fixture(html`
-      <cwkeyer-js></cwkeyer-js>
-    `);
+    element = await fixture(html`<cwkeyer-js></cwkeyer-js>`);
   });
 
   it('renders a h1', () => {

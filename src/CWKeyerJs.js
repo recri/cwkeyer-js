@@ -1,6 +1,6 @@
 //
 // cwkeyer.js - a progressive web app for morse code
-// Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
+// Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import { keyerLogo } from './keyer-logo.js';
 import { Keyer } from './Keyer.js';
 import { CWKeyer } from './CWKeyer.js';
@@ -83,6 +83,11 @@ const controls = {
     type: 'folder', lit: {type: Boolean}, value: false,
     label: 'Notes', level: 3, 
     title: 'MIDI Controls for Hasak keyer.'
+  },
+  displayAudio: {
+    type: 'folder', lit: {type: Boolean}, value: false,
+    label: 'Audio', level: 3,
+    title: 'Audio component controls'
   },
   // old keyer.js folders
   displaySettings: {
@@ -345,8 +350,6 @@ const controls = {
   content: { lit: { type: Object } },
   finished: { lit: { type: Array } },
   pending: { lit: { type: Array } },
-
-
 }; 
 
 export class CWKeyerJs extends LitElement {
@@ -414,9 +417,9 @@ export class CWKeyerJs extends LitElement {
 
   noteValue(note) { return this.cwkeyer.noteValue(note); }
   
-  get midiInputs() { return this.midiSource.inputs; }
+  get midiInputs() { return this.midiSource.inputs.map((x)=>x.name); }
 
-  get midiOutputs() { return this.midiSource.outputs; }
+  get midiOutputs() { return this.midiSource.outputs.map((x)=>x.name); }
   
   get currentTime() { return this.keyer.currentTime; }
 
@@ -647,8 +650,6 @@ export class CWKeyerJs extends LitElement {
     this.midiSource.on('midi:names', () => ['midiInputs', 'midiOutputs'].forEach(x => this.requestUpdate(x, [])));
     this.midiSource.on('midi:message', (name, data) => this.cwkeyer.onmidimessage(name, data));
 
-    console.log(`this.midiNotes = ${this.midiNotes}`);
-    console.log(`this.midiControls = ${this.midiControls}`);
     // only initialize the properties neede for startup
     this.displayAbout = false;
     this.displayLicense = false;
@@ -1028,7 +1029,7 @@ export class CWKeyerJs extends LitElement {
       return html`
 	<div class="group" title="Midi activity">
 	Inputs: ${this.midiInputs.join(', ')}<br/>
-	Outputs: ${this.midiInputs.join(', ')}<br/>
+	Outputs: ${this.midiOutputs.join(', ')}<br/>
 	Notes: ${this.midiNotes.join(', ')}<br/>
 	Controls: ${this.midiControls.join(', ')}
 	</div>
@@ -1048,6 +1049,28 @@ export class CWKeyerJs extends LitElement {
 	</div>
 	`;
 
+    case 'displayAudio':
+      // the first open click has to do some extra work
+      let first = html`
+	<div class="group" title="Start audio controls">
+	</div>`;
+      let stub = html`
+	<div class="group" title="Audio controls">
+	</div>`
+//      let after = html`
+//	<div class="group" title="Audio controls">
+//        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
+//        <div class="panel">
+//	  ${this.controlRender('running')}
+//	  <button @click=${this.clear}><span>Clear</span></button>
+//	  <button @click=${this.cancel}><span>Cancel</span></button>
+//	</div>
+//	 ${this.controlRender('displaySettings')}
+//	 ${this.controlRender('displayScope')}
+//	 ${this.controlRender('displayStatus')}
+//	</div>`
+      return html`${this.keyer === null ? first : stub}`;
+      
     case 'displayTouchStraight': return html``; // FIX.ME
 
     case 'displayTouchPaddle': return html``; // FIX.ME
@@ -1287,8 +1310,7 @@ export class CWKeyerJs extends LitElement {
       // options displays a list of options for selection
     case 'options': {
       const {options, label, title} = ctl;
-      console.log(`controlRender(${control}) => options ${options}, label ${label}, title ${title}`);
-      return html`
+            return html`
 	<div class="group" title="${title}"><label for="${control}">${label}
 	  <select
 	    name="${control}"
@@ -1340,31 +1362,13 @@ export class CWKeyerJs extends LitElement {
   }
   
   render() {
-    const startup = () => html`
-        <div>
-          <button class="start" @click=${this.start}><span>${playSymbol}</span></button>
-	  <br/>
-	  <h2>Press play to start the keyer.</h2>
-	  <p>Browsers shouldn't start audio without an user gesture.</p>
-	</div>`;
-    const main = () => html`
-        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
-        <div class="panel">
-	  ${this.controlRender('running')}
-	  <button @click=${this.clear}><span>Clear</span></button>
-	  <button @click=${this.cancel}><span>Cancel</span></button>
-	</div>
-	<p>This is the latest version of the source.</p>
-	${this.controlRender('displayMidi')}
-	${this.controlRender('displaySettings')}
-	${this.controlRender('displayScope')}
-	${this.controlRender('displayStatus')}
-	`;
     return html`
       <main>
         <div class="logo">${keyerLogo}</div>
         <div><h1>cwkeyer.js</h1></div>
-	${this.keyer === null ? startup() : main()}
+	${this.controlRender('displayMidi')}
+	${this.controlRender('displayKeyers')}
+	${this.controlRender('displayAudio')}
 	${this.controlRender('displayAbout')}
 	${this.controlRender('displayLicense')}
 	${this.controlRender('displayColophon')}

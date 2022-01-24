@@ -1,40 +1,53 @@
 {
+  "name": "cwkeyer-js",
+  "description": "Webcomponent cwkeyer-js following open-wc recommendations",
+  "license": "MIT",
+  "author": "cwkeyer-js",
+  "version": "0.0.0",
   "scripts": {
-    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore --rule 'no-console: off'",
-    "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
-    "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
-    "format:prettier": "prettier \"**/*.js\" --write --ignore-path .gitignore",
-    "lint": "npm run lint:eslint",
-    "format": "npm run format:eslint",
+    "lint": "eslint --ext .js,.html . --ignore-path .gitignore && prettier \"**/*.js\" --check --ignore-path .gitignore",
+    "format": "eslint --ext .js,.html . --fix --ignore-path .gitignore && prettier \"**/*.js\" --write --ignore-path .gitignore",
     "test": "web-test-runner --coverage",
     "test:watch": "web-test-runner --watch",
-    "storybook": "start-storybook",
-    "storybook:build": "build-storybook",
-    "build": "rimraf dist && rollup -c rollup.config.js",
-    "start:build": "npm run build && web-dev-server --root-dir dist --app-index index.html --open --compatibility none",
-    "start": "web-dev-server --app-index index.html --node-resolve --open --watch"
+    "storybook": "npm run analyze -- --exclude dist && web-dev-server -c .storybook/server.mjs",
+    "storybook:build": "npm run analyze -- --exclude dist && build-storybook",
+    "build": "rimraf dist && rollup -c rollup.config.js && npm run analyze -- --exclude dist",
+    "start:build": "web-dev-server --root-dir dist --app-index index.html --open",
+    "analyze": "cem analyze --litelement",
+    "start": "web-dev-server"
+  },
+  "dependencies": {
+    "lit": "^2.0.2"
   },
   "devDependencies": {
-    "@open-wc/building-rollup": "^1.0.0",
-    "@open-wc/demoing-storybook": "^2.0.0",
-    "@open-wc/eslint-config": "^2.0.0",
-    "@open-wc/testing": "^2.0.0",
-    "@web/dev-server": "^0.0.12",
-    "@web/test-runner": "^0.7.41",
+    "@babel/preset-env": "^7.16.4",
+    "@custom-elements-manifest/analyzer": "^0.4.17",
+    "@open-wc/building-rollup": "^2.0.1",
+    "@open-wc/eslint-config": "^4.3.0",
+    "@open-wc/testing": "next",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@web/dev-server": "^0.1.28",
+    "@web/dev-server-storybook": "next",
+    "@web/rollup-plugin-html": "^1.10.1",
+    "@web/rollup-plugin-import-meta-assets": "^1.0.7",
+    "@web/test-runner": "^0.13.22",
+    "babel-plugin-template-html-minifier": "^4.1.0",
     "deepmerge": "^4.2.2",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.14.0",
-    "husky": "^1.0.0",
-    "lint-staged": "^10.0.0",
-    "prettier": "^2.0.4",
-    "rimraf": "^2.6.3",
-    "rollup": "^2.32.1",
-    "rollup-plugin-copy": "^3.3.0"
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.60.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-workbox": "^6.2.0"
   },
   "eslintConfig": {
     "extends": [
-      "@open-wc/eslint-config",
-      "eslint-config-prettier"
+      "@open-wc",
+      "prettier"
     ]
   },
   "prettier": {
@@ -47,16 +60,10 @@
     }
   },
   "lint-staged": {
-    "*.js": []
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
-  "name": "cwkeyer-js",
-  "version": "0.0.0",
-  "description": "Webcomponent cwkeyer-js following open-wc recommendations",
-  "author": "Roger E Critchlow Jr",
-  "license": "GPL-3",
-  "dependencies": {
-    "caniuse-lite": "^1.0.30001299",
-    "lit-element": "^3.0.0-pre.1",
-    "lit-html": "^1.0.0"
-  }
+  "customElements": "custom-elements.json"
 }

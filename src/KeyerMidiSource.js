@@ -28,6 +28,15 @@ import { KeyerEvent } from './KeyerEvent.js';
  ** This works in chrome-stable as of 2020-11-04, Version 86.0.4240.111 (Official Build) (64-bit)
  */
 
+const knownMidiNames = {
+  'hasak MIDI 1': 'hasak1',
+  'hasak MIDI 2': 'hasak2',
+  'hasak MIDI 3': 'hasak3',
+  'Midi Through Port-0' : 'through0',
+  'Midi Through Port-1' : 'through1',
+  'Midi Through Port-2' : 'through2',
+};
+  
 export class KeyerMidiSource extends KeyerEvent {
   constructor(context) {
     super(context);
@@ -37,26 +46,28 @@ export class KeyerMidiSource extends KeyerEvent {
     this.notesList = [];	// cache of device:notes list
     this.controlsCache = [];	// per name list of controls
     this.controlsList = [];	// cache of device:controls list
-    this.namesList = [];	// cache of device names list
-    this.rawNamesList = [];
+    this._shorten = []		// full name to shortened name map
+    this._lengthen = [] 	// shortened name to full name map
     this.refresh();
   }
 
   cacheNote(note) {
     if (this.notesCache[note] === undefined) {
       // console.log(`adding midi:note ${note} to notesCache`);
-      this.notesCache[note] = true;
-      this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
+      this.notesCache[note] = 0;
+      this.notesList = [].concat(Array.from(Object.keys(this.notesCache)).sort())
       this.emit('midi:notes');
     }
+    this.notesCache[note] += 1;
   }
 
   cacheControl(note) {
     if (this.controlsCache[note] === undefined) {
-      this.controlsCache[note] = true;
-      this.controlsList = ['None'].concat(Array.from(Object.keys(this.controlsCache)).sort())
+      this.controlsCache[note] = 0;
+      this.controlsList = [].concat(Array.from(Object.keys(this.controlsCache)).sort())
       this.emit('midi:controls');
     }
+    this.controlsCache[note] += 1;
   }
   
   onmidimessage(name, e) { 
@@ -73,7 +84,7 @@ export class KeyerMidiSource extends KeyerEvent {
 	this.cacheNote(note);
 	this.emit('midi:event', note, false);
         break;
-      case 0xB0:
+      case 0xB0:		// control change
 	this.cacheControl(note);
 	break;
       default:
@@ -82,14 +93,24 @@ export class KeyerMidiSource extends KeyerEvent {
     }
   }
   
-  // shortened names would be nice.
-  shorten(name) { return name; }
+  shorten(name) { 
+    if ( ! this._shorten[name]) {
+      if (knownMidiNames[name]) {
+	this._shorten[name] = knownMidiNames[name]
+	this._lengthen[knownMidiNames[name]] = name
+      } else {
+	this._shorten[name] = name
+	this._lengthen[name] = name
+      }
+    }
+    return this._shorten[name];
+ }
 
-  lengthen(name) { return name; }
+  lengthen(name) { return this._lengthen[name]; }
 
-  get names() { return this.namesList; }
+  get names() { return Object.getOwnPropertyNames(this._lengthen); }
   
-  get rawnames() { return this.rawNamesList; }
+  get rawnames() { return Object.getOwnPropertyNames(this._shorten); }
   
   get inputs() { return this.midiAccess ? Array.from(this.midiAccess.inputs.values()) : []; }
 
@@ -99,25 +120,37 @@ export class KeyerMidiSource extends KeyerEvent {
 
   get controls() { return this.controlsList; }
   
+  output(name) { return this.midiAccess.outputs.get(this.lengthen(name)); }
+
+  input(name) { return this.midiAccess.inputs.get(this.lengthen(name)); }
+  
   // filter the notesCache for loss/gain of devices
   rebind() {
     const { notesCache, controlsCache } = this;
     this.notesCache = []
     this.controlsCache = []
+    this.inputNameCache = []
     this.inputs.forEach(input => {
       const name = this.shorten(input.name);
+      this.inputNameCache[name] = input.name
       // console.log(`rebind ${input.name} to ${name}`);
       notesCache.forEach(note => { if (note.startsWith(name)) this.notesCache[note] = true; });
       controlsCache.forEach(note => { if (note.startsWith(name)) this.controlsCache[note] = true; });
       input.onmidimessage = e => this.onmidimessage(name, e)
     });
+    this.outputCache = []
+    this.outputs.forEach(output => this.shorten(output.name))
     this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
     this.controlsList = ['None'].concat(Array.from(Object.keys(this.controlsCache)).sort())
-    this.rawNamesList = ['None'].concat(this.midiAccess ? this.inputs.map(input => input.name) : []);
-    this.namesList = this.rawNamesList.map(name => this.shorten(name));
     this.emit('midi:notes');
     this.emit('midi:controls');
     this.emit('midi:names');
+    this.on('midi:send', (name, msg) => this.onMIDISend(name, msg))
+  }
+
+  onMIDISend(name, data) {
+    const out = this.outputs.get(name)
+    if (out) out.send(data)
   }
 
   onStateChange() { this.rebind() }
