@@ -19,10 +19,11 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 import { LitElement, html, css } from 'lit';
-import { keyerLogo } from './keyer-logo.js';
-import { Keyer } from './Keyer.js';
+import { keyerLogo } from './keyer-logo.js'; // maybe a scope trace?
 import { CWKeyer } from './CWKeyer.js';
 import { KeyerMidiSource } from './KeyerMidiSource.js';
+import { Keyer } from './Keyer.js';
+
 //
 // prefix global constant functions and data
 //
@@ -67,7 +68,7 @@ const controls = {
   displayMidi: {
     type: 'folder', lit: {type: Boolean}, value: true,
     label: 'Midi activity', level: 2, 
-    title: 'Active Midi inputs, outputs, notes, and controls.'
+    title: 'Active Midi devices, notes, and controls.'
   },
   displayHasak: {
     type: 'folder', lit: {type: Boolean}, value: false,
@@ -334,6 +335,7 @@ const controls = {
   envelopes: { lit: { type: Array } },
   paddleKeyers: { lit: { type: Array } },
   shiftKeys: { lit: { type: Array } },
+  midiNames: { lit: { type: Array } },
   midiInputs: { lit: { type: Array } },
   midiOutputs: { lit: { type: Array } },
   midiNotes: { lit: { type: Array } },
@@ -416,6 +418,8 @@ export class CWKeyerJs extends LitElement {
   nrpnValue(nrpn) { return this.cwkeyer.nrpnValue(nrpn); }
 
   noteValue(note) { return this.cwkeyer.noteValue(note); }
+  
+  get midiNames() { return this.midiSource.names(); }
   
   get midiInputs() { return this.midiSource.inputs.map((x)=>x.name); }
 
@@ -647,7 +651,8 @@ export class CWKeyerJs extends LitElement {
 
     this.midiSource.on('midi:notes', () => this.requestUpdate('midiNotes', []));
     this.midiSource.on('midi:controls', () => this.requestUpdate('midiControls', []));
-    this.midiSource.on('midi:names', () => ['midiInputs', 'midiOutputs'].forEach(x => this.requestUpdate(x, [])));
+    this.midiSource.on('midi:names', () => this.requestUpdate('midiNames');
+		       // ['midiInputs', 'midiOutputs'].forEach(x => this.requestUpdate(x, [])));
     this.midiSource.on('midi:message', (name, data) => this.cwkeyer.onmidimessage(name, data));
 
     // only initialize the properties neede for startup
@@ -1028,8 +1033,7 @@ export class CWKeyerJs extends LitElement {
 	return html``;
       return html`
 	<div class="group" title="Midi activity">
-	Inputs: ${this.midiInputs.join(', ')}<br/>
-	Outputs: ${this.midiOutputs.join(', ')}<br/>
+	Devices: ${this.midiNames.join(', ')}<br/>
 	Notes: ${this.midiNotes.join(', ')}<br/>
 	Controls: ${this.midiControls.join(', ')}
 	</div>
