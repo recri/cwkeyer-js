@@ -17,7 +17,16 @@
 // 
 import { KeyerEvent } from './KeyerEvent.js';
 
-// map notes and control change
+//
+// map notes, nrpns, and other control change messages
+// maintain a state map for the device such that current note,
+// nrpn, and control change values can be retrieved
+//
+// also provide dummy keyer implementation so this class can be
+// used as the default keyer device implementation.
+//
+// also provide a base class for other keyer implementations to extend.
+//
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<","~"] }] */
 export class CWKeyerDefault extends KeyerEvent {
 
@@ -64,6 +73,7 @@ export class CWKeyerDefault extends KeyerEvent {
 	this._nrpns[this._nrpn] = this._data;
 	this.emit('nrpn', this._nrpn, this._data);
 	break;
+	// insert rest of CC panoply here
       default:
 	console.log(`CWKeyerDefault: other control change ${msg[0]} ${msg[1]} ${msg[2]}`);
 	break;
