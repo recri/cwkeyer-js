@@ -114,7 +114,7 @@ export class KeyerMidiSource extends KeyerEvent {
     if ( ! this.outputMap[sname]) {
       this.outputMap[sname] = id;
     } else if (this.outputMap[sname] !== id) {
-      console.log(`two outputs with same short name: sname ${sname} name ${name} id ${id} outputMap[sname] ${outputMap[sname]}`);
+      console.log(`two outputs with same short name: sname ${sname} name ${name} id ${id} this.outputMap[sname] ${this.outputMap[sname]}`);
     }
     return sname;
   }
@@ -124,7 +124,7 @@ export class KeyerMidiSource extends KeyerEvent {
     if ( ! this.inputMap[sname]) {
       this.inputMap[sname] = id;
     } else if (this.inputMap[sname] !== id) {
-      console.log(`two inputs with same short name: sname ${sname} name ${name} id ${id} inputMap[sname] ${inputMap[sname]}`);
+      console.log(`two inputs with same short name: sname ${sname} name ${name} id ${id} this.inputMap[sname] ${this.inputMap[sname]}`);
     }
     return sname;
   }
