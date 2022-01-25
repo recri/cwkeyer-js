@@ -690,16 +690,16 @@ export class CWKeyerJs extends LitElement {
   midiControlsUpdate() { this.requestUpdate('midiControls', []) }
 
   midiNamesUpdate() {
-    for (const name of this.midiNames) {
-      if ( ! this.devices[name]) {
-	if (name.match(/.*[hH]asak.*/)) {
-	  this.devices[name] = new CWKeyerHasak(null, name);
-	} else if (name.match(/.*Teensy MIDI.*/)) {
-	  this.devices[name] = new CWKeyerTWE(null, name);
+    for (const id of this.midiNames) {
+      if ( ! this.devices[id]) {
+	if (id.match(/.*[hH]asak.*/)) {
+	  this.devices[id] = new CWKeyerHasak(null, id);
+	} else if (id.match(/.*Teensy MIDI.*/)) {
+	  this.devices[id] = new CWKeyerTWE(null, id);
 	} else {
-	  this.devices[name] = new CWKeyerDefault(null, name);
+	  this.devices[id] = new CWKeyerDefault(null, id);
 	}
-	this.devices[name].on('midi:send', (name, msg) => this.onmidisend(name, msg))
+	this.devices[id].on('midi:send', (dev, msg) => this.onmidisend(dev, msg))
       }
     }
     this.requestUpdate('midiNames')
