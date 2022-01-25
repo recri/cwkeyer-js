@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // 
-import { CWKeyerChannel } from './CWKeyerChannel.js';
+import { CWKeyerDefault } from './CWKeyerDefault.js';
 
 // parameter map for hasak 100
 // generated with .../hasak/doc/nrpn.tcl from .../hasak/config.h
@@ -191,27 +191,196 @@ const cwkeyerhasak100 = {
 };
 
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<",'>>',"~"] }] */
-export class CWKeyerHasak extends CWKeyerChannel {
+export class CWKeyerHasak extends CWKeyerDefault {
 
-  constructor(context, midi, channel, chan) {
-    super(context, midi, channel, chan);
+  constructor(context, name) {
+    super(context, name);
     this._version = 0;
     this._hasak = cwkeyerhasak100;
+    this._keyers = ['vk6ph', 'k1el', 'nd7pa', 'ad5dz'];
+    this._envelopes = ['hann', 'blackman-harris', 'linear'];
+    this._voices = ['default', 'tune', 'straight key', 'paddle', 'winkey', 'kyr', 'button'];
+    this.on('nrpn', (nrpn, value) => this.onnrpn(nrpn, value));
+    this.on('note', (note, value) => this.onnote(note, value));
   }
 
   set version(version) { this._version = version; }
 
-  onmidimessage(msg) {
-    super.onmidimessage(msg);
+  tickle() {
+    if ( ! this._tickled) {
+      this._tickled = true
+      console.log(`requesting info from ${name}`);
+      this.sendnrpn(this._hasak.KYRP_VERSION.value, 0);
+      this.sendnrpn(this._hasak.KYRP_NRPN_SIZE.value, 0);
+      this.sendnrpn(this._hasak.KYRP_MSG_SIZE.value, 0);
+      this.sendnrpn(this._hasak.KYRP_SAMPLE_RATE.value, 0);
+      this.sendnrpn(this._hasak.KYRP_EEPROM_LENGTH.value, 0);
+      this.sendnrpn(this._hasak.KYRP_ID_CPU.value, 0);
+      this.sendnrpn(this._hasak.KYRP_ID_CODEC.value, 0);
+      this.sendnrpn(this._hasak.KYRP_ECHO_ALL.value, 0);
+    }
   }
 
-  sendnrpn(kyrp, val) {
-    const nrpn = this.hasak[kyrp].value;
-    const c = this.nrpnvalue(this.hasak.KYRP_CHAN_RECV_CC.value) || this.channel;
+  //  onmidimessage(msg) {
+  //    super.onmidimessage(msg);
+  //  }
+
+  onnote(note, vel) {
+    this.tickle();
+  }
+  
+  onnrpn(nrpn, val) {
+    this.tickle();
+    console.log(`rcvdnrpn(${nrpn}, ${val})`);
+    // super.rcvdnrpn(nrpn, val);
+    // console.log(`super.rcvdnrpn(${nrpn}, ${val}) returned`);
+    switch (nrpn) {
+    case this._hasak.KYRP_VERSION.value:
+      this._version = val;
+      console.log(`KYRP_VERSION ${val}`);
+      break;
+    case this._hasak.KYRP_NRPN_SIZE.value:
+      this._nrpn_size = val; 
+      console.log(`KYRP_NRPN_SIZE ${val}`);
+      break;
+    case this._hasak.KYRP_MSG_SIZE.value:
+      this._msg_size = val;
+      console.log(`KYRP_MSG_SIZE ${val}`);
+      break;
+    case this._hasak.KYRP_SAMPLE_RATE.value:
+      this._sample_rate = val;
+      console.log(`KYRP_SAMPLE_RATE ${val}`);
+      break;
+    case this._hasak.KYRP_EEPROM_LENGTH.value: 
+      this._eeprom_length = val; 
+      console.log(`KYRP_EEPROM_LENGTH ${val}`);
+      break;
+    case this._hasak.KYRP_ID_CPU.value:
+      this._id_cpu = val; 
+      console.log(`KYRP_ID_CPU ${val}`);
+      break;
+    case this._hasak.KYRP_ID_CODEC.value:
+      this._id_codec = val; 
+      console.log(`KYRP_ID_CODEC ${val}`);
+      break;
+    case this._hasak.KYRP_ECHO_ALL.value:
+      this._echo_all = true; 
+      console.log("KYRP_ECHO_ALL ack");
+      break;
+    }
+  }
+
+  sendnrpn(nrpn, val) {
+    // const nrpn = this._hasak[kyrp].value;
+    const c = this.nrpnvalue(this._hasak.KYRP_CHAN_RECV_CC.value) || this._channel;
     const cc = 0xB0|(c-1);
-    this.emit('midi:send', this.midi, [cc, 99, (nrpn>>7)&127, cc, 98, nrpn&127, cc, 6, (val>>7)&127, cc, 38, val&127]);
+    // console.log(`CWKeyerHasak sendnrpn(${nrpn}, ${val})`);
+    this.emit('midi:send', this.name, [cc, 99, (nrpn>>7)&127, cc, 98, nrpn&127, cc, 6, (val>>7)&127, cc, 38, val&127]);
   }
 
+  // keyer properties
+
+  set pitch(v) { this.set_nrpn(this._hasak.KYRP_TONE, v); }
+
+  get pitch() { return this.get_nrpn(this._hasak.KYRP_TONE); }
+
+  set gain(v) { this.set_nrpn(this._hasak.KYRP_LEVEL, v); }
+  
+  get gain() { return this.get_nrpn(this._hasak.KYRP_LEVEL); }
+
+  set speed(v) { this.set_nrpn(this._hasak.KYRP_SPEED, v); }
+
+  get speed() { return this.get_nrpn(this._hasak.KYRP_SPEED); }
+
+  // keyer properties for keyer timing
+
+  set weight(v) { this.set_nrpn(this._hasak.KYRP_WEIGHT, v); }
+
+  get weight() { return this.get_nrpn(this._hasak.KYRP_WEIGHT); }
+
+  set ratio(v) { this.set_nrpn(this._hasak.KYRP_RATIO, v); }
+
+  get ratio() { return this.get_nrpn(this._hasak.KYRP_RATIO); }
+
+  set compensation(v) { this.set_nrpn(this._hasak.KYRP_COMP, v); }
+
+  get compensation() { return this.get_nrpn(this._hasak.KYRP_COMP); }
+
+  set farnsworth(v) { this.set_nrpn(this._hasak.KYRP_FARNS, v); }
+
+  get farnsworth() { return this.get_nrpn(this._hasak.KYRP_FARNS); }
+
+  // keyer properties for keying envelope
+
+  set rise(v) { this.set_nrpn(this._hasak.KYRP_RISE_TIME, v); }
+
+  get rise() { return this.get_nrpn(this._hasak.KYRP_RISE_TIME); }
+
+  set fall(v) { this.set_nrpn(this._hasak.KYRP_FALL_TIME, v); }
+
+  get fall() { return this.get_nrpn(this._hasak.KYRP_FALL_TIME); }
+
+  set envelope(v) { this.set_nrpn(this._hasak.KYRP_RISE_RAMP, v); }
+
+  get envelope() { return this.get_nrpn(this._hasak.KYRP_RISE_RAMP); }
+
+  set envelope2(v) { this.set_nrpn(this._hasak.KYRP_FALL_RAMP, v); }
+
+  get envelope2() { return this.get_nrpn(this._hasak.KYRP_FALL_RAMP); }
+
+  get envelopes() { return this._envelopes; }
+  
+  // keyer properties for paddle
+
+  set paddleSwapped(v) { this.set_nrpn(this._hasak.KYRP_SWAP, v); }
+
+  get paddleSwapped() { return this.get_nrpn(this._hasak.KYRP_SWAP); }
+
+  get paddleKeyers() { return this._keyers; }
+
+  set paddleKeyer(v) { this.set_nrpn(this._hasak.KYRP_PAD_KEYER, v); }
+
+  get paddleKeyer() { return this.get_nrpn(this._hasak.KYRP_PAD_KEYER); }
+
+  set paddleAdapt(v) { this.set_nrpn(this._hasak.KYRP_PAD_ADAPT, v); }
+
+  get paddleAdapt() { return this.get_nrpn(this._hasak.KYRP_PAD_ADAPT); }
+
+  // vox specific keyer properties
+
+  get voices() { return this._voices; }
+  
+  set voice(v) { this._voice = v; }
+
+  get voice() { return this._voice; }
+
+  set voicePitch(v) {  this.set_vox_nrpn(this._voice, this._hasak.KYRP_TONE, v); }
+
+  get voicePitch() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_TONE); }
+
+  set voiceGain(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_LEVEL, v); }
+  
+  get voiceGain() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_LEVEL); }
+
+  set voiceSpeed(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_SPEED, v); }
+
+  get voiceSpeed() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_SPEED); }
+
+  set voiceWeight(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_WEIGHT, v); }
+
+  get voiceWeight() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_WEIGHT); }
+
+  set voiceRatio(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_RATIO, v); }
+
+  get voiceRatio() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_RATIO); }
+
+  set voiceCompensation(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_COMP, v); }
+
+  get voiceCompensation() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_COMP); }
+
+  set voiceFarnsworth(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_FARNS, v); }
+
+  get voiceFarnsworth() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_FARNS); }
 }
 // Local Variables:
 // mode: JavaScript

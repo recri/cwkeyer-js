@@ -1,5 +1,5 @@
 //
-// cwkeyer.js - a progressive web app for morse code
+// cwkeyer-js - a progressive web app for morse code
 // Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
 //
 // This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,10 @@
 
 import { LitElement, html, css } from 'lit';
 import { keyerLogo } from './keyer-logo.js'; // maybe a scope trace?
-import { CWKeyer } from './CWKeyer.js';
 import { KeyerMidiSource } from './KeyerMidiSource.js';
+import { CWKeyerDefault }  from './CWKeyerDefault.js';
+import { CWKeyerHasak } from './CWKeyerHasak.js';
+import { CWKeyerTWE } from './CWKeyerTWE.js';
 import { Keyer } from './Keyer.js';
 
 //
@@ -59,21 +61,21 @@ const alwaysForceDefault = false;
 // .type is one of folder, toggle, spinner, options, envelope
 //
 const controls = {
-  running: { 
-    type: 'toggle', lit: { type: Boolean}, 
-    label: '',  on: pauseSymbol, off: playSymbol,
-    title: 'Run or pause the web audio rendering engine.'
-  },
   // cwkeyer folders
   displayMidi: {
     type: 'folder', lit: {type: Boolean}, value: true,
     label: 'Midi activity', level: 2, 
     title: 'Active Midi devices, notes, and controls.'
   },
-  displayHasak: {
+  displayKeyer: {
     type: 'folder', lit: {type: Boolean}, value: false,
-    label: 'Hasak controller', level: 2, 
-    title: 'Controller panel for Hasak keyer.'
+    label: 'Keyer controller', level: 2, 
+    title: 'Controller panel for CWKeyer.'
+  },
+  displayTWE: {
+    type: 'folder', lit: {type: Boolean}, value: false,
+    label: 'Teensy Winkey Emulator controller', level: 2, 
+    title: 'Controller panel for Teensy Winkey Emulator.'
   },
   displayNotes: {
     type: 'folder', lit: {type: Boolean}, value: false,
@@ -85,81 +87,34 @@ const controls = {
     label: 'Notes', level: 3, 
     title: 'MIDI Controls for Hasak keyer.'
   },
-  displayAudio: {
-    type: 'folder', lit: {type: Boolean}, value: false,
-    label: 'Audio', level: 3,
-    title: 'Audio component controls'
-  },
-  // old keyer.js folders
-  displaySettings: {
-    type: 'folder', lit: {type: Boolean}, value: true,
-    label: 'Settings', level: 2, 
-    title: 'Settings that control the behavior of keyer.js.'
-  },
-  displayKeyboardSettings: { 
-    type: 'folder', lit: { type: Boolean}, value: true,
-    label: 'Keyboard Keyer', level: 3, 
-    title: 'Settings for keyboard keying.'
-  },
-  displayAdvancedKeyboardSettings: { 
-    type: 'folder', lit: { type: Boolean}, value: false,
-    label: 'More Keyboard Keyer', level: 4, 
-    title: 'Additional settings for keyboard keying.'
-  },
-  displayManualSettings: {
-    type: 'folder', lit: { type: Boolean}, value: false, 
-    label: 'Manual Keyer', level: 3, 
-    title: 'Settings for manually keying.'
-  },
-  displayAdvancedManualSettings: {
-    type: 'folder', lit: { type: Boolean}, value: false, 
-    label: 'More Manual Options', level: 4, 
-    title: 'Additional settings for manual keying.'
-  },
-  displayMiscSettings: {
-    type: 'folder', lit: { type: Boolean}, value: false, 
-    label: 'More Options', level: 3, 
-    title: "Other settings."
-  },
-  displayScope: {
-    type: 'folder', lit: { type: Boolean}, value: false,
-    label: 'Scope', level: 2, 
-    title: 'An oscilloscope for observing keyer.js.'
-  },
-  displayStatus: {
-    type: 'folder', lit: { type: Boolean}, value: true,
-    label: 'Status', level: 2, 
-    title: 'Status information about the operation of web audio.'
-  },
   displayAbout: {
     type: 'folder', lit: { type: Boolean}, value: false,
     label: 'About', level: 2, 
-    title: 'What keyer.js does and how it works.'
+    title: 'What cwkeyer-js does.'
   },
   displayLicense: { 
     type: 'folder', lit: { type: Boolean}, value: false,
     label: 'License', level: 2, 
-    title: 'How keyer.js is licensed.'
+    title: 'How cwkeyer-js is licensed.'
   },
   displayColophon: {
     type: 'folder', lit: { type: Boolean}, value: false,
     label: 'Colophon', level: 2, 
-    title: 'How Keyer.js was built.'
-  },
-  displayTouchStraight: { 
-    lit: { type: Boolean }, value: false,
-  },
-  displayTouchPaddle: {
-    lit: { type: Boolean }, value: false,
+    title: 'How cwkeyer-js was built.'
   },
   speed: {
     type: 'spinner', lit: { type: Number }, value: 20,
-    label: 'Speed', min: 10, max: 150, step: 1, unit: 'WPM', size: 4,
+    label: 'Speed', min: 5, max: 120, step: 1, unit: 'WPM', size: 4,
     title: 'The speed of the characters in words/minute (WPM).'
   },
   gain: { 
     type: 'spinner', lit: { type: Number }, value: -26,
     label: 'Gain', min: -50, max: 10, step: 1, unit: 'dB', size: 4,
+    title: 'The volume relative to full scale.'
+  },
+  volume: { 
+    type: 'spinner', lit: { type: Number }, value: -26,
+    label: 'Volume', min: -50, max: 10, step: 1, unit: 'dB', size: 4,
     title: 'The volume relative to full scale.'
   },
   pitch: { 
@@ -216,6 +171,64 @@ const controls = {
     type: 'toggle', lit: { type: Boolean }, value: false,
     label: 'Swapped', on: 'true', off: 'false',
     title: 'Should the paddles be swapped.'
+  },
+  displayAudio: {
+    type: 'folder', lit: {type: Boolean}, value: false,
+    label: 'Audio', level: 3,
+    title: 'Audio component controls'
+  },
+  // old keyer.js controls and folders
+  running: { 
+    type: 'toggle', lit: { type: Boolean}, 
+    label: '',  on: pauseSymbol, off: playSymbol,
+    title: 'Run or pause the web audio rendering engine.'
+  },
+  displaySettings: {
+    type: 'folder', lit: {type: Boolean}, value: true,
+    label: 'Settings', level: 2, 
+    title: 'Settings that control the behavior of keyer.js.'
+  },
+  displayKeyboardSettings: { 
+    type: 'folder', lit: { type: Boolean}, value: true,
+    label: 'Keyboard Keyer', level: 3, 
+    title: 'Settings for keyboard keying.'
+  },
+  displayAdvancedKeyboardSettings: { 
+    type: 'folder', lit: { type: Boolean}, value: false,
+    label: 'More Keyboard Keyer', level: 4, 
+    title: 'Additional settings for keyboard keying.'
+  },
+  displayManualSettings: {
+    type: 'folder', lit: { type: Boolean}, value: false, 
+    label: 'Manual Keyer', level: 3, 
+    title: 'Settings for manually keying.'
+  },
+  displayAdvancedManualSettings: {
+    type: 'folder', lit: { type: Boolean}, value: false, 
+    label: 'More Manual Options', level: 4, 
+    title: 'Additional settings for manual keying.'
+  },
+  displayMiscSettings: {
+    type: 'folder', lit: { type: Boolean}, value: false, 
+    label: 'More Options', level: 3, 
+    title: "Other settings."
+  },
+  displayScope: {
+    type: 'folder', lit: { type: Boolean}, value: false,
+    label: 'Scope', level: 2, 
+    title: 'An oscilloscope for observing keyer.js.'
+  },
+  displayStatus: {
+    type: 'folder', lit: { type: Boolean}, value: true,
+    label: 'Status', level: 2, 
+    title: 'Status information about the operation of web audio.'
+  },
+  // more old stuff
+  displayTouchStraight: { 
+    lit: { type: Boolean }, value: false,
+  },
+  displayTouchPaddle: {
+    lit: { type: Boolean }, value: false,
   },
   straightKey: {
     type: 'options', lit: { type: String }, value: 'ControlLeft',
@@ -383,55 +396,33 @@ export class CWKeyerJs extends LitElement {
   // property getters and setters
 
   // properties of web audio context
-  set running(v) { 
-    // console.log(`set running = ${v}, running is ${this.running}`);
-    if (v !== this._running) {
-      this._running = v;
-      if (v) {
-	// console.log(`calling resume`);
-	this.keyer.context.resume();
-	// this cures need to twiddle the gain to get iambic keying to work
-	// I wish I understood why
-	this.gain += 1;
-	this.gain -= 1;
-      } else {
-	this.keyer.context.suspend(); 
-      }
-    }
-    // console.log(`set running = ${v}, running is now ${this.running} and state is ${this.keyer.context.state}`);
-  }
+//  set running(v) { 
+//    // console.log(`set running = ${v}, running is ${this.running}`);
+//    if (v !== this._running) {
+//      this._running = v;
+//      if (v) {
+//	// console.log(`calling resume`);
+//	this.keyer.context.resume();
+//	// this cures need to twiddle the gain to get iambic keying to work
+//	// I wish I understood why
+//	this.gain += 1;
+//	this.gain -= 1;
+//      } else {
+//	this.keyer.context.suspend(); 
+//      }
+//    }
+//    // console.log(`set running = ${v}, running is now ${this.running} and state is ${this.keyer.context.state}`);
+//  }
 
-  get running() { return this._running; }
+  // get running() { return this._running; }
   
   // cwkeyer specific
 
-  get names() { return this.cwkeyer.names; }
-
-  get name() { return this.cwkeyer.name; }
-  
-  set name(name) { this.cwkeyer.name = name; }
-  
-  get nrpns() { return this.cwkeyer.nrpns; }
-
-  get notes() { return this.cwkeyer.notes; }
-  
-  nrpnValue(nrpn) { return this.cwkeyer.nrpnValue(nrpn); }
-
-  noteValue(note) { return this.cwkeyer.noteValue(note); }
-  
-  get midiNames() { return this.midiSource.names(); }
+  get midiNames() { return this.midiSource.names; }
   
   get midiInputs() { return this.midiSource.inputs.map((x)=>x.name); }
 
   get midiOutputs() { return this.midiSource.outputs.map((x)=>x.name); }
-  
-  get currentTime() { return this.keyer.currentTime; }
-
-  get sampleRate() { return this.keyer.sampleRate; }
-
-  get baseLatency() { return this.keyer.baseLatency; }
-
-  get state() { return this.keyer.context.state; }
   
   get midiAvailable() { return this.midiSource.midiAvailable; }
   
@@ -439,226 +430,288 @@ export class CWKeyerJs extends LitElement {
 
   get midiControls() { return this.midiSource.controls; }
   
-  // keyboard keyer properties
-  set pitch(v) { this.keyer.output.pitch = v; }
+  // get currentTime() { return this.keyer.currentTime; }
 
-  get pitch() { return this.keyer.output.pitch; }
+  // get sampleRate() { return this.keyer.sampleRate; }
 
-  set gain(v) { this.keyer.output.gain = v; }
+  // get baseLatency() { return this.keyer.baseLatency; }
+
+  // get state() { return this.keyer.context.state; }
   
-  get gain() { return this.keyer.output.gain; }
+  // keyer properties
+  set pitch(v) { this.keyer.pitch = v; }
 
-  set speed(v) { this.keyer.output.speed = v; }
+  get pitch() { return this.keyer.pitch; }
 
-  get speed() { return this.keyer.output.speed; }
+  set gain(v) { this.keyer.gain = v; }
+  
+  get gain() { return this.keyer.gain; }
 
-  set weight(v) { this.keyer.output.weight = v; }
+  set speed(v) { this.keyer.speed = v; }
 
-  get weight() { return this.keyer.output.weight; }
+  get speed() { return this.keyer.speed; }
 
-  set ratio(v) { this.keyer.output.ratio = v; }
+  set weight(v) { this.keyer.weight = v; }
 
-  get ratio() { return this.keyer.output.ratio; }
+  get weight() { return this.keyer.weight; }
 
-  set compensation(v) { this.keyer.output.compensation = v; }
+  set ratio(v) { this.keyer.ratio = v; }
 
-  get compensation() { return this.keyer.output.compensation; }
+  get ratio() { return this.keyer.ratio; }
 
-  set rise(v) { this.keyer.output.rise = v; }
+  set compensation(v) { this.keyer.compensation = v; }
 
-  get rise() { return this.keyer.output.rise; }
+  get compensation() { return this.keyer.compensation; }
 
-  set fall(v) {  this.keyer.output.fall = v; }
+  set farnsworth(v) { this.keyer.farnsworth = v; }
 
-  get fall() { return this.keyer.output.fall; }
+  get farnsworth() { return this.keyer.farnsworth; }
 
-  set envelope(v) { this.keyer.output.envelope = v; }
+  set rise(v) { this.keyer.rise = v; }
 
-  get envelope() { return this.keyer.output.envelope; }
+  get rise() { return this.keyer.rise; }
 
-  set envelope2(v) { this.keyer.output.envelope2 = v; }
+  set fall(v) { this.keyer.fall = v; }
 
-  get envelope2() { return this.keyer.output.envelope2; }
+  get fall() { return this.keyer.fall; }
 
-  get envelopes() { return this.keyer.output.envelopes; }
+  set envelope(v) { this.keyer.envelope = v; }
+
+  get envelope() { return this.keyer.envelope; }
+
+  set envelope2(v) { this.keyer.envelope2 = v; }
+
+  get envelope2() { return this.keyer.envelope2; }
+
+  get envelopes() { return this.keyer.envelopes; }
   
   // keyer properties for manual keyer
-  set paddleSwapped(v) {  this.keyer.input.swapped = v; }
+  set paddleSwapped(v) { this.keyer.swapped = v; }
 
-  get paddleSwapped() { return this.keyer.input.swapped; }
+  get paddleSwapped() { return this.keyer.swapped; }
 
-  get paddleKeyers() { return this.keyer.input.keyers; }
+  get paddleKeyers() { return this.keyer.keyers; }
 
-  set paddleKeyer(v) { this.keyer.input.keyer = v; }
+  set paddleKeyer(v) { this.keyer.keyer = v; }
 
-  get paddleKeyer() { return this.keyer.input.keyer; }
+  get paddleKeyer() { return this.keyer.keyer; }
 
-  set straightKey(v) { this.keyer.input.straightKey = v; }
+  set paddleAdapt(v) { this.keyer.adapt = v; }
 
-  get straightKey() { return this.keyer.input.straightKey; }
+  get paddleAdapt() { return this.keyer.adapt; }
 
-  set leftPaddleKey(v) { this.keyer.input.leftPaddleKey = v; }
+  // vox specific keyer properties
+  set voice(v) { this.keyer.voice = v; }
 
-  get leftPaddleKey() { return this.keyer.input.leftPaddleKey; }
+  get voice() { return this.keyer.voice; }
 
-  set rightPaddleKey(v) { this.keyer.input.rightPaddleKey = v; }
-
-  get rightPaddleKey() { return this.keyer.input.rightPaddleKey; }
-
-  set straightMidi(v) { this.keyer.input.straightMidi = v; }
-
-  get straightMidi() { return this.keyer.input.straightMidi; }
-
-  set leftPaddleMidi(v) { this.keyer.input.leftPaddleMidi = v; }
-
-  get leftPaddleMidi() { return this.keyer.input.leftPaddleMidi; }
-
-  set rightPaddleMidi(v) { this.keyer.input.rightPaddleMidi = v; }
-
-  get rightPaddleMidi() { return this.keyer.input.rightPaddleMidi; }
-
-  // manual keyer properties
-  set inputPitch(v) { this.keyer.input.pitch = v; }
-
-  get inputPitch() { return this.keyer.input.pitch; }
-
-  set inputGain(v) { this.keyer.input.gain = v; }
+  get voices() { return this.keyer.voices; }
   
-  get inputGain() { return Math.round(this.keyer.input.gain); }
+  set voicePitch(v) { this.keyer.vox[this.keyer.voice].pitch = v; }
 
-  set inputSpeed(v) { this.keyer.input.speed = v; }
+  get voicePitch() { return this.keyer.vox[this.keyer.voice].pitch; }
 
-  get inputSpeed() { return this.keyer.input.speed; }
+  set voiceGain(v) { this.keyer.vox[this.keyer.voice].gain = v; }
+  
+  get voiceGain() { return Math.round(this.keyer.vox[this.keyer.voice].gain); }
 
-  set inputWeight(v) { this.keyer.input.weight = v; }
+  set voiceSpeed(v) { this.keyer.vox[this.keyer.voice].speed = v; }
 
-  get inputWeight() { return this.keyer.input.weight; }
+  get voiceSpeed() { return this.keyer.vox[this.keyer.voice].speed; }
 
-  set inputRatio(v) { this.keyer.input.ratio = v; }
+  set voiceWeight(v) { this.keyer.vox[this.keyer.voice].weight = v; }
 
-  get inputRatio() { return this.keyer.input.ratio; }
+  get voiceWeight() { return this.keyer.vox[this.keyer.voice].weight; }
 
-  set inputCompensation(v) { this.keyer.input.compensation = v; }
+  set voiceRatio(v) { this.keyer.vox[this.keyer.voice].ratio = v; }
 
-  get inputCompensation() { return this.keyer.input.compensation; }
+  get voiceRatio() { return this.keyer.vox[this.keyer.voice].ratio; }
 
-  set inputRise(v) { this.keyer.input.rise = v; }
+  set voiceCompensation(v) { this.keyer.vox[this.keyer.voice].compensation = v; }
 
-  get inputRise() { return this.keyer.input.rise; }
+  get voiceCompensation() { return this.keyer.vox[this.keyer.voice].compensation; }
 
-  set inputFall(v) {  this.keyer.input.fall = v; }
+  set voiceFarnsworth(v) { this.keyer.vox[this.keyer.voice].farnsworth = v; }
 
-  get inputFall() { return this.keyer.input.fall; }
+  get voiceFarnsworth() { return this.keyer.vox[this.keyer.voice].farnsworth; }
 
-  set inputEnvelope(v) { this.keyer.input.envelope = v; }
 
-  get inputEnvelope() { return this.keyer.input.envelope; }
+  // set straightKey(v) { this.keyer.input.straightKey = v; }
 
-  set inputEnvelope2(v) { this.keyer.input.envelope2 = v; }
+  // get straightKey() { return this.keyer.input.straightKey; }
 
-  get inputEnvelope2() { return this.keyer.input.envelope2; }
+  // set leftPaddleKey(v) { this.keyer.input.leftPaddleKey = v; }
+
+  // get leftPaddleKey() { return this.keyer.input.leftPaddleKey; }
+
+  // set rightPaddleKey(v) { this.keyer.input.rightPaddleKey = v; }
+
+  // get rightPaddleKey() { return this.keyer.input.rightPaddleKey; }
+
+  // set straightMidi(v) { this.keyer.input.straightMidi = v; }
+
+  // get straightMidi() { return this.keyer.input.straightMidi; }
+
+  // set leftPaddleMidi(v) { this.keyer.input.leftPaddleMidi = v; }
+
+  // get leftPaddleMidi() { return this.keyer.input.leftPaddleMidi; }
+
+  // set rightPaddleMidi(v) { this.keyer.input.rightPaddleMidi = v; }
+
+  // get rightPaddleMidi() { return this.keyer.input.rightPaddleMidi; }
+
+//  set inputRise(v) { this.keyer.input.rise = v; }
+
+//  get inputRise() { return this.keyer.input.rise; }
+
+//  set inputFall(v) {  this.keyer.input.fall = v; }
+
+//  get inputFall() { return this.keyer.input.fall; }
+
+//  set inputEnvelope(v) { this.keyer.input.envelope = v; }
+
+//  get inputEnvelope() { return this.keyer.input.envelope; }
+
+//  set inputEnvelope2(v) { this.keyer.input.envelope2 = v; }
+
+//  get inputEnvelope2() { return this.keyer.input.envelope2; }
 
   // scope properties
-  set scopeRunning(v) { this.keyer.scope.running = v; }
+//  set scopeRunning(v) { this.keyer.scope.running = v; }
   
-  get scopeRunning() { return this.keyer.scope.running; }
+//  get scopeRunning() { return this.keyer.scope.running; }
   
-  set scopeTimeScale(v) { this.keyer.scope.timeScale = v; }
+//  set scopeTimeScale(v) { this.keyer.scope.timeScale = v; }
 
-  get scopeTimeScale() { return this.keyer.scope.timeScale; }
+//  get scopeTimeScale() { return this.keyer.scope.timeScale; }
 
-  get scopeTimeScales() { return this.keyer.scope.timeScales; }
+//  get scopeTimeScales() { return this.keyer.scope.timeScales; }
   
-  get scopeTriggers() { return this.keyer.scope.triggers; }
+//  get scopeTriggers() { return this.keyer.scope.triggers; }
   
-  set scopeTrigger(v) { this.keyer.scope.trigger = v; }
+//  set scopeTrigger(v) { this.keyer.scope.trigger = v; }
 
-  get scopeTrigger() { return this.keyer.scope.trigger; }
+//  get scopeTrigger() { return this.keyer.scope.trigger; }
   
-  get scopeChannels() { return this.keyer.scope.channels; }
+//  get scopeChannels() { return this.keyer.scope.channels; }
   
-  set scopeTriggerChannel(v) { this.keyer.scope.triggerChannel = v; }
+//  set scopeTriggerChannel(v) { this.keyer.scope.triggerChannel = v; }
 
-  get scopeTriggerChannel() { return this.keyer.scope.triggerChannel; }
+//  get scopeTriggerChannel() { return this.keyer.scope.triggerChannel; }
   
-  get scopeHolds() { return this.keyer.scope.holds; }
+//  get scopeHolds() { return this.keyer.scope.holds; }
   
-  set scopeHold(v) { this.keyer.scope.hold = v; }
+//  set scopeHold(v) { this.keyer.scope.hold = v; }
 
-  get scopeHold() { return this.keyer.scope.hold; }
+//  get scopeHold() { return this.keyer.scope.hold; }
   
-  get scopeSources() { return this.keyer.scope.sources; }
+//  get scopeSources() { return this.keyer.scope.sources; }
 
-  get scopeVerticalScales() { return this.keyer.scope.verticalScales; }
+//  get scopeVerticalScales() { return this.keyer.scope.verticalScales; }
   
-  setScopeChannel(control, channel, value) { this.keyer.scope.channel(channel)[control] = value; }
+//  setScopeChannel(control, channel, value) { this.keyer.scope.channel(channel)[control] = value; }
 
-  getScopeChannel(control, channel) { return this.keyer.scope.channel(channel)[control]; }
+//  getScopeChannel(control, channel) { return this.keyer.scope.channel(channel)[control]; }
   
-  set scopeSource1(v) { this.keyer.scope.channel(1).source = v; }
+//  set scopeSource1(v) { this.keyer.scope.channel(1).source = v; }
 
-  get scopeSource1() { return this.keyer.scope.channel(1).source; }
+//  get scopeSource1() { return this.keyer.scope.channel(1).source; }
   
-  set scopeSource2(v) { this.keyer.scope.channel(2).source = v; }
+//  set scopeSource2(v) { this.keyer.scope.channel(2).source = v; }
 
-  get scopeSource2() { return this.keyer.scope.channel(2).source; }
+//  get scopeSource2() { return this.keyer.scope.channel(2).source; }
 
-  set scopeSource3(v) { this.keyer.scope.channel(3).source = v; }
+//  set scopeSource3(v) { this.keyer.scope.channel(3).source = v; }
 
-  get scopeSource3() { return this.keyer.scope.channel(3).source; }
+//  get scopeSource3() { return this.keyer.scope.channel(3).source; }
   
-  set scopeSource4(v) { this.keyer.scope.channel(4).source = v; }
+//  set scopeSource4(v) { this.keyer.scope.channel(4).source = v; }
 
-  get scopeSource4() { return this.keyer.scope.channel(4).source; }
+//  get scopeSource4() { return this.keyer.scope.channel(4).source; }
 
-  set scopeVerticalScale1(v) { this.keyer.scope.channel(1).verticalScale = v; }
+//  set scopeVerticalScale1(v) { this.keyer.scope.channel(1).verticalScale = v; }
 
-  get scopeVerticalScale1() { return this.keyer.scope.channel(1).verticalScale; }
+//  get scopeVerticalScale1() { return this.keyer.scope.channel(1).verticalScale; }
 
-  set scopeVerticalScale2(v) { this.keyer.scope.channel(2).verticalScale = v; }
+//  set scopeVerticalScale2(v) { this.keyer.scope.channel(2).verticalScale = v; }
 
-  get scopeVerticalScale2() { return this.keyer.scope.channel(2).verticalScale; }
+//  get scopeVerticalScale2() { return this.keyer.scope.channel(2).verticalScale; }
 
-  set scopeVerticalScale3(v) { this.keyer.scope.channel(3).verticalScale = v; }
+//  set scopeVerticalScale3(v) { this.keyer.scope.channel(3).verticalScale = v; }
 
-  get scopeVerticalScale3() { return this.keyer.scope.channel(3).verticalScale; }
+//  get scopeVerticalScale3() { return this.keyer.scope.channel(3).verticalScale; }
 
-  set scopeVerticalScale4(v) { this.keyer.scope.channel(4).verticalScale = v; }
+//  set scopeVerticalScale4(v) { this.keyer.scope.channel(4).verticalScale = v; }
 
-  get scopeVerticalScale4() { return this.keyer.scope.channel(4).verticalScale; }
+//  get scopeVerticalScale4() { return this.keyer.scope.channel(4).verticalScale; }
 
-  set scopeVerticalOffset1(v) { this.keyer.scope.channel(1).verticalOffset = v; }
+//  set scopeVerticalOffset1(v) { this.keyer.scope.channel(1).verticalOffset = v; }
 
-  get scopeVerticalOffset1() { return this.keyer.scope.channel(1).verticalOffset; }
+//  get scopeVerticalOffset1() { return this.keyer.scope.channel(1).verticalOffset; }
 
-  set scopeVerticalOffset2(v) { this.keyer.scope.channel(2).verticalOffset = v; }
+//  set scopeVerticalOffset2(v) { this.keyer.scope.channel(2).verticalOffset = v; }
 
-  get scopeVerticalOffset2() { return this.keyer.scope.channel(2).verticalOffset; }
+//  get scopeVerticalOffset2() { return this.keyer.scope.channel(2).verticalOffset; }
 
-  set scopeVerticalOffset3(v) { this.keyer.scope.channel(3).verticalOffset = v; }
+//  set scopeVerticalOffset3(v) { this.keyer.scope.channel(3).verticalOffset = v; }
 
-  get scopeVerticalOffset3() { return this.keyer.scope.channel(3).verticalOffset; }
+//  get scopeVerticalOffset3() { return this.keyer.scope.channel(3).verticalOffset; }
 
-  set scopeVerticalOffset4(v) { this.keyer.scope.channel(4).verticalOffset = v; }
+//  set scopeVerticalOffset4(v) { this.keyer.scope.channel(4).verticalOffset = v; }
 
-  get scopeVerticalOffset4() { return this.keyer.scope.channel(4).verticalOffset; }
+//  get scopeVerticalOffset4() { return this.keyer.scope.channel(4).verticalOffset; }
 
   constructor() {
     super();
     this.keyer = null;
-    this.cwkeyer = new CWKeyer(null);
+    // this.cwkeyer = new CWKeyer(null);
     this.midiSource = new KeyerMidiSource(null);
-
-    this.midiSource.on('midi:notes', () => this.requestUpdate('midiNotes', []));
-    this.midiSource.on('midi:controls', () => this.requestUpdate('midiControls', []));
-    this.midiSource.on('midi:names', () => this.requestUpdate('midiNames');
-		       // ['midiInputs', 'midiOutputs'].forEach(x => this.requestUpdate(x, [])));
-    this.midiSource.on('midi:message', (name, data) => this.cwkeyer.onmidimessage(name, data));
+    this.devices = {};
+    this.hasak = null;
+    this.twe = null;
+    this.other = null;
+    this.keyer = null;
+    this.midiSource.on('midi:notes', () => this.midiNotesUpdate());
+    this.midiSource.on('midi:controls', () => this.midiControlsUpdate());
+    this.midiSource.on('midi:names', () => this.midiNamesUpdate());
+    this.midiSource.on('midi:message', (name, data) => this.onmidimessage(name, data));
 
     // only initialize the properties neede for startup
+    this.displayMidi = false;
+    this.displayHasak = false;
+    this.displayTWE = false;
     this.displayAbout = false;
     this.displayLicense = false;
     this.displayColophon = false;
+  }
+
+  midiNotesUpdate() { this.requestUpdate('midiNotes', []) }
+
+  midiControlsUpdate() { this.requestUpdate('midiControls', []) }
+
+  midiNamesUpdate() {
+    for (const name of this.midiNames) {
+      if ( ! this.devices[name]) {
+	if (name.match(/.*[hH]asak.*/)) {
+	  this.devices[name] = new CWKeyerHasak(null, name);
+	} else if (name.match(/.*Teensy MIDI.*/)) {
+	  this.devices[name] = new CWKeyerTWE(null, name);
+	} else {
+	  this.devices[name] = new CWKeyerDefault(null, name);
+	}
+	this.devices[name].on('midi:send', (name, msg) => this.onmidisend(name, msg))
+      }
+    }
+    this.requestUpdate('midiNames')
+  }
+
+  onmidisend(name, data) {
+    // console.log(`CWKeyerJs relaying 'midi:send' ${name} ${data}`);
+    this.midiSource.emit('midi:send', name, data);
+  }
+  
+  onmidimessage(name, data) {
+    if (this.devices[name]) this.devices[name].onmidimessage(name, data);
   }
 
   async start() {
@@ -1054,13 +1107,6 @@ export class CWKeyerJs extends LitElement {
 	`;
 
     case 'displayAudio':
-      // the first open click has to do some extra work
-      let first = html`
-	<div class="group" title="Start audio controls">
-	</div>`;
-      let stub = html`
-	<div class="group" title="Audio controls">
-	</div>`
 //      let after = html`
 //	<div class="group" title="Audio controls">
 //        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
@@ -1073,7 +1119,11 @@ export class CWKeyerJs extends LitElement {
 //	 ${this.controlRender('displayScope')}
 //	 ${this.controlRender('displayStatus')}
 //	</div>`
-      return html`${this.keyer === null ? first : stub}`;
+      return html`${this.keyer === null ? html`
+	<div class="group" title="Start audio controls">
+	</div>` : html`
+	<div class="group" title="Audio controls">
+	</div>`}`;
       
     case 'displayTouchStraight': return html``; // FIX.ME
 
@@ -1191,62 +1241,78 @@ export class CWKeyerJs extends LitElement {
     case 'displayAbout':
       return html`
 	<p>
-	  <b>CWKeyer.js</b> implements a morse code keyer in a web page.
-	  The text window translates typed text into morse code which 
-	  plays on the browser's audio output.
-	  Keyboard keys and MIDI notes can be interpreted as switch 
-	  closures for directly keying morse.
-	  Directly keyed input is played on the browser's audio output
-	  and decoded into the text window.
+	  <b>cwkeyer-js</b> implements a MIDI control panel for compatible
+	  morse code keyers in a web page.  The compatible keyers are:
+	  https://github.com/recri/hasak, but there should be at least
+	  one more.
 	</p><p>
-	  The <b>Settings</b> panel controls the generated morse code
-	  and other aspects of the prog.
+	  It is a progressive web app, meaning it's a web page which
+	  can be downloaded and run off-line.
 	</p><p>
-	  The <b>Status</b> panel shows the status of the web audio,
-	  the time since the system started, the sample rate, the
-	  estimated latency, and whether MIDI is available.
+	  It is also an adaptive web app, so it resizes and reorganizes its
+	  interface to run on devices of different screen sizes. 
 	</p><p>
-	  The <b>Scope</b> panel allows the wave forms of the keyer to be displayed.
+	  It uses the Web MIDI API (https://webaudio.github.io/web-midi-api/)
+	  to send and receive MIDI messages in the browser.  This API is
+	  implemented by the Chrome, Edge, and Opera desktop browsers and the
+	  Webview Android, Chrome Android, Opera Android, and Samsung Internet
+	  mobile browsers as of early 2022.
 	</p><p>
 	  This <b>About</b> panel gives a brief introduction to the app.
 	</p><p>
 	  The <b>License</b> panel describes the licenscing of the app.
+	</p><p>
+	  The <b>Colophon</b> panel describes the construction of the app.
 	</p>
 	`;
 
     case 'displayLicense':
       return html`
 	<p>
-	  cwkeyer.js - a progressive web app for morse code
+	  cwkeyer-js - a PWA for controlling morse code keyers over MIDI.
 	</p><p>
-	  Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
+	  Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
 	</p><p>
-	  This program is free software: you can redistribute it and/or modify
-	  it under the terms of the GNU General Public License as published by
-	  the Free Software Foundation, either version 3 of the License, or
-	  (at your option) any later version.
+	<p>
+	MIT License
 	</p><p>
-	  This program is distributed in the hope that it will be useful,
-	  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	  GNU General Public License for more details.
+	Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
 	</p><p>
-	  You should have received a copy of the GNU General Public License
-	  along with this program.  If not, see <a href="https://www.gnu.org/licenses/">gnu.org/licenses</a>.
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	</p><p>
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+	</p><p>
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
 	</p>
 	`;
 
     case 'displayColophon':
       return html`
 	<p>
-	  cwkeyer.js was written with emacs on a laptop running Ubuntu.
+	  cwkeyer-js was written with emacs on a laptop running Ubuntu using the development guides
+	  from open-wc.org.
 	</p><p>
-	  The algorithms in cwkeyer.js were developed for <a href="https://github.com/recri/keyer">keyer</a>,
+	  The immediate impetus was the Steve (kf7o) Haynal's CWKeyer project, https://github.com/softerhardware/CWKeyer.
+	</p><p>
+	  A lot of background can be found in <a href="https://github.com/recri/keyer">keyer</a>,
 	  a collection of software defined radio software built using Jack, Tcl, and C.
 	</p><p>
-	  The polymer project, the PWA starter kit, open-wc, lit-element, lit-html, web audio, web MIDI.
+	  The polymer project, the PWA starter kit, open-wc, lit-element, lit-html, web audio, web MIDI provided the
+	  web development tools.
 	</p><p>
-	  The source for <a href="https://github.com/recri/cwkeyer.js">cwkeyer.js</a>
+	  The source for <a href="https://github.com/recri/cwkeyer-js">cwkeyer-js</a>
 	</p>
 	`;
     default: 
@@ -1366,13 +1432,13 @@ export class CWKeyerJs extends LitElement {
   }
   
   render() {
+    // 	${this.controlRender('displayAudio')}
     return html`
       <main>
         <div class="logo">${keyerLogo}</div>
-        <div><h1>cwkeyer.js</h1></div>
+        <div><h1>cwkeyer-js</h1></div>
+	${this.controlRender('displayKeyer')}
 	${this.controlRender('displayMidi')}
-	${this.controlRender('displayKeyers')}
-	${this.controlRender('displayAudio')}
 	${this.controlRender('displayAbout')}
 	${this.controlRender('displayLicense')}
 	${this.controlRender('displayColophon')}

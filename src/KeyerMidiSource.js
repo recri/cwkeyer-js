@@ -46,8 +46,11 @@ export class KeyerMidiSource extends KeyerEvent {
     this.notesList = [];	// cache of device:notes list
     this.controlsCache = [];	// per name list of controls
     this.controlsList = [];	// cache of device:controls list
-    this._shorten = []		// full name to shortened name map
-    this._lengthen = [] 	// shortened name to full name map
+    this._shorten = {};		// full name to shortened name map
+    this._lengthen = {}; 	// shortened name to full name map
+    this.outputMap = {};
+    this.inputMap = {};
+    this.on('midi:send', (name, msg) => this.onMIDISend(name, msg))
     this.refresh();
   }
 
@@ -93,7 +96,7 @@ export class KeyerMidiSource extends KeyerEvent {
     }
   }
   
-  shorten(name) { 
+  shortenname(name) {
     if ( ! this._shorten[name]) {
       if (knownMidiNames[name]) {
 	this._shorten[name] = knownMidiNames[name]
@@ -104,7 +107,29 @@ export class KeyerMidiSource extends KeyerEvent {
       }
     }
     return this._shorten[name];
- }
+  }
+
+  recordOutput(name, id) {
+    const sname = this.shortenname(name);
+    if ( ! this.outputMap[sname]) {
+      this.outputMap[sname] = id;
+    } else if (this.outputMap[sname] !== id) {
+      console.log(`two outputs with same short name: sname ${sname} name ${name} id ${id} outputMap[sname] ${outputMap[sname]}`);
+    }
+    return sname;
+  }
+
+  recordInput(name, id) {
+    const sname = this.shortenname(name);
+    if ( ! this.inputMap[sname]) {
+      this.inputMap[sname] = id;
+    } else if (this.inputMap[sname] !== id) {
+      console.log(`two inputs with same short name: sname ${sname} name ${name} id ${id} inputMap[sname] ${inputMap[sname]}`);
+    }
+    return sname;
+  }
+
+  shorten(name) { return this._shorten[name] }
 
   lengthen(name) { return this._lengthen[name]; }
 
@@ -120,37 +145,38 @@ export class KeyerMidiSource extends KeyerEvent {
 
   get controls() { return this.controlsList; }
   
-  output(name) { return this.midiAccess.outputs.get(this.lengthen(name)); }
+  output(name) { return this.midiAccess.outputs.get(this.outputMap[name]); }
 
-  input(name) { return this.midiAccess.inputs.get(this.lengthen(name)); }
+  input(name) { return this.midiAccess.inputs.get(this.inputMap[name]); }
   
   // filter the notesCache for loss/gain of devices
   rebind() {
     const { notesCache, controlsCache } = this;
     this.notesCache = []
     this.controlsCache = []
-    this.inputNameCache = []
+    this.inputMap = {}
+    this.outputMap = {}
+    this._shorten = {}
+    this._lengthen = {}
     this.inputs.forEach(input => {
-      const name = this.shorten(input.name);
-      this.inputNameCache[name] = input.name
+      const name = this.recordInput(input.name, input.id);
       // console.log(`rebind ${input.name} to ${name}`);
       notesCache.forEach(note => { if (note.startsWith(name)) this.notesCache[note] = true; });
       controlsCache.forEach(note => { if (note.startsWith(name)) this.controlsCache[note] = true; });
       input.onmidimessage = e => this.onmidimessage(name, e)
     });
-    this.outputCache = []
-    this.outputs.forEach(output => this.shorten(output.name))
+    this.outputs.forEach(output => this.recordOutput(output.name, output.id))
     this.notesList = ['None'].concat(Array.from(Object.keys(this.notesCache)).sort())
     this.controlsList = ['None'].concat(Array.from(Object.keys(this.controlsCache)).sort())
     this.emit('midi:notes');
     this.emit('midi:controls');
     this.emit('midi:names');
-    this.on('midi:send', (name, msg) => this.onMIDISend(name, msg))
   }
 
   onMIDISend(name, data) {
-    const out = this.outputs.get(name)
+    const out = this.output(name)
     if (out) out.send(data)
+    // console.log(`KeyerMidiSource.send midi ${name} ${data} to ${out}`);
   }
 
   onStateChange() { this.rebind() }
