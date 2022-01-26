@@ -22,6 +22,8 @@ export class KeyerEvent {
     this.events = [];
   }
 
+  updateAudioContext(audioContext) { this.context = audioContext; }
+  
   // delegate to context
   
   get currentTime() { return this.context.currentTime; }

@@ -85,6 +85,8 @@ export class CWKeyerDefault extends KeyerEvent {
     }
   }
 
+  get label() { return `${this.name} as ${this.type}`; }
+  
   get channels() { return this._channels; }
 
   get nrpns() { return Object.getOwnPropertyNames(this._nrpns); }

@@ -20,7 +20,10 @@ import { CWKeyerDefault } from './CWKeyerDefault.js';
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<",'>>',"~"] }] */
 export class CWKeyerTWE extends CWKeyerDefault {
 
-  // constructor(context, name) { super(context, name); }
+  constructor(context, name) {
+    super(context, name); 
+    this._type = 'twe';
+  }
 
   onmidimessage(msg) {
     super.onmidimessage(msg);

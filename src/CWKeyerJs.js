@@ -19,6 +19,7 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 import { LitElement, html, css } from 'lit';
+import './UhComponents.js';
 import { keyerLogo } from './keyer-logo.js'; // maybe a scope trace?
 import { KeyerMidiSource } from './KeyerMidiSource.js';
 import { CWKeyerDefault }  from './CWKeyerDefault.js';
@@ -61,21 +62,46 @@ const alwaysForceDefault = false;
 // .type is one of folder, toggle, spinner, options, envelope
 //
 const controls = {
+  // cwkeyer properties
+  device: {
+    type: 'object', lit: {type: Object}
+  },
+
   // cwkeyer folders
+  displayTest: {
+    type: 'folder', lit: {type: Boolean}, value: true,
+    label: 'Test uh-folder', level: 2, 
+    title: 'This is a test uh folder.'
+  },
+  displayTest2: {
+    type: 'folder', lit: {type: Boolean}, value: true,
+    label: 'Test uh-folder', level: 3, 
+    title: 'This is a test uh folder.'
+  },
+  deviceSelect: {
+    type: 'options', lit: {type: String}, value: 'none as default',
+    label: 'Select device',
+    title: 'Choose a MIDI keyer device'
+  },
   displayMidi: {
     type: 'folder', lit: {type: Boolean}, value: true,
     label: 'Midi activity', level: 2, 
     title: 'Active Midi devices, notes, and controls.'
   },
-  displayKeyer: {
-    type: 'folder', lit: {type: Boolean}, value: false,
+  displayHasak: {
+    type: 'block', lit: {type: Boolean}, value: false,
     label: 'Keyer controller', level: 2, 
-    title: 'Controller panel for CWKeyer.'
+    title: 'Controller panel for Hasak keyer.'
   },
   displayTWE: {
-    type: 'folder', lit: {type: Boolean}, value: false,
+    type: 'block', lit: {type: Boolean}, value: false,
     label: 'Teensy Winkey Emulator controller', level: 2, 
     title: 'Controller panel for Teensy Winkey Emulator.'
+  },
+  displayDefault: {
+    type: 'block', lit: {type: Boolean}, value: false,
+    label: 'Default controller', level: 2, 
+    title: 'Controller panel for unrecognized device.'
   },
   displayNotes: {
     type: 'folder', lit: {type: Boolean}, value: false,
@@ -367,18 +393,20 @@ const controls = {
   pending: { lit: { type: Array } },
 }; 
 
-export class CWKeyerJs extends LitElement {
+function getControl(c) {
+  // one level of indirection, where controls[c] is another control name
+  return controls[c] && controls[controls[c]] ? controls[controls[c]] : controls[c]
+}
 
-  // declare the controls of the ui
-  static get controls() { return controls; }
+export class CWKeyerJs extends LitElement {
 
   // extract LitElement properties from controls
   static get properties() { 
     if ( ! CWKeyerJs._properties) {
       CWKeyerJs._properties = {};
-      Object.keys(CWKeyerJs.controls)
-	.filter(x => 'lit' in CWKeyerJs.getControl(x))
-	.forEach(x => { CWKeyerJs._properties[x] = CWKeyerJs.getControl(x).lit });
+      Object.keys(controls)
+	.filter(x => 'lit' in getControl(x))
+	.forEach(x => { CWKeyerJs._properties[x] = getControl(x).lit });
     }
     return CWKeyerJs._properties;
   }
@@ -386,12 +414,7 @@ export class CWKeyerJs extends LitElement {
   // get the control object for a control
   // implement single string value indicates
   // indirect to the control named by the string
-  static getControl(control) {
-    const c = CWKeyerJs.controls[control];
-    if (c && typeof c === 'string')
-      return CWKeyerJs.controls[c];
-    return c;
-  }
+  static getControl(control) { return getControl(control) }
   
   // property getters and setters
 
@@ -439,101 +462,101 @@ export class CWKeyerJs extends LitElement {
   // get state() { return this.keyer.context.state; }
   
   // keyer properties
-  set pitch(v) { this.keyer.pitch = v; }
+  set pitch(v) { this.device.pitch = v; }
 
-  get pitch() { return this.keyer.pitch; }
+  get pitch() { return this.device.pitch; }
 
-  set gain(v) { this.keyer.gain = v; }
+  set gain(v) { this.device.gain = v; }
   
-  get gain() { return this.keyer.gain; }
+  get gain() { return this.device.gain; }
 
-  set speed(v) { this.keyer.speed = v; }
+  set speed(v) { this.device.speed = v; }
 
-  get speed() { return this.keyer.speed; }
+  get speed() { return this.device.speed; }
 
-  set weight(v) { this.keyer.weight = v; }
+  set weight(v) { this.device.weight = v; }
 
-  get weight() { return this.keyer.weight; }
+  get weight() { return this.device.weight; }
 
-  set ratio(v) { this.keyer.ratio = v; }
+  set ratio(v) { this.device.ratio = v; }
 
-  get ratio() { return this.keyer.ratio; }
+  get ratio() { return this.device.ratio; }
 
-  set compensation(v) { this.keyer.compensation = v; }
+  set compensation(v) { this.device.compensation = v; }
 
-  get compensation() { return this.keyer.compensation; }
+  get compensation() { return this.device.compensation; }
 
-  set farnsworth(v) { this.keyer.farnsworth = v; }
+  set farnsworth(v) { this.device.farnsworth = v; }
 
-  get farnsworth() { return this.keyer.farnsworth; }
+  get farnsworth() { return this.device.farnsworth; }
 
-  set rise(v) { this.keyer.rise = v; }
+  set rise(v) { this.device.rise = v; }
 
-  get rise() { return this.keyer.rise; }
+  get rise() { return this.device.rise; }
 
-  set fall(v) { this.keyer.fall = v; }
+  set fall(v) { this.device.fall = v; }
 
-  get fall() { return this.keyer.fall; }
+  get fall() { return this.device.fall; }
 
-  set envelope(v) { this.keyer.envelope = v; }
+  set envelope(v) { this.device.envelope = v; }
 
-  get envelope() { return this.keyer.envelope; }
+  get envelope() { return this.device.envelope; }
 
-  set envelope2(v) { this.keyer.envelope2 = v; }
+  set envelope2(v) { this.device.envelope2 = v; }
 
-  get envelope2() { return this.keyer.envelope2; }
+  get envelope2() { return this.device.envelope2; }
 
-  get envelopes() { return this.keyer.envelopes; }
+  get envelopes() { return this.device.envelopes; }
   
   // keyer properties for manual keyer
-  set paddleSwapped(v) { this.keyer.swapped = v; }
+  set paddleSwapped(v) { this.device.swapped = v; }
 
-  get paddleSwapped() { return this.keyer.swapped; }
+  get paddleSwapped() { return this.device.swapped; }
 
-  get paddleKeyers() { return this.keyer.keyers; }
+  get paddleKeyers() { return this.device.keyers; }
 
-  set paddleKeyer(v) { this.keyer.keyer = v; }
+  set paddleKeyer(v) { this.device.keyer = v; }
 
-  get paddleKeyer() { return this.keyer.keyer; }
+  get paddleKeyer() { return this.device.keyer; }
 
-  set paddleAdapt(v) { this.keyer.adapt = v; }
+  set paddleAdapt(v) { this.device.adapt = v; }
 
-  get paddleAdapt() { return this.keyer.adapt; }
+  get paddleAdapt() { return this.device.adapt; }
 
   // vox specific keyer properties
-  set voice(v) { this.keyer.voice = v; }
+  set voice(v) { this.device.voice = v; }
 
-  get voice() { return this.keyer.voice; }
+  get voice() { return this.device.voice; }
 
-  get voices() { return this.keyer.voices; }
+  get voices() { return this.device.voices; }
   
-  set voicePitch(v) { this.keyer.vox[this.keyer.voice].pitch = v; }
+  set voicePitch(v) { this.device.vox[this.device.voice].pitch = v; }
 
-  get voicePitch() { return this.keyer.vox[this.keyer.voice].pitch; }
+  get voicePitch() { return this.device.vox[this.device.voice].pitch; }
 
-  set voiceGain(v) { this.keyer.vox[this.keyer.voice].gain = v; }
+  set voiceGain(v) { this.device.vox[this.device.voice].gain = v; }
   
-  get voiceGain() { return Math.round(this.keyer.vox[this.keyer.voice].gain); }
+  get voiceGain() { return Math.round(this.device.vox[this.device.voice].gain); }
 
-  set voiceSpeed(v) { this.keyer.vox[this.keyer.voice].speed = v; }
+  set voiceSpeed(v) { this.device.vox[this.device.voice].speed = v; }
 
-  get voiceSpeed() { return this.keyer.vox[this.keyer.voice].speed; }
+  get voiceSpeed() { return this.device.vox[this.device.voice].speed; }
 
-  set voiceWeight(v) { this.keyer.vox[this.keyer.voice].weight = v; }
+  set voiceWeight(v) { this.device.vox[this.device.voice].weight = v; }
 
-  get voiceWeight() { return this.keyer.vox[this.keyer.voice].weight; }
+  get voiceWeight() { return this.device.vox[this.device.voice].weight; }
 
-  set voiceRatio(v) { this.keyer.vox[this.keyer.voice].ratio = v; }
+  set voiceRatio(v) { this.device.vox[this.device.voice].ratio = v; }
 
-  get voiceRatio() { return this.keyer.vox[this.keyer.voice].ratio; }
+  get voiceRatio() { return this.device.vox[this.device.voice].ratio; }
 
-  set voiceCompensation(v) { this.keyer.vox[this.keyer.voice].compensation = v; }
+  set voiceCompensation(v) { this.device.vox[this.device.voice].compensation = v; }
 
-  get voiceCompensation() { return this.keyer.vox[this.keyer.voice].compensation; }
+  get voiceCompensation() { return this.device.vox[this.device.voice].compensation; }
 
-  set voiceFarnsworth(v) { this.keyer.vox[this.keyer.voice].farnsworth = v; }
+  set voiceFarnsworth(v) { this.device.vox[this.device.voice].farnsworth = v; }
 
-  get voiceFarnsworth() { return this.keyer.vox[this.keyer.voice].farnsworth; }
+  get voiceFarnsworth() { return this.device.vox[this.device.voice].farnsworth; }
 
 
   // set straightKey(v) { this.keyer.input.straightKey = v; }
@@ -661,16 +684,25 @@ export class CWKeyerJs extends LitElement {
 
 //  get scopeVerticalOffset4() { return this.keyer.scope.channel(4).verticalOffset; }
 
+  set deviceSelect(deviceSelect) {
+    Object.values(this.devices).forEach(device => { 
+      if (device.label === deviceSelect) {
+	this.device = device
+	// this.requestUpdate('device', null)
+      }
+    });
+  }
+
+  get deviceSelect() { return this.device.label; }
+  
+  get deviceOptions() { return Object.values(this.devices).map(device => device.label); }
+  
   constructor() {
     super();
-    this.keyer = null;
-    // this.cwkeyer = new CWKeyer(null);
+    this.audioContext = null;
+    this.device = new CWKeyerDefault(this.audioContext, 'none');
+    this.devices = { none: this.device };
     this.midiSource = new KeyerMidiSource(null);
-    this.devices = {};
-    this.hasak = null;
-    this.twe = null;
-    this.other = null;
-    this.keyer = null;
     this.midiSource.on('midi:notes', () => this.midiNotesUpdate());
     this.midiSource.on('midi:controls', () => this.midiControlsUpdate());
     this.midiSource.on('midi:names', () => this.midiNamesUpdate());
@@ -680,9 +712,12 @@ export class CWKeyerJs extends LitElement {
     this.displayMidi = false;
     this.displayHasak = false;
     this.displayTWE = false;
+    this.displayDefault = false;
     this.displayAbout = false;
     this.displayLicense = false;
     this.displayColophon = false;
+    this.displayTest = false
+    this.displayTest2 = false
   }
 
   midiNotesUpdate() { this.requestUpdate('midiNotes', []) }
@@ -693,11 +728,13 @@ export class CWKeyerJs extends LitElement {
     for (const id of this.midiNames) {
       if ( ! this.devices[id]) {
 	if (id.match(/.*[hH]asak.*/)) {
-	  this.devices[id] = new CWKeyerHasak(null, id);
+	  this.devices[id] = new CWKeyerHasak(this.audioContext, id);
+	  if (this.deviceSelect === 'none as default') this.device = this.devices[id];
 	} else if (id.match(/.*Teensy MIDI.*/)) {
-	  this.devices[id] = new CWKeyerTWE(null, id);
+	  this.devices[id] = new CWKeyerTWE(this.audioContext, id);
+	  if (this.deviceSelect === 'none as default') this.device = this.devices[id];
 	} else {
-	  this.devices[id] = new CWKeyerDefault(null, id);
+	  this.devices[id] = new CWKeyerDefault(this.audioContext, id);
 	}
 	this.devices[id].on('midi:send', (dev, msg) => this.onmidisend(dev, msg))
       }
@@ -714,23 +751,32 @@ export class CWKeyerJs extends LitElement {
     if (this.devices[name]) this.devices[name].onmidimessage(name, data);
   }
 
-  async start() {
+  get audioContext() { return this._audioContext; }
+
+  set audioContext(v) {
+    if (v !== null) {
+      // update audio context in keyer instances
+    }
+    this._audioContext = v
+  }
+  
+  async startAudio() {
     // start the engine
 
     // retrieve the preferred sample rate
     this.controlSetDefaultValue('requestedSampleRate', false);
 
     // create the audio context
-    const context = new AudioContext({ sampleRate: parseInt(this.requestedSampleRate, 10) })
+    this.audioContext = new AudioContext({ sampleRate: parseInt(this.requestedSampleRate, 10) })
 
     // load the worklet processors
-    await context.audioWorklet.addModule('src/KeyerASKProcessor.js');
-    await context.audioWorklet.addModule('src/KeyerPaddleNoneProcessor.js');
-    await context.audioWorklet.addModule('src/KeyerPaddleNd7paProcessor.js');
-    await context.audioWorklet.addModule('src/KeyerPaddleVk6phProcessor.js');
+    await this.audioContext.audioWorklet.addModule('src/KeyerASKProcessor.js');
+    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleNoneProcessor.js');
+    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleNd7paProcessor.js');
+    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleVk6phProcessor.js');
     
     // build the keyer
-    this.keyer = new Keyer(context, this.midiSource);
+    this.keyer = new Keyer(this.audioContext, this.midiSource);
     // this.cwkeyer = new CWKeyer(context);
     
     // load some constants into the instance
@@ -907,19 +953,19 @@ export class CWKeyerJs extends LitElement {
       localStorage[control] = JSON.stringify(value);
       return value;
     }
-    if ('value' in CWKeyerJs.getControl(control))
-      this[control] = controlDefault(CWKeyerJs.getControl(control).value);
+    if ('value' in getControl(control))
+      this[control] = controlDefault(getControl(control).value);
   }
 
   controlSetDefaultValues(forceDefault) {
-    Object.keys(CWKeyerJs.controls).forEach(control => this.controlSetDefaultValue(control, forceDefault));
+    Object.keys(controls).forEach(control => this.controlSetDefaultValue(control, forceDefault));
   }
 
   controlUpdate(control, oldv, newv) {
     this[control] = newv;
-    const c = CWKeyerJs.getControl(control);
-    if ('value' in c) localStorage[control] = JSON.stringify(newv);
-    if ('lit' in c) this.requestUpdate(control, oldv);
+    const c = getControl(control);
+    if (c.value) localStorage[control] = JSON.stringify(newv);
+    if (c.lit) this.requestUpdate(control, oldv);
     switch (control) {
     case 'requestedSampleRate':
       this.start();
@@ -932,6 +978,12 @@ export class CWKeyerJs extends LitElement {
   controlToggle(control) { this.controlUpdate(control, this[control], ! this[control]); }
 
   controlSelect(control, e) { this.controlUpdate(control, this[control], e.target.value); }
+
+  controlSelectNew(e) { 
+    this.controlSelect(e.detail.control, e.detail.event);
+  }
+  
+  controlToggleNew(e) { this.controlToggle(e.detail.control); }
   
   scopeResize() {
     if (this.displayScope) {
@@ -1081,9 +1133,9 @@ export class CWKeyerJs extends LitElement {
       return html`${x} => ${this.nrpnValue(x)}<br/>`;
     }
     switch (control) {
+
     case 'displayMidi':
-      if ( ! this.midiSource)
-	return html``;
+      if ( ! this.midiSource) return html``;
       return html`
 	<div class="group" title="Midi activity">
 	Devices: ${this.midiNames.join(', ')}<br/>
@@ -1105,6 +1157,15 @@ export class CWKeyerJs extends LitElement {
 	${this.nrpns.map(x => mynrpn(x))}
 	</div>
 	`;
+
+    case 'displayHasak':
+      return html`<p>Controller for Hasak keyer goes here</p>`;
+      
+    case 'displayTWE':
+      return html`<p>Controller for Teensy Winkey Emulator keyer goes here</p>`;
+
+    case 'displayDefault':
+      return html`<p>Controller for Default keyer goes here</p>`;
 
     case 'displayAudio':
 //      let after = html`
@@ -1322,10 +1383,12 @@ export class CWKeyerJs extends LitElement {
 
   // render a user interface control element
   controlRender(control) {
-    const ctl = CWKeyerJs.getControl(control);
+    const ctl = getControl(control);
     if ( ! ctl) return html`<h1>No controlRender for ${control}</h1>`;
     switch (ctl.type) {
       // folder is a label button which shows or hides content
+    case 'block':
+      return html`${this.displayRender(control)}`
     case 'folder': {
       const {level, label, title} = ctl;
       const pclass = level === 2 ? 'panel' : 'subpanel';
@@ -1341,7 +1404,7 @@ export class CWKeyerJs extends LitElement {
     }
       // slider adjusts a number between a min and a max by step
     case 'slider': {
-      const {min, max, step, label, unit, title} = ctl;
+      const {label, title, min, max, step, unit} = ctl;
       return html`
 	<div class="group" title="${title}">
 	  <input
@@ -1359,7 +1422,7 @@ export class CWKeyerJs extends LitElement {
 
       // spinner adjusts a number between a min and a max by step
     case 'spinner': {
-      const {min, max, step, label, unit, size, title} = ctl;
+      const { label, title, min, max, step, unit, size} = ctl;
       return html`
 	<div class="group" title="${title}">
 	  <label for="${control}">${label}
@@ -1431,17 +1494,30 @@ export class CWKeyerJs extends LitElement {
     }
   }
   
+  /* eslint no-nested-ternary: off */
   render() {
     // 	${this.controlRender('displayAudio')}
     return html`
       <main>
         <div class="logo">${keyerLogo}</div>
-        <div><h1>cwkeyer-js</h1></div>
+        <div><h3>cwkeyer-js</h3></div>
+	<uh-options control="deviceSelect"
+		value="${this.deviceSelect}"
+		.ctl=${getControl('deviceSelect')} 
+		.options=${this.deviceOptions}
+		@uh-change=${(e) => this.controlSelectNew(e)}>
+	</uh-options>
+	${this.controlRender(this.device.type === 'hasak' ? 'displayHasak' : this.device.type === 'twe' ? 'displayTWE' : 'displayDefault')}
 	${this.controlRender('displayKeyer')}
 	${this.controlRender('displayMidi')}
 	${this.controlRender('displayAbout')}
 	${this.controlRender('displayLicense')}
 	${this.controlRender('displayColophon')}
+	<uh-folder control="displayTest" value="${this.displayTest}" .ctl=${getControl('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
+	  <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getControl('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
+	    <p>A bunch of test that should come and go with clicks</p>
+	  </uh-folder>
+	</uh-folder>
       </main>
 
       <p class="app-footer">

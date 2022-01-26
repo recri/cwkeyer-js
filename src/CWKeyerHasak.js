@@ -195,6 +195,7 @@ export class CWKeyerHasak extends CWKeyerDefault {
 
   constructor(context, name) {
     super(context, name);
+    this._type = 'hasak';
     this._version = 0;
     this._hasak = cwkeyerhasak100;
     this._keyers = ['vk6ph', 'k1el', 'nd7pa', 'ad5dz'];
@@ -242,73 +243,92 @@ export class CWKeyerHasak extends CWKeyerDefault {
     this.emit('midi:send', this.name, [cc, 99, (nrpn>>7)&127, cc, 98, nrpn&127, cc, 6, (val>>7)&127, cc, 38, val&127]);
   }
 
+  setnrpn(kyrp, v) {
+    console.log(`setnrpn ${kyrp} ${v}`);
+    this.sendnrpn(kyrp.value, v)
+  }
+
+  getnrpn(kyrp) {
+    console.log(`getnrpn ${kyrp}`)
+    return this.nrpnvalue(kyrp.value)
+  }
+  
+  setvoxnrpn(voice, kyrp, v) {
+    this.sendnrpn(voice*this._hasak.KYRP_VOX_OFFSET.value+kyrp.value, v)
+  }
+
+  getvoxnrpn(voice, kyrp) {
+    const vv = this.nrpnvalue(voice*this._hasak.KYRP_VOX_OFFSET.value+kyrp.value)
+    return (vv !== undefined) ? vv : this.getnrpn(kyrp)
+  }
+  
   // keyer properties
 
-  set pitch(v) { this.set_nrpn(this._hasak.KYRP_TONE, v); }
+  set pitch(v) { this.setnrpn(this._hasak.KYRP_TONE, v); }
 
-  get pitch() { return this.get_nrpn(this._hasak.KYRP_TONE); }
+  get pitch() { return this.getnrpn(this._hasak.KYRP_TONE); }
 
-  set gain(v) { this.set_nrpn(this._hasak.KYRP_LEVEL, v); }
+  set gain(v) { this.setnrpn(this._hasak.KYRP_LEVEL, v); }
   
-  get level() { return this.get_nrpn(this._hasak.KYRP_LEVEL); }
+  get level() { return this.getnrpn(this._hasak.KYRP_LEVEL); }
 
-  set speed(v) { this.set_nrpn(this._hasak.KYRP_SPEED, v); }
+  set speed(v) { this.setnrpn(this._hasak.KYRP_SPEED, v); }
 
-  get speed() { return this.get_nrpn(this._hasak.KYRP_SPEED); }
+  get speed() { return this.getnrpn(this._hasak.KYRP_SPEED); }
 
   // keyer properties for keyer timing
 
-  set weight(v) { this.set_nrpn(this._hasak.KYRP_WEIGHT, v); }
+  set weight(v) { this.setnrpn(this._hasak.KYRP_WEIGHT, v); }
 
-  get weight() { return this.get_nrpn(this._hasak.KYRP_WEIGHT); }
+  get weight() { return this.getnrpn(this._hasak.KYRP_WEIGHT); }
 
-  set ratio(v) { this.set_nrpn(this._hasak.KYRP_RATIO, v); }
+  set ratio(v) { this.setnrpn(this._hasak.KYRP_RATIO, v); }
 
-  get ratio() { return this.get_nrpn(this._hasak.KYRP_RATIO); }
+  get ratio() { return this.getnrpn(this._hasak.KYRP_RATIO); }
 
-  set compensation(v) { this.set_nrpn(this._hasak.KYRP_COMP, v); }
+  set compensation(v) { this.setnrpn(this._hasak.KYRP_COMP, v); }
 
-  get compensation() { return this.get_nrpn(this._hasak.KYRP_COMP); }
+  get compensation() { return this.getnrpn(this._hasak.KYRP_COMP); }
 
-  set farnsworth(v) { this.set_nrpn(this._hasak.KYRP_FARNS, v); }
+  set farnsworth(v) { this.setnrpn(this._hasak.KYRP_FARNS, v); }
 
-  get farnsworth() { return this.get_nrpn(this._hasak.KYRP_FARNS); }
+  get farnsworth() { return this.getnrpn(this._hasak.KYRP_FARNS); }
 
   // keyer properties for keying envelope
 
-  set rise(v) { this.set_nrpn(this._hasak.KYRP_RISE_TIME, v); }
+  set rise(v) { this.setnrpn(this._hasak.KYRP_RISE_TIME, v); }
 
-  get rise() { return this.get_nrpn(this._hasak.KYRP_RISE_TIME); }
+  get rise() { return this.getnrpn(this._hasak.KYRP_RISE_TIME); }
 
-  set fall(v) { this.set_nrpn(this._hasak.KYRP_FALL_TIME, v); }
+  set fall(v) { this.setnrpn(this._hasak.KYRP_FALL_TIME, v); }
 
-  get fall() { return this.get_nrpn(this._hasak.KYRP_FALL_TIME); }
+  get fall() { return this.getnrpn(this._hasak.KYRP_FALL_TIME); }
 
-  set envelope(v) { this.set_nrpn(this._hasak.KYRP_RISE_RAMP, v); }
+  set envelope(v) { this.setnrpn(this._hasak.KYRP_RISE_RAMP, v); }
 
-  get envelope() { return this.get_nrpn(this._hasak.KYRP_RISE_RAMP); }
+  get envelope() { return this.getnrpn(this._hasak.KYRP_RISE_RAMP); }
 
-  set envelope2(v) { this.set_nrpn(this._hasak.KYRP_FALL_RAMP, v); }
+  set envelope2(v) { this.setnrpn(this._hasak.KYRP_FALL_RAMP, v); }
 
-  get envelope2() { return this.get_nrpn(this._hasak.KYRP_FALL_RAMP); }
+  get envelope2() { return this.getnrpn(this._hasak.KYRP_FALL_RAMP); }
 
   get envelopes() { return this._envelopes; }
   
   // keyer properties for paddle
 
-  set paddleSwapped(v) { this.set_nrpn(this._hasak.KYRP_SWAP, v); }
+  set paddleSwapped(v) { this.setnrpn(this._hasak.KYRP_SWAP, v); }
 
-  get paddleSwapped() { return this.get_nrpn(this._hasak.KYRP_SWAP); }
+  get paddleSwapped() { return this.getnrpn(this._hasak.KYRP_SWAP); }
 
   get paddleKeyers() { return this._keyers; }
 
-  set paddleKeyer(v) { this.set_nrpn(this._hasak.KYRP_PAD_KEYER, v); }
+  set paddleKeyer(v) { this.setnrpn(this._hasak.KYRP_PAD_KEYER, v); }
 
-  get paddleKeyer() { return this.get_nrpn(this._hasak.KYRP_PAD_KEYER); }
+  get paddleKeyer() { return this.getnrpn(this._hasak.KYRP_PAD_KEYER); }
 
-  set paddleAdapt(v) { this.set_nrpn(this._hasak.KYRP_PAD_ADAPT, v); }
+  set paddleAdapt(v) { this.setnrpn(this._hasak.KYRP_PAD_ADAPT, v); }
 
-  get paddleAdapt() { return this.get_nrpn(this._hasak.KYRP_PAD_ADAPT); }
+  get paddleAdapt() { return this.getnrpn(this._hasak.KYRP_PAD_ADAPT); }
 
   // vox specific keyer properties
 
@@ -318,33 +338,33 @@ export class CWKeyerHasak extends CWKeyerDefault {
 
   get voice() { return this._voice; }
 
-  set voicePitch(v) {  this.set_vox_nrpn(this._voice, this._hasak.KYRP_TONE, v); }
+  set voicePitch(v) {  this.setvoxnrpn(this._voice, this._hasak.KYRP_TONE, v); }
 
-  get voicePitch() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_TONE); }
+  get voicePitch() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_TONE); }
 
-  set voiceGain(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_LEVEL, v); }
+  set voiceGain(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_LEVEL, v); }
   
-  get voiceGain() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_LEVEL); }
+  get voiceGain() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_LEVEL); }
 
-  set voiceSpeed(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_SPEED, v); }
+  set voiceSpeed(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_SPEED, v); }
 
-  get voiceSpeed() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_SPEED); }
+  get voiceSpeed() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_SPEED); }
 
-  set voiceWeight(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_WEIGHT, v); }
+  set voiceWeight(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_WEIGHT, v); }
 
-  get voiceWeight() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_WEIGHT); }
+  get voiceWeight() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_WEIGHT); }
 
-  set voiceRatio(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_RATIO, v); }
+  set voiceRatio(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_RATIO, v); }
 
-  get voiceRatio() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_RATIO); }
+  get voiceRatio() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_RATIO); }
 
-  set voiceCompensation(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_COMP, v); }
+  set voiceCompensation(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_COMP, v); }
 
-  get voiceCompensation() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_COMP); }
+  get voiceCompensation() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_COMP); }
 
-  set voiceFarnsworth(v) { this.set_vox_nrpn(this._voice, this._hasak.KYRP_FARNS, v); }
+  set voiceFarnsworth(v) { this.setvoxnrpn(this._voice, this._hasak.KYRP_FARNS, v); }
 
-  get voiceFarnsworth() { return this.get_vox_nrpn(this._voice, this._hasak.KYRP_FARNS); }
+  get voiceFarnsworth() { return this.getvoxnrpn(this._voice, this._hasak.KYRP_FARNS); }
 }
 // Local Variables:
 // mode: JavaScript
