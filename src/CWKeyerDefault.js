@@ -103,13 +103,17 @@ export class CWKeyerDefault extends KeyerEvent {
   
   // keyer properties
 
+  set masterVolumne(v) { this._masterVolume = v; }
+
+  get masterVolume() { return this._masterVolume; }
+  
   set pitch(v) { this._pitch = v; }
 
   get pitch() { return this._pitch; }
 
-  set gain(v) { this._gain = v; }
+  set sidetoneVolume(v) { this._sidetoneVolume = v; }
   
-  get gain() { return this._gain; }
+  get sidetoneVolume() { return this._sidetoneVolume; }
 
   set speed(v) { this._speed = v; }
 
@@ -135,21 +139,21 @@ export class CWKeyerDefault extends KeyerEvent {
 
   // keyer properties for keying envelope
 
-  set rise(v) { this._rise = v; }
+  set riseTime(v) { this._riseTime = v; }
 
-  get rise() { return this._rise; }
+  get riseTime() { return this._riseTime; }
 
-  set fall(v) { this._fall = v; }
+  set fallTime(v) { this._fallTime = v; }
 
-  get fall() { return  this._fall; }
+  get fallTime() { return  this._fallTime; }
 
-  set envelope(v) { this._envelope = v; }
+  set riseRamp(v) { this._riseRamp = v; }
 
-  get envelope() { return  this._envelope; }
+  get riseRamp() { return  this._riseRamp; }
 
-  set envelope2(v) { this._envelope2 = v; }
+  set fallRamp(v) { this._fallRamp = v; }
 
-  get envelope2() { return  this._envelope2; }
+  get fallRamp() { return  this._fallRamp; }
 
   get envelopes() { return  this._envelopes; }
   

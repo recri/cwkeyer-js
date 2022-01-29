@@ -11,9 +11,6 @@ import { LitElement, html, css } from 'lit';
 const shownSymbol = '\u23f7';
 const hiddenSymbol = '\u23f5';
 
-const playSymbol = '\u23f5';
-const pauseSymbol = '\u23f8';
-
 const uncheckedCheckBox = '\u2610';
 const checkedCheckBox = '\u2611';
 
@@ -167,41 +164,23 @@ class UhSlider extends LitElement {
 
   static get properties() {
     return {
-      min: { type: Number },
-      max: { type: Number },
-      step: { type: Number },
-      label: { type: String },
-      title: { type: String },
-      unit: { type: String },
       value: { type: Number },
       control: { type: String }
     }
   }
   
-  constructor() {
-    super()
-    this.min = 0
-    this.max = 127
-    this.step = 11
-    this.label = "Slider"
-    this.title = "Uh, Slider"
-    this.unit = ''
-    this.value = 64
-    this.control = 'none'
-  }
-
   render() {
     return html`
-	<div class="group" title="${this.title}">
+	<div class="group" title="${this.ctl.title}">
 	  <input
 	    type="range"
 	    name="${this.control}" 
-	    min="${this.min}"
-	    max="${this.max}"
-	    step="${this.step}"
+	    min="${this.ctl.min}"
+	    max="${this.ctl.max}"
+	    step="${this.ctl.step}"
 	    .value=${this.value}
 	    @input=${(e) => this._input(e)}>
-	  <label for="${this.control}">${this.label} ${this.value} (${this.unit})</label>
+	  <label for="${this.control}">${this.ctl.label} ${this.value} (${this.ctl.unit})</label>
 	</div>
 	`;
   }
@@ -218,39 +197,29 @@ customElements.define('uh-slider', UhSlider);
 // a numeric value spinbox input component
 //
 class UhSpinner extends LitElement {
-  // const {min, max, step, label, unit, size, title} = ctl;
-  constructor() {
-    super()
-    this.min = 0
-    this.max = 127
-    this.step = 11
-    this.label = "Spinner"
-    this.title = "Uh, Spinner"
-    this.unit = ''
-    this.size = 5
-    this.title = "Uh, Folder"
-    this.value = 64
-    this.control = 'none'
-  }
+  static get styles() { return sharedStyles }
 
-  connectedCallback() {
-    super.connectedCallback();
+  static get properties() {
+    return {
+      value: { type: Number },
+      control: { type: String }
+    }
   }
 
   render() {
       return html`
-	<div class="group" title="${this.title}">
-	  <label for="${this.control}">${this.label}
+	<div class="group" title="${this.ctl.title}">
+	  <label for="${this.control}">${this.ctl.label}
 	    <input
 	      type="number"
 	      name="${this.control}" 
-	      min="${this.min}"
-	      max="${this.max}"
-	      step="${this.step}"
-	      size="${this.size}"
+	      min="${this.ctl.min}"
+	      max="${this.ctl.max}"
+	      step="${this.ctl.step}"
+	      size="${this.ctl.size}"
 	      .value=${this.value}
 	      @input=${(e) => this._input(e)}>
-	    (${this.unit})
+	    (${this.ctl.unit})
 	  </label>
 	</div>
 	`;
@@ -304,26 +273,24 @@ customElements.define('uh-options', UhOptions);
 // a play/pause toggle input
 //
 class UhToggle extends LitElement {
-  // const {label, on, off, title} = ctl;
-  connectedCallback() {
-    super.connectedCallback();
-    if ( ! this.on ) this.on = pauseSymbol
-    if ( ! this.off ) this.off = playSymbol
-    if ( ! this.label ) this.label = "Toggle"
-    if ( ! this.title )  this.title = "Uh, Toggle"
-    if ( ! this.value ) this.value = false
-    if ( ! this.control ) this.control = 'none'
+  static get styles() { return sharedStyles }
+
+  static get properties() {
+    return {
+      control: { type: String },
+      value: { type: String }
+    }
   }
 
   render() {
     return html`
-	<div class="group" title="${this.title}"><label for="${this.control}">${this.label}
+	<div class="group" title="${this.ctl.title}"><label for="${this.control}">${this.ctl.label}
 	  <button
 	    name="${this.control}"
 	    role="switch" 
 	    aria-checked=${this.value} 
 	    @click=${(e) => this._click(e)}>
-	    ${this.value ? this.on : this.off}
+	    ${this.value ? this.ctl.on : this.ctl.off}
 	  </button></label></div>
 	`;
   }
@@ -340,22 +307,22 @@ customElements.define('uh-toggle', UhToggle);
 // a check box button component
 //
 class UhCheck extends LitElement {
-  // const {label, title} = ctl;
-  connectedCallback() {
-    super.connectedCallback();
-    if ( ! this.label ) this.label = "Check"
-    if ( ! this.title )  this.title = "Uh, Check"
-    if ( ! this.value ) this.value = false
-    if ( ! this.control ) this.control = 'none'
+  static get styles() { return sharedStyles }
+
+  static get properties() {
+    return {
+      control: { type: String },
+      value: { type: String }
+    }
   }
 
   render() {
       return html`
-	<div class="group" title="${this.title}"><button
+	<div class="group" title="${this.ctl.title}"><button
 	    role="switch" 
 	    aria-checked=${this.value} 
 	    @click=${(e) => this._click(e)}>
-	    ${this.value ? checkedCheckBox : uncheckedCheckBox} ${this.label}
+	    ${this.value ? checkedCheckBox : uncheckedCheckBox} ${this.ctl.label}
 	  </button></div>
 	`;
   }
@@ -367,6 +334,10 @@ class UhCheck extends LitElement {
 }
 
 customElements.define('uh-check', UhCheck);
+
+//
+// a few I haven't sorted out yet
+//
 
 //
 // a terminal window

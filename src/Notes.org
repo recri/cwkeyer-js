@@ -1,0 +1,49 @@
+* Hah, got it, I can take a list of 'keyer properties' consisting of name and type
+	and programmatically define getter and setter methods for each property.
+
+	Object.defineProperty(user, 'fullName', {
+	  get() {
+	    return `${this.name} ${this.surname}`;
+	  },
+
+	  set(value) {
+	    [this.name, this.surname] = value.split(" ");
+	  }
+	});
+
+* So, all the explicitly written keyer property functions in CWKeyerJs.js
+	can take the list of properties and write the boilerplate delegation
+	to this.device, or whatever I call it now.
+* And all the explicitly written dummy keyer property functions in CWKeyerDefault.js
+	can take the same list of properties and write the boiler plate dummy
+	properties.
+* And all the explicity written dummy keyer property functions in CWKeyerHasak.js
+	can take the same list of properties and the information from the keyer definition
+	data, and override the dummy property definitions with the boiler plate that it
+	uses, doing unit conversion in line.
+* And I should be able to do that and make it work with LitElement.
+* Joined the lit-element slack, but I think I'll read the life cycle call back first.
+	no obvious place in the callback lifecycle except before super() in the constructor.
+* Looked at the lit sources, and I think the best solution is to construct the source
+	with the desired properties, so you concatenate chunks of javascript code to build
+	the javascript source file, and interpolate an interpretation of the property list
+	specialized to the class you're generating.
+** So there is a property list which:
+*** provides the static get properties() contents for Lit in CWKeyerJs.js
+*** inserts the getter and setter definitions for the delegated properties in CWKeyerJs.js
+*** inserts the dummy getter and setter definitions in CWKeyerDefault.js
+*** combines with a keyer firmware specific property list which:
+**** inserts the getter and setter definitions in CWKeyerFirmware.js
+*** So everybody works off the common property list, 
+	and firmware specific code works off the combination of the common property list
+	and the firmware specific property list.
+*** The firmware specific code can include methods that specify if properties are
+	implemented or not, so simpler keyers can use a subset of the complete
+	feature set.
+** So the template sources look like javascript source code with insertion markers	
+*** %%insert-properties%% marks the location of the return value for the return
+	value for static get properties()
+*** %%insert-methods%% marks the location to insert the generated property	
+	methods.
+*** and the %% %% contents could just include the tcl command to 
+	
