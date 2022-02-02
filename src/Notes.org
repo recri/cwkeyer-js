@@ -11,6 +11,8 @@
 	  }
 	});
 
+	Ah, but that won't work for defining getters/setters with substitutions in
+	them, hmm.
 * So, all the explicitly written keyer property functions in CWKeyerJs.js
 	can take the list of properties and write the boilerplate delegation
 	to this.device, or whatever I call it now.

@@ -1,5 +1,6 @@
 {
   "name": "cwkeyer-js",
+  "type": "module",
   "description": "Webcomponent cwkeyer-js following open-wc recommendations",
   "license": "MIT",
   "author": "cwkeyer-js",

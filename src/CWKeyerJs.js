@@ -26,9 +26,9 @@ import { CWKeyerDefault }  from './CWKeyerDefault.js';
 import { CWKeyerHasak } from './CWKeyerHasak.js';
 import { CWKeyerTWE } from './CWKeyerTWE.js';
 import { Keyer } from './Keyer.js';
-import { properties, getProperty } from './CWKeyerProperties.js'
+import { cwkeyerProperties, getProperty } from './cwkeyerProperties.js'
 import { shownSymbol, hiddenSymbol, // playSymbol, pauseSymbol, 
-	 uncheckedCheckBox, checkedCheckBox } from './CWKeyerConstants.js'
+	 uncheckedCheckBox, checkedCheckBox } from './cwkeyerConstants.js'
 
 // always force default values, because I don't trust what's stored, yet
 const alwaysForceDefault = false;
@@ -47,7 +47,7 @@ export class CWKeyerJs extends LitElement {
   static get properties() { 
     if ( ! CWKeyerJs._properties) {
       CWKeyerJs._properties = {};
-      Object.keys(properties)
+      Object.keys(cwkeyerProperties)
 	.filter(x => 'lit' in getProperty(x))
 	.forEach(x => { CWKeyerJs._properties[x] = getProperty(x).lit });
     }
@@ -57,7 +57,7 @@ export class CWKeyerJs extends LitElement {
   // get the control object for a control
   // implement single string value indicates
   // indirect to the control named by the string
-  static getControl(control) { return getControl(control) }
+  // static getControl(control) { return getProperty(control) }
   
   // cwkeyer specific
 
@@ -141,7 +141,7 @@ export class CWKeyerJs extends LitElement {
   }
 
   keyerUpdate(control) {
-    if ( ! getControl(control))
+    if ( ! getProperty(control))
       console.log(`keyerUpdate(${control}) not a control`)
     else
       this.requestUpdate(control, null)
@@ -224,7 +224,7 @@ export class CWKeyerJs extends LitElement {
       if (CWKeyerJs.properties[k].type === Boolean && this[k] !== true && this[k] !== false)
 	console.log(`property '${k}' failed validate '${this[k]}' is not Boolean value`);
   }
-	       
+  
   //
   // teletype window
   //
@@ -358,17 +358,17 @@ export class CWKeyerJs extends LitElement {
       localStorage[control] = JSON.stringify(value);
       return value;
     }
-    if ('value' in getControl(control))
-      this[control] = controlDefault(getControl(control).value);
+    if ('value' in getProperty(control))
+      this[control] = controlDefault(getProperty(control).value);
   }
 
   propertySetDefaultValues(forceDefault) {
-    Object.keys(properties).forEach(property => this.propertySetDefaultValue(property, forceDefault));
+    Object.keys(cwkeyerProperties).forEach(property => this.propertySetDefaultValue(property, forceDefault));
   }
 
   controlUpdate(control, oldv, newv) {
     this[control] = newv;
-    const c = getControl(control);
+    const c = getProperty(control);
     if (c.value) localStorage[control] = JSON.stringify(newv);
     if (c.lit) this.requestUpdate(control, oldv);
     switch (control) {
@@ -522,10 +522,10 @@ export class CWKeyerJs extends LitElement {
   displayKeyer(type) {
     const common = html`
 	<div class="group" title="Basic keyer controls">
-	  <uh-spinner control='masterVolume' .ctl=${getControl('masterVolume')} value="${this.masterVolume}"></uh-spinner>
-	  <uh-spinner control="sidetoneVolume" .ctl=${getControl('sidetoneVolume')} value="${this.sidetoneVolume}"></uh-spinner>
-	  <uh-spinner control="pitch" .ctl=${getControl('pitch')} value="${this.pitch}"></uh-spinner>
-	  <uh-spinner control="speed" .ctl=${getControl('speed')} value="${this.speed}"></uh-spinner>
+	  <uh-spinner control='masterVolume' .ctl=${getProperty('masterVolume')} value="${this.masterVolume}"></uh-spinner>
+	  <uh-spinner control="keyerLevel" .ctl=${getProperty('keyerLevel')} value="${this.keyerLevel}"></uh-spinner>
+	  <uh-spinner control="keyerTone" .ctl=${getProperty('keyerTone')} value="${this.keyerTone}"></uh-spinner>
+	  <uh-spinner control="keyerSpeed" .ctl=${getProperty('keyerSpeed')} value="${this.keyerSpeed}"></uh-spinner>
 	</div>
 	`;
     switch (type) {
@@ -575,18 +575,18 @@ export class CWKeyerJs extends LitElement {
 	`;
 
     case 'displayAudio':
-//      let after = html`
-//	<div class="group" title="Audio controls">
-//        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
-//        <div class="panel">
-//	  ${this.controlRender('running')}
-//	  <button @click=${this.clear}><span>Clear</span></button>
-//	  <button @click=${this.cancel}><span>Cancel</span></button>
-//	</div>
-//	 ${this.controlRender('displaySettings')}
-//	 ${this.controlRender('displayScope')}
-//	 ${this.controlRender('displayStatus')}
-//	</div>`
+      //      let after = html`
+      //	<div class="group" title="Audio controls">
+      //        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
+      //        <div class="panel">
+      //	  ${this.controlRender('running')}
+      //	  <button @click=${this.clear}><span>Clear</span></button>
+      //	  <button @click=${this.cancel}><span>Cancel</span></button>
+      //	</div>
+      //	 ${this.controlRender('displaySettings')}
+      //	 ${this.controlRender('displayScope')}
+      //	 ${this.controlRender('displayStatus')}
+      //	</div>`
       return html`${this.keyer === null ? html`
 	<div class="group" title="Start audio controls">
 	</div>` : html`
@@ -599,9 +599,9 @@ export class CWKeyerJs extends LitElement {
 
     case 'displayKeyboardSettings': 
       return html`
-	${this.controlRender('speed')},
-	${this.controlRender('sidetoneVolume')},
-	${this.controlRender('pitch')},
+	${this.controlRender('keyerSpeed')},
+	${this.controlRender('keyerLevel')},
+	${this.controlRender('keyerTone')},
 	${this.controlRender('displayAdvancedKeyboardSettings')}
 	`;
 
@@ -634,8 +634,8 @@ export class CWKeyerJs extends LitElement {
 	  ${this.controlRender('rightPaddleMidi')}
         </div><br/>
 	${this.controlRender('inputSpeed')}
-	${this.controlRender('inputGain')}
-	${this.controlRender('inputPitch')}
+	${this.controlRender('inputLevel')}
+	${this.controlRender('inputTone')}
 	${this.controlRender('displayAdvancedManualSettings')}
       `;
 
@@ -790,7 +790,7 @@ export class CWKeyerJs extends LitElement {
 
   // render a user interface control element
   controlRender(control) {
-    const ctl = getControl(control);
+    const ctl = getProperty(control);
     if ( ! ctl) return html`<h1>No controlRender for ${control}</h1>`;
     switch (ctl.type) {
       // folder is a label button which shows or hides content
@@ -850,7 +850,7 @@ export class CWKeyerJs extends LitElement {
       // options displays a list of options for selection
     case 'options': {
       const {options, label, title} = ctl;
-            return html`
+      return html`
 	<div class="group" title="${title}"><label for="${control}">${label}
 	  <select
 	    name="${control}"
@@ -910,7 +910,7 @@ export class CWKeyerJs extends LitElement {
         <div><h3>cwkeyer-js</h3></div>
 	<div class="panel">
 	<uh-options control="deviceSelect" value="${this.deviceSelect}"
-	  .ctl=${getControl('deviceSelect')} .options=${this.deviceOptions}
+	  .ctl=${getProperty('deviceSelect')} .options=${this.deviceOptions}
 	  @uh-change=${(e) => this.controlSelectNew(e)}>
 	</uh-options>
 	</div>
@@ -919,8 +919,8 @@ export class CWKeyerJs extends LitElement {
 	${this.controlRender('displayLicense')}
 	${this.controlRender('displayColophon')}
 	<uh-folder control="displayTest" value="${this.displayTest}" 
-	  .ctl=${getControl('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
-	    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getControl('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
+	  .ctl=${getProperty('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
+	    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getProperty('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
 	      <p>A bunch of test that should come and go with clicks</p>
 	    </uh-folder>
 	</uh-folder>
@@ -936,109 +936,266 @@ export class CWKeyerJs extends LitElement {
 
   // BEGIN keyer property getters/setters
 
-  set keyerPitch(v) { this.device.keyerPitch = v; }
 
-  get keyerPitch() { return this.device.keyerPitch; }
+  get masterVolume() { return this.device.masterVolume; }
 
-  set keyerVolume(v) { this.device.keyerVolume = v; }
-  
-  get keyerVolume() { return this.device.keyerVolume; }
+  set masterVolume(v) { this.device.masterVolume = v; };
 
-  set keyerSpeed(v) { this.device.keyerSpeed = v; }
+  get inputSelect() { return this.device.inputSelect; }
 
-  get keyerSpeed() { return this.device.keyerSpeed; }
+  set inputSelect(v) { this.device.inputSelect = v; };
 
-  set keyerWeight(v) { this.device.keyerWeight = v; }
+  get inputSelects() { return this.device.inputSelects; }
 
-  get keyerWeight() { return this.device.keyerWeight; }
+  get inputLevel() { return this.device.inputLevel; }
 
-  set keyerRatio(v) { this.device.keyerRatio = v; }
+  set inputLevel(v) { this.device.inputLevel = v; };
 
-  get keyerRatio() { return this.device.keyerRatio; }
+  get buttonLevel0() { return this.device.buttonLevel0; }
 
-  set keyerCompensation(v) { this.device.keyerCompensation = v; }
+  set buttonLevel0(v) { this.device.buttonLevel0 = v; };
 
-  get keyerCompensation() { return this.device.keyerCompensation; }
+  get buttonLevel1() { return this.device.buttonLevel1; }
 
-  set keyerFarnsworth(v) { this.device.keyerFarnsworth = v; }
+  set buttonLevel1(v) { this.device.buttonLevel1 = v; };
 
-  get keyerFarnsworth() { return this.device.keyerFarnsworth; }
+  get buttonLevel2() { return this.device.buttonLevel2; }
 
-  set keyerRiseTime(v) { this.device.keyerRiseTime = v; }
+  set buttonLevel2(v) { this.device.buttonLevel2 = v; };
+
+  get buttonLevel3() { return this.device.buttonLevel3; }
+
+  set buttonLevel3(v) { this.device.buttonLevel3 = v; };
+
+  get buttonLevel4() { return this.device.buttonLevel4; }
+
+  set buttonLevel4(v) { this.device.buttonLevel4 = v; };
+
+  get externalPTTRequire() { return this.device.externalPTTRequire; }
+
+  set externalPTTRequire(v) { this.device.externalPTTRequire = v; };
+
+  get iqModeSelect() { return this.device.iqModeSelect; }
+
+  set iqModeSelect(v) { this.device.iqModeSelect = v; };
+
+  get iqModeSelects() { return this.device.iqModeSelects; }
+
+  get iqAdjustPhase() { return this.device.iqAdjustPhase; }
+
+  set iqAdjustPhase(v) { this.device.iqAdjustPhase = v; };
+
+  get iqAdjustBalance() { return this.device.iqAdjustBalance; }
+
+  set iqAdjustBalance(v) { this.device.iqAdjustBalance = v; };
+
+  get txEnable() { return this.device.txEnable; }
+
+  set txEnable(v) { this.device.txEnable = v; };
+
+  get sidetoneEnable() { return this.device.sidetoneEnable; }
+
+  set sidetoneEnable(v) { this.device.sidetoneEnable = v; };
+
+  get sidetonePan() { return this.device.sidetonePan; }
+
+  set sidetonePan(v) { this.device.sidetonePan = v; };
+
+  get outputEnable() { return this.device.outputEnable; }
+
+  set outputEnable(v) { this.device.outputEnable = v; };
+
+  get debouncePeriod() { return this.device.debouncePeriod; }
+
+  set debouncePeriod(v) { this.device.debouncePeriod = v; };
+
+  get pttHeadTime() { return this.device.pttHeadTime; }
+
+  set pttHeadTime(v) { this.device.pttHeadTime = v; };
+
+  get pttTailTime() { return this.device.pttTailTime; }
+
+  set pttTailTime(v) { this.device.pttTailTime = v; };
+
+  get pttHangTime() { return this.device.pttHangTime; }
+
+  set pttHangTime(v) { this.device.pttHangTime = v; };
 
   get keyerRiseTime() { return this.device.keyerRiseTime; }
 
-  set keyerFallTime(v) { this.device.keyerFallTime = v; }
+  set keyerRiseTime(v) { this.device.keyerRiseTime = v; };
 
   get keyerFallTime() { return this.device.keyerFallTime; }
 
-  set keyerRise(v) { this.device.keyerRiseRamp = v; }
+  set keyerFallTime(v) { this.device.keyerFallTime = v; };
 
   get keyerRiseRamp() { return this.device.keyerRiseRamp; }
 
-  set keyerFallRamp(v) { this.device.keyerFallRamp = v; }
+  set keyerRiseRamp(v) { this.device.keyerRiseRamp = v; };
 
   get keyerFallRamp() { return this.device.keyerFallRamp; }
 
+  set keyerFallRamp(v) { this.device.keyerFallRamp = v; };
+
   get keyerRamps() { return this.device.keyerRamps; }
-  
-  // keyer properties for manual keyer
-  set paddleSwapped(v) { this.device.swapped = v; }
 
-  get paddleSwapped() { return this.device.swapped; }
+  get paddleMode() { return this.device.paddleMode; }
 
-  get paddleKeyers() { return this.device.paddleKeyers; } // list of implemented keyers
+  set paddleMode(v) { this.device.paddleMode = v; };
 
-  set paddleKeyer(v) { this.device.paddleKeyer = v; }
+  get paddleModes() { return this.device.paddleModes; }
 
-  get paddleKeyer() { return this.device.paddleKeyer; }
+  get paddleSwapped() { return this.device.paddleSwapped; }
 
-  set paddleAdapter(v) { this.device.paddleAdapter = v; }
+  set paddleSwapped(v) { this.device.paddleSwapped = v; };
 
   get paddleAdapter() { return this.device.paddleAdapter; }
 
+  set paddleAdapter(v) { this.device.paddleAdapter = v; };
+
   get paddleAdapters() { return this.device.paddleAdapters; }
 
-  set paddleMode(v) { this.device.paddleMode = v; }
+  get autoLetterSpace() { return this.device.autoLetterSpace; }
 
-  get paddleMode() { return this.device.adapter; }
+  set autoLetterSpace(v) { this.device.autoLetterSpace = v; };
 
-  get paddleModes() { return this.device.paddleAdapters; }
+  get autoWordSpace() { return this.device.autoWordSpace; }
 
-  // vox specific keyer properties
-  set voice(v) { this.device.voice = v; }
+  set autoWordSpace(v) { this.device.autoWordSpace = v; };
+
+  get paddleKeyer() { return this.device.paddleKeyer; }
+
+  set paddleKeyer(v) { this.device.paddleKeyer = v; };
+
+  get paddleKeyers() { return this.device.paddleKeyers; }
+
+  get channelCC() { return this.device.channelCC; }
+
+  set channelCC(v) { this.device.channelCC = v; };
+
+  get channelNote() { return this.device.channelNote; }
+
+  set channelNote(v) { this.device.channelNote = v; };
+
+  get noteLeftPaddle() { return this.device.noteLeftPaddle; }
+
+  set noteLeftPaddle(v) { this.device.noteLeftPaddle = v; };
+
+  get noteRightPaddle() { return this.device.noteRightPaddle; }
+
+  set noteRightPaddle(v) { this.device.noteRightPaddle = v; };
+
+  get noteStraightKey() { return this.device.noteStraightKey; }
+
+  set noteStraightKey(v) { this.device.noteStraightKey = v; };
+
+  get noteExternalPTT() { return this.device.noteExternalPTT; }
+
+  set noteExternalPTT(v) { this.device.noteExternalPTT = v; };
+
+  get noteKeyOut() { return this.device.noteKeyOut; }
+
+  set noteKeyOut(v) { this.device.noteKeyOut = v; };
+
+  get notePTTOut() { return this.device.notePTTOut; }
+
+  set notePTTOut(v) { this.device.notePTTOut = v; };
+
+  get adcEnable() { return this.device.adcEnable; }
+
+  set adcEnable(v) { this.device.adcEnable = v; };
+
+  get adcControls() { return this.device.adcControls; }
+
+  get adc0Control() { return this.device.adc0Control; }
+
+  set adc0Control(v) { this.device.adc0Control = v; };
+
+  get adc1Control() { return this.device.adc1Control; }
+
+  set adc1Control(v) { this.device.adc1Control = v; };
+
+  get adc2Control() { return this.device.adc2Control; }
+
+  set adc2Control(v) { this.device.adc2Control = v; };
+
+  get adc3Control() { return this.device.adc3Control; }
+
+  set adc3Control(v) { this.device.adc3Control = v; };
+
+  get adc4Control() { return this.device.adc4Control; }
+
+  set adc4Control(v) { this.device.adc4Control = v; };
+
+  get keyerTone() { return this.device.keyerTone; }
+
+  set keyerTone(v) { this.device.keyerTone = v; };
+
+  get keyerLevel() { return this.device.keyerLevel; }
+
+  set keyerLevel(v) { this.device.keyerLevel = v; };
+
+  get keyerSpeed() { return this.device.keyerSpeed; }
+
+  set keyerSpeed(v) { this.device.keyerSpeed = v; };
+
+  get keyerWeight() { return this.device.keyerWeight; }
+
+  set keyerWeight(v) { this.device.keyerWeight = v; };
+
+  get keyerRatio() { return this.device.keyerRatio; }
+
+  set keyerRatio(v) { this.device.keyerRatio = v; };
+
+  get keyerFarnsworth() { return this.device.keyerFarnsworth; }
+
+  set keyerFarnsworth(v) { this.device.keyerFarnsworth = v; };
+
+  get keyerCompensation() { return this.device.keyerCompensation; }
+
+  set keyerCompensation(v) { this.device.keyerCompensation = v; };
+
+  get keyerSpeedFraction() { return this.device.keyerSpeedFraction; }
+
+  set keyerSpeedFraction(v) { this.device.keyerSpeedFraction = v; };
 
   get voice() { return this.device.voice; }
 
+  set voice(v) { this.device.voice = v; };
+
   get voices() { return this.device.voices; }
-  
-  set voicePitch(v) { this.device.voicePitch = v; }
 
-  get voicePitch() { return this.device.voiceitch; }
+  get voiceTone() { return this.device.voiceTone; }
 
-  set voiceSidetoneVolume(v) { this.device.voiceSidetonevolume = v; }
-  
-  get voiceSidetoneVolume() { return this.device.voiceSidetoneVolume; }
+  set voiceTone(v) { this.device.voiceTone = v; };
 
-  set voiceSpeed(v) { this.device.voiceSpeed = v; }
+  get voiceLevel() { return this.device.voiceLevel; }
+
+  set voiceLevel(v) { this.device.voiceLevel = v; };
 
   get voiceSpeed() { return this.device.voiceSpeed; }
 
-  set voiceWeight(v) { this.device.voiceWeight = v; }
+  set voiceSpeed(v) { this.device.voiceSpeed = v; };
 
   get voiceWeight() { return this.device.voiceWeight; }
 
-  set voiceRatio(v) { this.device.voiceRatio = v; }
+  set voiceWeight(v) { this.device.voiceWeight = v; };
 
   get voiceRatio() { return this.device.voiceRatio; }
 
-  set voiceCompensation(v) { this.device.voiceCompensation = v; }
+  set voiceRatio(v) { this.device.voiceRatio = v; };
+
+  get voiceFarnsworth() { return this.device.voiceFarnsworth; }
+
+  set voiceFarnsworth(v) { this.device.voiceFarnsworth = v; };
 
   get voiceCompensation() { return this.device.voiceCompensation; }
 
-  set voiceFarnsworth(v) { this.device.voiceFarnsworth = v; }
+  set voiceCompensation(v) { this.device.voiceCompensation = v; };
 
-  get voiceFarnsworth() { return this.device.voiceFarnsworth; }
+  get voiceSpeedFraction() { return this.device.voiceSpeedFraction; }
+
+  set voiceSpeedFraction(v) { this.device.voiceSpeedFraction = v; };
 
   // END keyer properties
 

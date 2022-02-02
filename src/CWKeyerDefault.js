@@ -2,212 +2,41 @@
 // cwkeyer.js - a progressive web app for morse code
 // Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// MIT License
+//
+// Copyright (c) 2022 cwkeyer-js
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 // 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-// 
-import { KeyerEvent } from './KeyerEvent.js';
+import { CWKeyerBase } from './CWKeyerBase.js';
+import { defaultDescriptors } from './defaultDescriptors.js';
 
 //
-// map notes, nrpns, and other control change messages
-// maintain a state map for the device such that current note,
-// nrpn, and control change values can be retrieved
-//
-// also provide dummy keyer implementation so this class can be
-// used as the default keyer device implementation.
-//
-// also provide a base class for other keyer implementations to extend.
+// provide a dummy keyer implementation
 //
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<","~"] }] */
-export class CWKeyerDefault extends KeyerEvent {
+export class CWKeyerDefault extends CWKeyerBase {
 
   constructor(context, name) {
-    super(context);
-    this._name = name;
-    this._type = 'default'
-    this._active = true;
-    this._channels = {};
-    this._channel = 0;
-    this._notes = {};		// note state map
-    this._ctrls = {};		// control change state map
-    this._nrpns = {};		// nrpn state map
-    this._nrpn = 0;		// nrpn assembly
-    this._data = 0;		// data assembly
+    super(context, name, 'default');
+    Object.defineProperties(this, defaultDescriptors);
   }
-
-  onmidimessage(name, msg) {
-    const chan = 1+(msg[0]&0xF)
-    if ( ! this._channels[chan]) this._channels[chan] = 0;
-    this._channels[chan] += 1;
-    this._channel = chan;
-    switch (msg[0] & 0xf0) {
-    case 0x90:
-      this._notes[msg[1]] = msg[2] === 0 ? false : msg[2];
-      this.emit('note', true, msg[1], msg[2]);
-      break;
-    case 0x80: this._notes[msg[1]] = false; 
-      this.emit('note', false, msg[1], msg[2]);
-      break;
-    case 0xB0:
-      switch (msg[1]) {
-      case 99: 
-	this._nrpn = (this._nrpn&127) | ((msg[2]&127)<<7);
-	break;
-      case 98:
-	this._nrpn = (this._nrpn&~127) | (msg[2]&127);
-	break;
-      case 6:
-	this._data = (this._data&127) | ((msg[2]&127)<<7);
-	break;
-      case 38:
-	this._data = (this._data&~127) | (msg[2]&127); 
-	this._nrpns[this._nrpn] = this._data;
-	this.emit('nrpn', this._nrpn, this._data);
-	break;
-	// insert rest of CC panoply here
-      default:
-	console.log(`CWKeyerDefault: other control change ${msg[0]} ${msg[1]} ${msg[2]}`);
-	break;
-      }
-      break;
-    default:
-      console.log(`CWKeyerDefault: other message ${msg[0]} ${msg[1]} ${msg[2]}}`);
-      break;
-    }
-  }
-
-  get label() { return `${this.name} as ${this.type}`; }
-  
-  get channels() { return this._channels; }
-
-  get nrpns() { return Object.getOwnPropertyNames(this._nrpns); }
-
-  get notes() { return Object.getOwnPropertyNames(this._notes); }
-  
-  nrpnvalue(nrpn) { return this._nrpns[nrpn]; }
-
-  notevalue(note) { return this._notes[note]; }
-
-  get name() { return this._name; }
-
-  get type() { return this._type; }
-  
-  // keyer properties
-
-  set masterVolumne(v) { this._masterVolume = v; }
-
-  get masterVolume() { return this._masterVolume; }
-  
-  set pitch(v) { this._pitch = v; }
-
-  get pitch() { return this._pitch; }
-
-  set sidetoneVolume(v) { this._sidetoneVolume = v; }
-  
-  get sidetoneVolume() { return this._sidetoneVolume; }
-
-  set speed(v) { this._speed = v; }
-
-  get speed() { return this._speed; }
-
-  // keyer properties for keyer timing
-
-  set weight(v) { this._weight = v; }
-
-  get weight() { return this._weight; }
-
-  set ratio(v) { this._ratio = v; }
-
-  get ratio() { return  this._ratio; }
-
-  set compensation(v) { this._compensation = v; }
-
-  get compensation() { return  this._compensation; }
-
-  set farnsworth(v) { this._farnsworth = v; }
-
-  get farnsworth() { return  this._farnsworth; }
-
-  // keyer properties for keying envelope
-
-  set riseTime(v) { this._riseTime = v; }
-
-  get riseTime() { return this._riseTime; }
-
-  set fallTime(v) { this._fallTime = v; }
-
-  get fallTime() { return  this._fallTime; }
-
-  set riseRamp(v) { this._riseRamp = v; }
-
-  get riseRamp() { return  this._riseRamp; }
-
-  set fallRamp(v) { this._fallRamp = v; }
-
-  get fallRamp() { return  this._fallRamp; }
-
-  get envelopes() { return  this._envelopes; }
-  
-  // keyer properties for paddle
-
-  set paddleSwapped(v) { this._swapped = v; }
-
-  get paddleSwapped() { return  this._swapped; }
-
-  get paddleKeyers() { return  this._keyers; }
-
-  set paddleKeyer(v) { this._keyer = v; }
-
-  get paddleKeyer() { return this._keyer; }
-
-  set paddleAdapt(v) { this._adapt = v; }
-
-  get paddleAdapt() { return this._adapt; }
-
-  // vox specific keyer properties
-
-  get voices() { return this._voices; }
-  
-  set voice(v) { this._voice = v; }
-
-  get voice() { return this._voice; }
-
-  set voicePitch(v) {  this._vox[this._voice].pitch = v; }
-
-  get voicePitch() { return this._vox[this._voice].pitch; }
-
-  set voiceGain(v) { this._vox[this._voice].gain = v; }
-  
-  get voiceGain() { return this._vox[this._voice].gain; }
-
-  set voiceSpeed(v) { this._vox[this._voice].speed = v; }
-
-  get voiceSpeed() { return this._vox[this._voice].speed; }
-
-  set voiceWeight(v) { this._vox[this._voice].weight = v; }
-
-  get voiceWeight() { return this._vox[this._voice].weight; }
-
-  set voiceRatio(v) { this._vox[this._voice].ratio = v; }
-
-  get voiceRatio() { return this._vox[this._voice].ratio; }
-
-  set voiceCompensation(v) { this._vox[this._voice].compensation = v; }
-
-  get voiceCompensation() { return this._vox[this._voice].compensation; }
-
-  set voiceFarnsworth(v) { this._vox[this._voice].farnsworth = v; }
-
-  get voiceFarnsworth() { return this._vox[this._voice].farnsworth; }
 
 }
 // Local Variables:
