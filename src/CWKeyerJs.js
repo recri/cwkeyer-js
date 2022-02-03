@@ -46,64 +46,33 @@ export class CWKeyerJs extends LitElement {
   // extract LitElement properties from controls
   static get properties() { 
     if ( ! CWKeyerJs._properties) {
-      CWKeyerJs._properties = {};
-      Object.keys(cwkeyerProperties)
-	.filter(x => 'lit' in getProperty(x))
-	.forEach(x => { CWKeyerJs._properties[x] = getProperty(x).lit });
+      CWKeyerJs._properties = Object.entries(cwkeyerProperties)
+	.filter(([,v]) => v.lit)
+	.map(([k,v]) => [k, v.lit]);
     }
     return CWKeyerJs._properties;
   }
 
-  // get the control object for a control
-  // implement single string value indicates
-  // indirect to the control named by the string
-  // static getControl(control) { return getProperty(control) }
-  
-  // cwkeyer specific
-
-  get midiNames() { return this.midiSource.names; }
-  
-  get midiInputs() { return this.midiSource.inputs.map((x)=>x.name); }
-
-  get midiOutputs() { return this.midiSource.outputs.map((x)=>x.name); }
-  
-  get midiAvailable() { return this.midiSource.midiAvailable; }
-  
-  get midiNotes() { return this.midiSource.notes; }
-
-  get midiControls() { return this.midiSource.controls; }
-  
-  // get currentTime() { return this.keyer.currentTime; }
-
-  // get sampleRate() { return this.keyer.sampleRate; }
-
-  // get baseLatency() { return this.keyer.baseLatency; }
-
-  // get state() { return this.keyer.context.state; }
-  
-  set deviceSelect(deviceSelect) {
-    Object.values(this.devices).forEach(device => { 
-      if (device.label === deviceSelect) {
-	this.device = device
-	// this.requestUpdate('device', null)
-      }
-    });
-  }
-
-  get deviceSelect() { return this.device.label; }
-  
-  get deviceOptions() { return Object.values(this.devices).map(device => device.label); }
-  
   constructor() {
     super();
     this.audioContext = null;
+    // the event handlers for requests are constant lambdas
+    // so they can be added and removed
+    this.keyerUpdateHandler = (dev, control, value) => this.keyerUpdate(dev, control, value)
+    this.onMidiSendHandler = (dev, message) => this.onmidisend(dev, message)
+    this.midiNotesUpdateHandler = () => this.midiNotesUpdate()
+    this.midiControlsUpdateHandler = () => this.midiControlsUpdate()
+    this.midiNamesUpdateHandler = () => this.midiNamesUpdate()
+    this.midiMessageHandler = (name, data) => this.onmidimessage(name, data)
     this.device = new CWKeyerDefault(this.audioContext, 'none');
     this.devices = { none: this.device };
+    this.device.on('send:midi', this.onMidiSendHandler)
+    this.device.on('update', this.keyerUpdateHandler)
     this.midiSource = new KeyerMidiSource(null);
-    this.midiSource.on('midi:notes', () => this.midiNotesUpdate());
-    this.midiSource.on('midi:controls', () => this.midiControlsUpdate());
-    this.midiSource.on('midi:names', () => this.midiNamesUpdate());
-    this.midiSource.on('midi:message', (name, data) => this.onmidimessage(name, data));
+    this.midiSource.on('midi:notes', this.midiNotesUpdateHandler);
+    this.midiSource.on('midi:controls', this.midiControlsUpdateHandler);
+    this.midiSource.on('midi:names', this.midiNamesUpdateHandler);
+    this.midiSource.on('midi:message', this.midiMessageHandler);
 
     // only initialize the properties neede for startup
     this.displayMidi = false;
@@ -117,34 +86,80 @@ export class CWKeyerJs extends LitElement {
     this.displayTest2 = false
   }
 
+  // these next three methods implement the device selector
+  set deviceSelect(deviceSelect) {
+    Object.values(this.devices).forEach(device => { 
+      if (device.name === deviceSelect) {
+	if (device !== this.device) {
+	  this.device.activate(false)
+	  this.device = device
+	  this.device.activate(true)
+	}
+      }
+    });
+  }
+
+  get deviceSelect() { return this.device.name; }
+  
+  get deviceSelectOptions() { return Object.values(this.devices).map(device => device.name); }
+  
+  get midiNames() { return this.midiSource.names; }
+  
+  get midiInputs() { return this.midiSource.inputs.map((x)=>x.name); }
+
+  get midiOutputs() { return this.midiSource.outputs.map((x)=>x.name); }
+  
+  get midiAvailable() { return this.midiSource.midiAvailable; }
+  
+  get midiNotes() { return this.midiSource.notes; }
+
+  get midiControls() { return this.midiSource.controls; }
+  
   midiNotesUpdate() { this.requestUpdate('midiNotes', []) }
 
   midiControlsUpdate() { this.requestUpdate('midiControls', []) }
 
   midiNamesUpdate() {
-    for (const id of this.midiNames) {
-      if ( ! this.devices[id]) {
+    // console.log(`midNamesUpdate: devices ${Object.keys(this.devices).join(', ')} midiNames: ${this.midiNames.join(', ')}`);
+    // remove deleted devices, though there never seem to be any
+    Object.keys(this.devices)
+      .filter(x => x !== 'none' && ! this.midiNames.find(y => x === y))
+      .forEach(x => {
+	const dev = this.devices[x]
+	console.log(`midiNamesUpdate ${dev.name} is not in ${this.midiNames.join(', ')}`)
+	dev.off('midi:send', this.onMidiSendHandler)
+	dev.off('update', this.keyerUpdateHandler)
+	delete this.devices[dev.name]
+      });
+    // add new devices
+    this.midiNames
+      .filter(id => ! this.devices[id])
+      .forEach(id => {
 	if (id.match(/.*[hH]asak.*/)) {
+	  console.log(`midiNamesUpdate ${id} creating hasak keyer`)
 	  this.devices[id] = new CWKeyerHasak(this.audioContext, id);
-	  if (this.deviceSelect === 'none as default') this.device = this.devices[id];
-	} else if (id.match(/.*Teensy MIDI.*/)) {
+	  // if (this.deviceSelect === 'none as default') this.device = this.devices[id];
+	} else if (id.match(/.*CWKeyer.*/)) {
+	  console.log(`midiNamesUpdate ${id} creating CWKeyer keyer`)
 	  this.devices[id] = new CWKeyerTWE(this.audioContext, id);
-	  if (this.deviceSelect === 'none as default') this.device = this.devices[id];
+	  // if (this.deviceSelect === 'none as default') this.device = this.devices[id];
 	} else {
+	  console.log(`midiNamesUpdate ${id} creating default keyer`)
 	  this.devices[id] = new CWKeyerDefault(this.audioContext, id);
 	}
-	this.devices[id].on('midi:send', (dev, msg) => this.onmidisend(dev, msg))
-	this.devices[id].on('update', (control) => this.keyerUpdate(control))
-      }
-    }
+	this.devices[id].on('midi:send', this.onMidiSendHandler)
+	this.devices[id].on('update', this.keyerUpdateHandler)
+      });
     this.requestUpdate('midiNames')
+    this.requestUpdate('deviceOptions')
+    this.requestUpdate('deviceSelect')
   }
 
-  keyerUpdate(control) {
+  keyerUpdate(dev, control, value) {
     if ( ! getProperty(control))
       console.log(`keyerUpdate(${control}) not a control`)
-    else
-      this.requestUpdate(control, null)
+    else if (dev === this.device.name)
+      this.requestUpdate(control, value)
   }
 
   onmidisend(name, data) {
@@ -708,62 +723,10 @@ export class CWKeyerJs extends LitElement {
       
     case 'displayAbout':
       return html`
-	<p>
-	  <b>cwkeyer-js</b> implements a MIDI control panel for compatible
-	  morse code keyers in a web page.  The compatible keyers are:
-	  https://github.com/recri/hasak, but there should be at least
-	  one more.
-	</p><p>
-	  It is a progressive web app, meaning it's a web page which
-	  can be downloaded and run off-line.
-	</p><p>
-	  It is also an adaptive web app, so it resizes and reorganizes its
-	  interface to run on devices of different screen sizes. 
-	</p><p>
-	  It uses the Web MIDI API (https://webaudio.github.io/web-midi-api/)
-	  to send and receive MIDI messages in the browser.  This API is
-	  implemented by the Chrome, Edge, and Opera desktop browsers and the
-	  Webview Android, Chrome Android, Opera Android, and Samsung Internet
-	  mobile browsers as of early 2022.
-	</p><p>
-	  This <b>About</b> panel gives a brief introduction to the app.
-	</p><p>
-	  The <b>License</b> panel describes the licenscing of the app.
-	</p><p>
-	  The <b>Colophon</b> panel describes the construction of the app.
-	</p>
 	`;
 
     case 'displayLicense':
       return html`
-	<p>
-	  cwkeyer-js - a PWA for controlling morse code keyers over MIDI.
-	</p><p>
-	  Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
-	</p><p>
-	<p>
-	MIT License
-	</p><p>
-	Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
-	</p><p>
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-	</p><p>
-	The above copyright notice and this permission notice shall be included in all
-	copies or substantial portions of the Software.
-	</p><p>
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
-	</p>
 	`;
 
     case 'displayColophon':
@@ -905,32 +868,106 @@ export class CWKeyerJs extends LitElement {
   render() {
     // 	${this.controlRender('displayAudio')}
     return html`
-      <main>
-        <div class="logo">${keyerLogo}</div>
-        <div><h3>cwkeyer-js</h3></div>
-	<div class="panel">
-	<uh-options control="deviceSelect" value="${this.deviceSelect}"
-	  .ctl=${getProperty('deviceSelect')} .options=${this.deviceOptions}
-	  @uh-change=${(e) => this.controlSelectNew(e)}>
-	</uh-options>
-	</div>
-	${this.displayKeyer(this.device.type)}
-	${this.controlRender('displayAbout')}
-	${this.controlRender('displayLicense')}
-	${this.controlRender('displayColophon')}
-	<uh-folder control="displayTest" value="${this.displayTest}" 
-	  .ctl=${getProperty('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
-	    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getProperty('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
-	      <p>A bunch of test that should come and go with clicks</p>
-	    </uh-folder>
-	</uh-folder>
-      </main>
+<main>
+  <div class="logo">${keyerLogo}</div>
+  <div><h3>cwkeyer-js</h3></div>
+  <div class="panel">
+    <uh-options control="deviceSelect" value="${this.deviceSelect}" .options="${this.deviceSelectOptions}"
+        .ctl=${getProperty('deviceSelect')} @uh-change=${(e) => this.controlSelectNew(e)}>
+    </uh-options>
+  </div>
+  ${this.displayKeyer(this.device.type)}
+  <uh-folder control="displayTest1" value="${this.displayTest1}" .ctl=${getProperty('displayTest1')} @uh-click=${(e) => this.controlToggleNew(e)}>
+    <p>this.device: ${this.device.label}</p>
+    <p>this.devices as labels: ${Object.values(this.devices).map(dev => dev.label).join(', ')}</p>
+    <p>this.deviceSelectOptions: ${Object.values(this.deviceSelectOptions).join(', ')}</p>
+  </uh-folder>
+  <uh-folder control="displayAbout" value="${this.displayAbout}" .ctl=${cwkeyerProperties.displayAbout}
+      @uh-click=${(e) => this.controlToggleNew(e)}>
+    <p>
+      <b>cwkeyer-js</b> implements a MIDI control panel for compatible
+      morse code keyers in a web page.  The compatible keyers are:
+      https://github.com/recri/hasak, but there should be at least
+      one more.
+    </p><p>
+      It is a progressive web app, meaning it is a web page which
+      can be downloaded and run off-line.
+    </p><p>
+      It is also an adaptive web app, so it resizes and reorganizes its
+      interface to run on devices of different screen sizes. 
+    </p><p>
+      It uses the Web MIDI API (https://webaudio.github.io/web-midi-api/)
+      to send and receive MIDI messages in the browser.  This API is
+      implemented by the Chrome, Edge, and Opera desktop browsers and the
+      Webview Android, Chrome Android, Opera Android, and Samsung Internet
+      mobile browsers as of early 2022.
+    </p><p>
+      This <b>About</b> panel gives a brief introduction to the app.
+    </p><p>
+      The <b>License</b> panel describes the licenscing of the app.
+    </p><p>
+      The <b>Colophon</b> panel describes the construction of the app.
+    </p>
+  </uh-folder>
+  <uh-folder control="displayLicense" value="${this.displayLicense}" .ctl=${cwkeyerProperties.displayLicense}
+      @uh-click=${(e) => this.controlToggleNew(e)}>
+    <p>
+      cwkeyer-js - a PWA for controlling morse code keyers over MIDI.
+    </p><p>
+      Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
+    </p><p>
+    <p>
+      MIT License
+    </p><p>
+      Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
+    </p><p>
+      Permission is hereby granted, free of charge, to any person obtaining a copy
+      of this software and associated documentation files (the "Software"), to deal
+      in the Software without restriction, including without limitation the rights
+      to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+      copies of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions:
+      </p><p>
+      The above copyright notice and this permission notice shall be included in all
+      copies or substantial portions of the Software.
+      </p><p>
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+      SOFTWARE.
+    </p>
+  </uh-folder>
+  <uh-folder control="displayColophon" value="${this.displayTest}" .ctl=${cwkeyerProperties.displayColophon}
+    @uh-click=${(e) => this.controlToggleNew(e)}>
+      <p>
+      cwkeyer-js was written with emacs on a laptop running Ubuntu using the development guides
+      from open-wc.org.
+    </p><p>
+      The immediate impetus was the Steve (kf7o) Haynal's CWKeyer project, https://github.com/softerhardware/CWKeyer.
+    </p><p>
+      A lot of background can be found in <a href="https://github.com/recri/keyer">keyer</a>,
+      a collection of software defined radio software built using Jack, Tcl, and C.
+    </p><p>
+      The polymer project, the PWA starter kit, open-wc, lit-element, lit-html, web audio, web MIDI provided the
+      web development tools.
+    </p><p>
+      The source for <a href="https://github.com/recri/cwkeyer-js">cwkeyer-js</a>
+    </p>
+  </uh-folder>
+  <uh-folder control="displayTest" value="${this.displayTest}" 
+      .ctl=${getProperty('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
+    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getProperty('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
+      <p>A bunch of test that should come and go with clicks</p>
+    </uh-folder>
+  </uh-folder>
+</main>
 
-      <p class="app-footer">
-        🚽 Made with thanks to
-        <a target="_blank" rel="noopener noreferrer"
-           href="https://github.com/open-wc" >open-wc</a>.
-      </p>
+<p class="app-footer">
+🚽 Made with thanks to <a target="_blank" rel="noopener noreferrer" href="https://github.com/open-wc" >open-wc</a>.
+</p>
     `;
   }
 

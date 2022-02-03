@@ -97,6 +97,10 @@ export const cwkeyerProperties = {
   voice: { lit: { type: String }, type: 'options', value: 'none', label: 'Voice', options: 'voices', title: 'Keyer voice to configure.', delegate: true },
   voices: { lit: { type: Array }, delegate: true, getOnly: true },
 
+  // device selection
+  deviceSelect: { lit: {type: String}, type: 'options', value: 'none as default', options: 'deviceSelectOptions', label: 'Select device', title: 'Choose a MIDI keyer device' },
+  deviceOptions: { lit: { type: Array}, getOnly: true },
+
   // these voice properties reuse the property definitions of earlier properties
   voiceTone: 'keyerTone',
   voiceLevel: 'keyerLevel',
@@ -107,10 +111,14 @@ export const cwkeyerProperties = {
   voiceCompensation: 'keyerCompensation',
   voiceSpeedFraction: 'keyerSpeedFraction',
 
+  // dummy folders for debugging information
+  displayTest: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test', level: 2, title: 'Test.' },
+  displayTest1: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test 1', level: 2, title: 'Test 1.' },
+  displayTest2: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test 2', level: 3, title: 'Test 2.' },
+  displayTest3: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test 3', level: 3, title: 'Test 3.' },
+  displayTest4: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test 4', level: 3, title: 'Test 4.' },
+
   // cwkeyer folders
-  displayTest: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test uh-folder', level: 2, title: 'This is a test uh folder.' },
-  displayTest2: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test uh-folder', level: 3, title: 'This is a test uh folder.' },
-  deviceSelect: { lit: {type: String}, type: 'options', value: 'none as default', label: 'Select device', title: 'Choose a MIDI keyer device' },
   displayMidi: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Midi activity', level: 2, title: 'Active Midi devices, notes, and controls.' },
   displayHasak: { lit: {type: Boolean}, type: 'block', value: false, label: 'Keyer controller', level: 2, title: 'Controller panel for Hasak keyer.' },
   displayTWE: { lit: {type: Boolean}, type: 'block', value: false, label: 'Teensy Winkey Emulator controller', level: 2, title: 'Controller panel for Teensy Winkey Emulator.' },

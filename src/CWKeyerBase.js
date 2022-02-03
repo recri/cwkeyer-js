@@ -27,11 +27,11 @@ import { KeyerEvent } from './KeyerEvent.js';
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<","~"] }] */
 export class CWKeyerBase extends KeyerEvent {
 
-  constructor(context, name, type) {
+  constructor(context, name, type, active) {
     super(context);
     this._name = name;
     this._type = type;
-    this._active = true;
+    this._active = active;
     this._channels = {};
     this._channel = 0;
     this._notes = {};		// note state map
@@ -39,6 +39,9 @@ export class CWKeyerBase extends KeyerEvent {
     this._nrpns = {};		// nrpn state map
   }
 
+  activate(state) { this._active = state }
+  
+  // on receipt of a midi message from our device
   onmidimessage(name, msg) {
     // console.log(`onmidimessage(${name}, ${msg[0]}, ${msg[1]}, ${msg[2]})`)
     const [cmd,,] = msg
@@ -57,13 +60,13 @@ export class CWKeyerBase extends KeyerEvent {
       break;
     case 0xB0: {		// control change
       const [, ctrl, data] = msg
-      this._ctrls[ctrl] = data&127;
+      this._ctrls[ctrl] = data;
       if (ctrl === 38) {
 	const nrpnData = (this._ctrls[6]<<7) | (data&127); 
 	const nrpn = (this._ctrls[99]<<7) | this._ctrls[98]
 	this._nrpns[nrpn] = nrpnData;
-	// this.emit('nrpn', nrpn, nrpnData);
-	console.log(`emitted nrpn ${nrpn} ${nrpnData}`);
+	this.emit('nrpn', nrpn, nrpnData);
+	// console.log(`emitted nrpn ${nrpn} ${nrpnData}`);
 	break;
       }
       this.emit('ctrl', ctrl, this._ctrls[ctrl])
@@ -83,11 +86,11 @@ export class CWKeyerBase extends KeyerEvent {
   
   get channels() { return this._channels }
 
-  get nrpns() { return Object.getOwnPropertyNames(this._nrpns) }
+  get nrpns() { return Object.keys(this._nrpns) }
 
-  get ctrls() { return Object.getOwnPropertyNames(this._ctrls) }
+  get ctrls() { return Object.keys(this._ctrls) }
   
-  get notes() { return Object.getOwnPropertyNames(this._notes) }
+  get notes() { return Object.keys(this._notes) }
   
   nrpnvalue(nrpn) { return this._nrpns[nrpn] }
 
@@ -95,6 +98,9 @@ export class CWKeyerBase extends KeyerEvent {
   
   notevalue(note) { return this._notes[note] }
 
+  sendmidi(message) { this.emit('midi:send', this.name, message); }
+
+  requestUpdate(control, value) { this.emit('update', this.name, control, value); }
 
 }
 // Local Variables:

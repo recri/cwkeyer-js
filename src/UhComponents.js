@@ -244,7 +244,8 @@ class UhOptions extends LitElement {
   static get properties() {
     return {
       control: { type: String },
-      value: { type: String }
+      value: { type: String },
+      options: { type: Array }
     }
   }
 

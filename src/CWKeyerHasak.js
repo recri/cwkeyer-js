@@ -30,64 +30,52 @@ export class CWKeyerHasak extends CWKeyerBase {
     Object.defineProperties(this, hasakDescriptors);
     this._version = 0;
     // trigger exactly one roll call of set parameters on first note or nrpn
-    this._tickled = false
-    this.tickleOnce = () => {
-      if (this._tickled) return
-      this._tickled = true
-      this.off('nrpn', this.tickleOnce)
-      this.off('note', this.tickleOnce)
-      this.tickle();
-    }
-    this.on('nrpn', this.tickleOnce);
-    this.on('note', this.tickleOnce);
     this.on('nrpn', (nrpn, value) => this.needUpdate(nrpn, value));
+    setTimeout(() => this.tickle(), 500)
   }
 
-  needUpdate(nrpn, value) { // , value
+  activate(state) {
+    super.activate(state)
+    if (state) {
+      this.nrpns.forEach(nrpn => this.needUpdate(nrpn))
+    }
+  }
+  
+  needUpdate(nrpn) { // , value
     const np = hasakProperties[hasakProperties[nrpn]]
-    console.log(`needUpdate(${nrpn},${value}) at ${np.label}`)
-    if ( ! np) {
-      // console.log(`needupdate(${nrpn}, ${value}) not sent (no this.np[nrpn])`);
-      return
-    }
-    if ( ! np.control) {
-      // console.log(`needupdate(${nrpn}, ${value}) not sent (no this.np[nrpn].control)`);
-      return
-    }
-    console.log(`needupdate(${nrpn}, ${value}) sent`);
-    this.emit('update', np.control)
+    if (np && np.property) this.requestUpdate(np.property, this.getnrpn(nrpn));
   }  
 
-  get KYRP_VERSION() { return this.nrpnvalue(hasakProperties.KYRP_VERSION.value); }
+  get KYRP_VERSION() { return this.nrpnvalue(hasakProperties.KYRP_VERSION.nrpn); }
 
-  get KYRP_NRPN_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_NRPN_SIZE.value); }
+  get KYRP_NRPN_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_NRPN_SIZE.nrpn); }
 
-  get KYRP_MSG_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_MSG_SIZE.value); }
+  get KYRP_MSG_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_MSG_SIZE.nrpn); }
 
-  get KYRP_SAMPLE_RATE() { return this.nrpnvalue(hasakProperties.KYRP_SAMPLE_RATE.value); }
+  get KYRP_SAMPLE_RATE() { return this.nrpnvalue(hasakProperties.KYRP_SAMPLE_RATE.nrpn); }
 
-  get KYRP_EEPROM_LENGTH() { return this.nrpnvalue(hasakProperties.KYRP_EEPROM_LENGTH.value); }
+  get KYRP_EEPROM_LENGTH() { return this.nrpnvalue(hasakProperties.KYRP_EEPROM_LENGTH.nrpn); }
 
-  get KYRP_ID_CPU() { return this.nrpnvalue(hasakProperties.KYRP_ID_CPU.value); }
+  get KYRP_ID_CPU() { return this.nrpnvalue(hasakProperties.KYRP_ID_CPU.nrpn); }
 
-  get KYRP_ID_CODEC() { return this.nrpnvalue(hasakProperties.KYRP_ID_CODEC.value); }
+  get KYRP_ID_CODEC() { return this.nrpnvalue(hasakProperties.KYRP_ID_CODEC.nrpn); }
 
   tickle() {
     console.log(`requesting info from ${this.name}`);
-    this.sendnrpn(hasakProperties.KYRP_VERSION.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_NRPN_SIZE.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_MSG_SIZE.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_SAMPLE_RATE.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_EEPROM_LENGTH.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_ID_CPU.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_ID_CODEC.value, 0);
-    this.sendnrpn(hasakProperties.KYRP_ECHO_ALL.value, 0);
+    this.sendnrpn(hasakProperties.KYRP_VERSION.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_NRPN_SIZE.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_MSG_SIZE.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_SAMPLE_RATE.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_EEPROM_LENGTH.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_ID_CPU.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_ID_CODEC.nrpn, 0);
+    this.sendnrpn(hasakProperties.KYRP_ECHO_ALL.nrpn, 0);
   }
 
   sendnrpn(nrpn, val) {
-    const c = this.nrpnvalue(hasakProperties.KYRP_CHAN_CC.value) || this._channel;
+    const c = this.nrpnvalue(hasakProperties.KYRP_CHAN_CC.nrpn) || this._channel || 1; 
     const cc = 0xB0|(c-1);
-    this.emit('midi:send', this.name, [cc, 99, (nrpn>>7)&127, cc, 98, nrpn&127, cc, 6, (val>>7)&127, cc, 38, val&127]);
+    this.sendmidi([cc, 99, (nrpn>>7)&127, cc, 98, nrpn&127, cc, 6, (val>>7)&127, cc, 38, val&127]);
   }
 
   setnrpn(nrpn, v) {
@@ -102,11 +90,11 @@ export class CWKeyerHasak extends CWKeyerBase {
   
   setvoxnrpn(voice, nrpn, v) {
     console.log(`setvoxnrpn(${voice},${nrpn},${v})`);
-    this.sendnrpn(voice*hasakProperties.KYRP_VOX_OFFSET.value+nrpn, v)
+    this.sendnrpn(voice*hasakProperties.KYRP_VOX_OFFSET.nrpn+nrpn, v)
   }
 
   getvoxnrpn(voice, nrpn) {
-    const vv = this.nrpnvalue(voice*hasakProperties.KYRP_VOX_OFFSET.value+nrpn)
+    const vv = this.nrpnvalue(voice*hasakProperties.KYRP_VOX_OFFSET.nrpn+nrpn)
     console.log(`getvoxnrpn(${voice},${nrpn},${vv})`);
     return (vv !== undefined) ? vv : this.getnrpn(nrpn)
   }
