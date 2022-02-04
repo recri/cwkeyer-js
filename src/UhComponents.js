@@ -1,3 +1,29 @@
+//
+// cwkeyer-js - a progressive web app for morse code
+// Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
+//
+// MIT License
+//
+// Copyright (c) 2022 cwkeyer-js
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
 import { LitElement, html, css } from 'lit';
 
 /* eslint max-classes-per-file: "off" */
@@ -55,68 +81,7 @@ const sharedStyles = css`
       input[type="number"][size="3"] {
 	 width: 2em;
       }
-
-      div.keyboard {
-        display: inline-block;
-        padding: 10px;
-        text-align: left;
-	white-space: pre-wrap;
-        margin-top: 16px;
-	margin: auto;
-	width: 90%;
-        height: 300px;
-	overflow-wrap: break-word;
-        overflow-y: auto;
-        border: 1px solid #9e9e9e;
-        color: #000000;
-      }
-      .sent {
-        color: #888;
-      }
-      .keyed {
-	color: #aaaa;
-      }
-      .skipped {
-        color: #888;
-        text-decoration: line-through;
-      }
-
-      .blinker {
-	font-weight: 100;
-	color: #2E3D48;
-	-webkit-animation: 1s blink step-end infinite;
-	animation: 1s blink step-end infinite;
-      }
-
-      @-webkit-keyframes "blink" {
-        from, to {
-          color: transparent;
-        }
-        50% {
-          color: black;
-        }
-      }
-
-      @keyframes "blink" {
-	from, to {
-	  color: transparent;
-	}
-	50% {
-	  color: black;
-	}
-      }
-
-      div.scope canvas {
-	width: 90%;
-	height: 400px;
-	border: 1px solid black;
-	background: #fff;
-	background-size: 50px 50px;
-	background-image:
-	    linear-gradient(to right, grey 1px, transparent 1px),
-	    linear-gradient(to bottom, grey 1px, transparent 1px);
-      }
-    `
+     `
 //
 // a folder component
 // trying to pass a Boolean value is a problem, 
@@ -143,7 +108,7 @@ class UhFolder extends LitElement {
 	<div class="${pclass}" title="${this.ctl.title}">
 	  <button class="${hclass}" @click=${(e) => this._click(e)}>
 	    ${marker} ${this.ctl.label}
-	  </button}>
+	  </button>
 	</div>
 	<div class="${dclass}"><slot></slot></div>
 	`;
@@ -336,30 +301,3 @@ class UhCheck extends LitElement {
 
 customElements.define('uh-check', UhCheck);
 
-//
-// a few I haven't sorted out yet
-//
-
-//
-// a terminal window
-//
-class UhTerminal extends LitElement {
-  render() {
-    return html`
-	`;
-  }
-}
-
-customElements.define('un-terminal', UhTerminal);
-
-//
-// an oscilloscope
-//
-class UhScope extends LitElement {
-  render() {
-    return html`
-	`;
-  }
-}
-
-customElements.define('uh-scope', UhScope);

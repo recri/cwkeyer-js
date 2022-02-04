@@ -51,7 +51,7 @@ function hasakGenerate() {
       // console.error(`findHname maps ${pname} into ${hprops[pname]}`)
       return hprops[pname]
     }
-    if (pname.startsWith("voice")) {
+    if (pname.startsWith("voice") && pname !== 'voice' && pname !== 'voices') {
       const pname2 = `keyer${pname.slice(5)}`
       if (pprops[pname2] && hprops[pname2]) {
 	// console.error(`findHname maps ${pname} into ${pname2} and into ${hprops[pname2]}`)

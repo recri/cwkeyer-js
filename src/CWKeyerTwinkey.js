@@ -23,7 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-// 
-import { CWKeyerJs } from './CWKeyerJs.js';
+//
+import { CWKeyerDefault } from './CWKeyerDefault.js';
 
-customElements.define('cwkeyer-js', CWKeyerJs);
+/* eslint no-bitwise: ["error", { "allow": ["&","|","<<",'>>',"~"] }] */
+export class CWKeyerTwinkey extends CWKeyerDefault {
+
+  constructor(context, name) {
+    super(context, name); 
+    this._type = 'twinkey';
+  }
+
+  onmidimessage(msg) {
+    super.onmidimessage(msg);
+  }
+
+}
+// Local Variables:
+// mode: JavaScript
+// js-indent-level: 2
+// End:
+

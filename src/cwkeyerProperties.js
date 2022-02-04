@@ -90,7 +90,7 @@ export const cwkeyerProperties = {
   keyerWeight: { lit: { type: Number }, type: 'spinner', value: 50, label: 'Weight', min: 25, max: 75, step: 0.1, unit: '%', size: 4, title: 'The relative weight of marks and spaces in percent deviation from 50.', delegate: true },
   keyerRatio: { lit: { type: Number }, type: 'spinner', value: 50, label: 'Ratio', min: 25, max: 75, step: 0.1, unit: '%', size: 4, title: 'The relative length of dits and dahs in percent deviation from 50.', delegate: true },
   keyerFarnsworth: { lit: { type: Number }, type: 'spinner', value: 0, label: 'Farns', min: 0, max: 16383, step: 1, unit: 'WPM', size: 5, title: 'The Farnsworth speed of the keyer in words/minute (WPM).', delegate: true },
-  keyerCompensation: { lit: { type: Number }, type: 'spinner', value: 0, label: 'Compensation', min: -15, max: 15, step: 0.1, unit: 'ms', size: 5, title: 'A final correction to element length.', delegate: true },
+  keyerCompensation: { lit: { type: Number }, type: 'spinner', value: 0, label: 'Compensation', min: -15, max: 15, step: 0.1, unit: 'ms', size: 5, title: 'An absolute correction to element length.', delegate: true },
   keyerSpeedFraction: { lit: { type: Number }, type: 'spinner', value: 0, label: '', min: 1/128, max: 127/128, step: 1/128, unit: 'WPM', size: 5, title: 'The fractional speed of the characters in words/minute (WPM).', delegate: true },
 
   // voice selection
@@ -101,16 +101,6 @@ export const cwkeyerProperties = {
   deviceSelect: { lit: {type: String}, type: 'options', value: 'none as default', options: 'deviceSelectOptions', label: 'Select device', title: 'Choose a MIDI keyer device' },
   deviceOptions: { lit: { type: Array}, getOnly: true },
 
-  // these voice properties reuse the property definitions of earlier properties
-  voiceTone: 'keyerTone',
-  voiceLevel: 'keyerLevel',
-  voiceSpeed: 'keyerSpeed',
-  voiceWeight: 'keyerWeight',
-  voiceRatio: 'keyerRatio',
-  voiceFarnsworth: 'keyerFarnsworth',
-  voiceCompensation: 'keyerCompensation',
-  voiceSpeedFraction: 'keyerSpeedFraction',
-
   // dummy folders for debugging information
   displayTest: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test', level: 2, title: 'Test.' },
   displayTest1: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Test 1', level: 2, title: 'Test 1.' },
@@ -120,8 +110,9 @@ export const cwkeyerProperties = {
 
   // cwkeyer folders
   displayMidi: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Midi activity', level: 2, title: 'Active Midi devices, notes, and controls.' },
+  displayDevice: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Device activity', level: 2, title: 'Active device notes, controls, and parameters.' },
   displayHasak: { lit: {type: Boolean}, type: 'block', value: false, label: 'Keyer controller', level: 2, title: 'Controller panel for Hasak keyer.' },
-  displayTWE: { lit: {type: Boolean}, type: 'block', value: false, label: 'Teensy Winkey Emulator controller', level: 2, title: 'Controller panel for Teensy Winkey Emulator.' },
+  displayTwinky: { lit: {type: Boolean}, type: 'block', value: false, label: 'Teensy Winkey Emulator controller', level: 2, title: 'Controller panel for Teensy Winkey Emulator.' },
   displayDefault: { lit: {type: Boolean}, type: 'block', value: false, label: 'Default controller', level: 2, title: 'Controller panel for unrecognized device.' },
   displayNotes: { lit: {type: Boolean}, type: 'folder', value: false, label: 'Notes', level: 3, title: 'MIDI Notes for Hasak keyer.' },
   displayNrpns: { lit: {type: Boolean}, type: 'folder', value: false, label: 'Notes', level: 3, title: 'MIDI Controls for Hasak keyer.' },
@@ -142,12 +133,3 @@ export const cwkeyerProperties = {
   midiControls: { lit: { type: Array } },
 
 }; 
-
-//
-// get a property by name
-// with one level of indirection, where properties[p] is another property name
-//
-export function getProperty(p) {
-  return cwkeyerProperties[p] && cwkeyerProperties[cwkeyerProperties[p]] ? cwkeyerProperties[cwkeyerProperties[p]] : cwkeyerProperties[p]
-}
-

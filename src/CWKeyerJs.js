@@ -1,37 +1,42 @@
 //
 // cwkeyer-js - a progressive web app for morse code
-// Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
+// Copyright (c) 2020 Roger E Critchlow Jr, Charlestown, MA, USA
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-// 
+// MIT License
+//
+// Copyright (c) 2022 cwkeyer-js
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
 import { LitElement, html, css } from 'lit';
 import './UhComponents.js';
-import { keyerLogo } from './keyer-logo.js'; // maybe a scope trace?
-import { KeyerMidiSource } from './KeyerMidiSource.js';
+import { cwkeyerLogo } from './cwkeyer-logo.js'; // maybe a scope trace?
+import { CWKeyerMidi } from './CWKeyerMidi.js';
 import { CWKeyerDefault }  from './CWKeyerDefault.js';
 import { CWKeyerHasak } from './CWKeyerHasak.js';
-import { CWKeyerTWE } from './CWKeyerTWE.js';
-import { Keyer } from './Keyer.js';
-import { cwkeyerProperties, getProperty } from './cwkeyerProperties.js'
+import { CWKeyerTwinkey } from './CWKeyerTwinkey.js';
+import { cwkeyerProperties } from './cwkeyerProperties.js'
 import { shownSymbol, hiddenSymbol, // playSymbol, pauseSymbol, 
 	 uncheckedCheckBox, checkedCheckBox } from './cwkeyerConstants.js'
-
-// always force default values, because I don't trust what's stored, yet
-const alwaysForceDefault = false;
 
 // application color scheme, from material design color tool
 // const colorPrimary = css`#1d62a7`;
@@ -68,7 +73,7 @@ export class CWKeyerJs extends LitElement {
     this.devices = { none: this.device };
     this.device.on('send:midi', this.onMidiSendHandler)
     this.device.on('update', this.keyerUpdateHandler)
-    this.midiSource = new KeyerMidiSource(null);
+    this.midiSource = new CWKeyerMidi(null);
     this.midiSource.on('midi:notes', this.midiNotesUpdateHandler);
     this.midiSource.on('midi:controls', this.midiControlsUpdateHandler);
     this.midiSource.on('midi:names', this.midiNamesUpdateHandler);
@@ -77,7 +82,7 @@ export class CWKeyerJs extends LitElement {
     // only initialize the properties neede for startup
     this.displayMidi = false;
     this.displayHasak = false;
-    this.displayTWE = false;
+    this.displayTwinkey = false;
     this.displayDefault = false;
     this.displayAbout = false;
     this.displayLicense = false;
@@ -115,6 +120,12 @@ export class CWKeyerJs extends LitElement {
 
   get midiControls() { return this.midiSource.controls; }
   
+  get deviceNotes() { return this.device.notes }
+
+  get deviceCtrls() { return this.device.ctrls }
+
+  get deviceNrpns() { return this.device.nrpns }
+  
   midiNotesUpdate() { this.requestUpdate('midiNotes', []) }
 
   midiControlsUpdate() { this.requestUpdate('midiControls', []) }
@@ -139,9 +150,9 @@ export class CWKeyerJs extends LitElement {
 	  console.log(`midiNamesUpdate ${id} creating hasak keyer`)
 	  this.devices[id] = new CWKeyerHasak(this.audioContext, id);
 	  // if (this.deviceSelect === 'none as default') this.device = this.devices[id];
-	} else if (id.match(/.*CWKeyer.*/)) {
+	} else if (id.match(/.*Keyer.*/)) {
 	  console.log(`midiNamesUpdate ${id} creating CWKeyer keyer`)
-	  this.devices[id] = new CWKeyerTWE(this.audioContext, id);
+	  this.devices[id] = new CWKeyerTwinkey(this.audioContext, id);
 	  // if (this.deviceSelect === 'none as default') this.device = this.devices[id];
 	} else {
 	  console.log(`midiNamesUpdate ${id} creating default keyer`)
@@ -156,10 +167,14 @@ export class CWKeyerJs extends LitElement {
   }
 
   keyerUpdate(dev, control, value) {
-    if ( ! getProperty(control))
-      console.log(`keyerUpdate(${control}) not a control`)
-    else if (dev === this.device.name)
+    if ( ! cwkeyerProperties[control]) {
+      console.log(`keyerUpdate(${dev}, ${control}, ${value}) not a control`)
+    } else if (dev === this.device.name) {
+      console.log(`keyerUpdate(${dev}, ${control}, ${value}) requesting`)
       this.requestUpdate(control, value)
+    } else {
+      console.log(`keyerUpdate(${dev}, ${control}, ${value}) not current device == ${this.device.name}`)
+    }
   }
 
   onmidisend(name, data) {
@@ -179,211 +194,10 @@ export class CWKeyerJs extends LitElement {
     }
     this._audioContext = v
   }
-  
-  async startAudio() {
-    // start the engine
-
-    // retrieve the preferred sample rate
-    this.propertySetDefaultValue('requestedSampleRate', false);
-
-    // create the audio context
-    this.audioContext = new AudioContext({ sampleRate: parseInt(this.requestedSampleRate, 10) })
-
-    // load the worklet processors
-    await this.audioContext.audioWorklet.addModule('src/KeyerASKProcessor.js');
-    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleNoneProcessor.js');
-    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleNd7paProcessor.js');
-    await this.audioContext.audioWorklet.addModule('src/KeyerPaddleVk6phProcessor.js');
-    
-    // build the keyer
-    this.keyer = new Keyer(this.audioContext, this.midiSource);
-    // this.cwkeyer = new CWKeyer(context);
-    
-    // load some constants into the instance
-    // shift keys which can be used as key simulators
-    // in truth, if I ignored repeats, then any key would work
-    this.shiftKeys = ['None','ShiftLeft','ControlLeft','AltLeft','AltRight','ControlRight','ShiftRight'];
-    // list of acceptable sample rates 
-    this.sampleRates = ['8000', '32000', '44100', '48000', '96000', '192000', '384000' ];
-
-    // using localStorage to persist defaults between sessions
-    // defaults set at top of file
-    this.propertySetDefaultValues(false);
-    
-    this.running = true;
-
-    this.clear();
-
-    this.validate();
-    
-    // this.keyer.outputDecoder.on('letter', (ltr, code) => console.log(`output '${ltr}' '${code}'`));
-    this.keyer.inputDecoder.on('letter', (ltr) =>  this.onkeyed(ltr));
-    this.keyer.output.on('sent', (ltr) => this.onsent(ltr));
-    this.keyer.output.on('unsent', (ltr) => this.onunsent(ltr));
-    this.keyer.output.on('skipped', (ltr) => this.onskipped(ltr));
-
-    // this.keyer.midiSource.on('midi:notes', () => this.requestUpdate('midiNotes', []));
-    // this.keyer.midiSource.on('midi:controls', () => this.requestUpdate('midiControls', []));
-    // this.keyer.midiSource.on('midi:names', () => ['midiInputs', 'midiOutputs'].forEach(x, this.requestUpdate(x, [])));
-    // this.keyer.midiSource.on('midi:message', (name, data) => this.cwkeyer.onmidimessage(name, data));
-
-    document.addEventListener('keydown', (e) => this.keyer.input.keyboardKey(e, true));
-    document.addEventListener('keyup', (e) => this.keyer.input.keyboardKey(e, false));
-  }
-  
-  // validate that our lists of options are actual options
-  // and that default values are chosen from the same lists
-  // also use the functions we define for this purpose
-  validate() {
-    for (const k of Object.keys(CWKeyerJs.properties))
-      if (CWKeyerJs.properties[k].type === Boolean && this[k] !== true && this[k] !== false)
-	console.log(`property '${k}' failed validate '${this[k]}' is not Boolean value`);
-  }
-  
-  //
-  // teletype window
-  //
-  onfocus() {
-    // console.log("keyboard focus");
-    this.keyboardFocused = true;
-    this.updateContent();	// show cursor
-  }
-
-  onblur() { 
-    // console.log("keyboard blur");
-    this.keyboardFocused = false;
-    this.updateContent();	// hide cursor
-  }
-
-  updated(/* propertiesChanged */) { 
-    if (this.keyboardFocused) {
-      // scroll the div up if the cursor goes off bottom of div
-      const keyboard = this.shadowRoot.querySelector('.keyboard');
-      const cursor = this.shadowRoot.querySelector('.blinker');
-      const fromBottom = cursor.offsetTop+cursor.offsetHeight-keyboard.offsetTop-keyboard.offsetHeight;
-      if (fromBottom > 0) keyboard.scrollTop += cursor.offsetHeight;
-    }
-    if (this.keyer && this.keyer.scope && this.keyer.scope.enabled !== this.displayScope) {
-      if (this.displayScope) {
-	const canvas = this.shadowRoot.querySelector("canvas");
-	if (canvas) this.keyer.scope.enable(this.displayScope, canvas);
-      } else {
-	this.keyer.scope.enable(false, null);
-      }
-    }
-  }
-  
-  processFinished() {
-    return this.finished.map(tagText => { const [tag,text] = tagText; return html`<span class="${tag}">${text}</span>`; });
-  }
-
-  blinkenCursen() {
-    return this.keyboardFocused ? html`<span class="blinker">|</span>` : html`<span class="blinker"></span>`;
-  }
-  
-  updateContent() {
-    this.content = html`${this.processFinished()}<span class="pending">${this.pending.join('')}</span>${this.blinkenCursen()}`;
-  }
-  
-  appendFinished(tag, text) {
-    if (this.finished.length === 0)
-      this.finished.push([tag, text]);
-    else {
-      const [ltag, ltext] = this.finished[this.finished.length-1];
-      if (tag === ltag)
-	this.finished[this.finished.length-1] = [tag, `${ltext}${text}`];
-      else
-	this.finished.push([tag, text]);
-    }
-  }
-  
-  // this is for input keyed manually as opposed to typed on the keyboard
-  // it has the same presentation as sent by default
-  onkeyed(ltr) {
-    this.appendFinished('sent', ltr.toLowerCase());
-    this.updateContent();
-  }
-  
-  ttyKeydown(e) { 
-    // may need to handle ctrl-V for paste
-    // may need to preventDefault on Space to avoid autoscroll
-    // may need to catch Escape as cancel key
-    // console.log(`ttyKeydown '${e.key}'`);
-    if (e.isComposing || e.altKey || e.metaKey || e.ctrlKey) {
-      // log.textContent = `keydown code ${e.code} key ${e.key} CAMS ${e.ctrlKey} ${e.altKey} ${e.metaKey} ${e.shiftKey}`;
-    } else if (e.key.length === 1 && /^[A-Za-z0-9.,?/*+!@$&()-=+"':; ]$/.test(e.key)) {
-      this.pending.push(e.key);
-      this.keyer.output.send(e.key);
-      this.updateContent();
-      if (e.key === ' ') e.preventDefault();
-    } else if (e.key === 'Backspace') {
-      this.keyer.output.unsend(e.data);
-      // this.pending.pop(); the pop happens when the unsent confirmation comes back
-      this.updateContent();
-    } else if (e.key === 'Enter') {
-      this.pending.push('\n');
-      this.keyer.output.send('\n');
-      this.updateContent();
-    } else if (e.key === 'Escape') {
-      this.cancel();
-    }
-  }
-
-  clear() { 
-    this.finished = [['sent','']];
-    this.pending = [];
-    this.updateContent();
-  }
-
-  cancel() {
-    this.keyer.output.cancel();
-    this.keyer.output.cancelPending();
-    this.updateContent();
-  }
-
-  onsent(ltr) {
-    const chr = this.pending.shift();
-    if (ltr !== chr) { console.log(`onsent ${ltr} not first in pending ${chr}`); }
-    this.appendFinished('sent', ltr);
-    this.updateContent()
-  }
-
-  onunsent(ltr) {
-    const chr = this.pending.pop()
-    if (ltr !== chr) { console.log(`onunsent ${ltr} not last in pending ${chr}`); }
-    this.updateContent();
-  }
-
-  onskipped(ltr) {
-    const chr = this.pending.shift();
-    if (ltr !== chr) { console.log(`onskipped ${ltr} not first in pending ${chr}`); }
-    this.appendFinished('skipped', chr);
-    this.updateContent()
-  }
-  
-  // control manipulation
-  propertySetDefaultValue(control, forceDefault) {
-    const JSONparse = (value) => { 
-      try { return JSON.parse(value); }
-      catch(e) { return undefined; }
-    }
-    const controlDefault = (defaultValue) => {
-      const localValue = JSONparse(localStorage[control]);
-      const value = forceDefault || alwaysForceDefault || localValue === undefined ? defaultValue : localValue;
-      localStorage[control] = JSON.stringify(value);
-      return value;
-    }
-    if ('value' in getProperty(control))
-      this[control] = controlDefault(getProperty(control).value);
-  }
-
-  propertySetDefaultValues(forceDefault) {
-    Object.keys(cwkeyerProperties).forEach(property => this.propertySetDefaultValue(property, forceDefault));
-  }
-
+ 
   controlUpdate(control, oldv, newv) {
     this[control] = newv;
-    const c = getProperty(control);
+    const c = cwkeyerProperties[control];
     if (c.value) localStorage[control] = JSON.stringify(newv);
     if (c.lit) this.requestUpdate(control, oldv);
     switch (control) {
@@ -459,70 +273,7 @@ export class CWKeyerJs extends LitElement {
 	margin: auto;
 	width: 100%;
       }
-      div.keyboard {
-        display: inline-block;
-        padding: 10px;
-        text-align: left;
-	white-space: pre-wrap;
-        margin-top: 16px;
-	margin: auto;
-	width: 90%;
-        height: 300px;
-	overflow-wrap: break-word;
-        overflow-y: auto;
-        border: 1px solid #9e9e9e;
-        color: #000000;
-      }
-      div.group {
-	display: inline-block;
-      }
-      .sent {
-        color: #888;
-      }
-      .keyed {
-	color: #aaaa;
-      }
-      .skipped {
-        color: #888;
-        text-decoration: line-through;
-      }
-
-      .blinker {
-	font-weight: 100;
-	color: #2E3D48;
-	-webkit-animation: 1s blink step-end infinite;
-	animation: 1s blink step-end infinite;
-      }
-
-      @-webkit-keyframes "blink" {
-        from, to {
-          color: transparent;
-        }
-        50% {
-          color: black;
-        }
-      }
-
-      @keyframes "blink" {
-	from, to {
-	  color: transparent;
-	}
-	50% {
-	  color: black;
-	}
-      }
-
-      div.scope canvas {
-	width: 90%;
-	height: 400px;
-	border: 1px solid black;
-	background: #fff;
-	background-size: 50px 50px;
-	background-image:
-	    linear-gradient(to right, grey 1px, transparent 1px),
-	    linear-gradient(to bottom, grey 1px, transparent 1px);
-      }
-
+     
       .app-footer {
         font-size: calc(12px + 0.5vmin);
         align-items: center;
@@ -536,215 +287,78 @@ export class CWKeyerJs extends LitElement {
 
   displayKeyer(type) {
     const common = html`
-	<div class="group" title="Basic keyer controls">
-	  <uh-spinner control='masterVolume' .ctl=${getProperty('masterVolume')} value="${this.masterVolume}"></uh-spinner>
-	  <uh-spinner control="keyerLevel" .ctl=${getProperty('keyerLevel')} value="${this.keyerLevel}"></uh-spinner>
-	  <uh-spinner control="keyerTone" .ctl=${getProperty('keyerTone')} value="${this.keyerTone}"></uh-spinner>
-	  <uh-spinner control="keyerSpeed" .ctl=${getProperty('keyerSpeed')} value="${this.keyerSpeed}"></uh-spinner>
-	</div>
+<div class="group" title="Basic keyer controls">
+  <uh-spinner control='masterVolume' .ctl=${cwkeyerProperties.masterVolume} value="${this.masterVolume}"></uh-spinner>
+  <uh-spinner control="keyerLevel" .ctl=${cwkeyerProperties.keyerLevel} value="${this.keyerLevel}"></uh-spinner>
+  <uh-spinner control="keyerTone" .ctl=${cwkeyerProperties.keyerTone} value="${this.keyerTone}"></uh-spinner>
+  <uh-spinner control="keyerSpeed" .ctl=${cwkeyerProperties.keyerSpeed} value="${this.keyerSpeed}"></uh-spinner>
+  <uh-spinner control="keyerWeight" .ctl=${cwkeyerProperties.keyerWeight} value="${this.keyerWeight}"></uh-spinner>
+  <uh-spinner control="keyerRatio" .ctl=${cwkeyerProperties.keyerRatio} value="${this.keyerRatio}"></uh-spinner>
+  <uh-spinner control="keyerCompensation" .ctl=${cwkeyerProperties.keyerCompensation} value="${this.keyerCompensation}"></uh-spinner>
+  <uh-spinner control="keyerFarnsworth" .ctl=${cwkeyerProperties.keyerFarnsworth} value="${this.keyerFarnsworth}"></uh-spinner>
+  <uh-spinner control="keyerSpeedFraction" .ctl=${cwkeyerProperties.keyerSpeedFraction} value="${this.keyerSpeedFraction}"></uh-spinner>
+</div>
+${this.displayRender('displayMidi')}
+${this.displayRender('displayDevice')}
 	`;
     switch (type) {
     case 'hasak':
       return html`${common}<p>Controller for Hasak keyer goes here</p>`;
-    case 'twe':
+    case 'twinkey':
       return html`${common}<p>Controller for Teensy Winkey Emulator keyer goes here</p>`;
     case 'default':
       return html`${common}<p>Controller for Default keyer goes here</p>`;
     default:
-      return html`<p>No code to displayKeyer for type ${type}`;
+      return html`<p>No code to displayKeyer for type ${type}</p>`;
     }
   }
 
   // render a section of the user interface
   displayRender(control) {
-    function mynote(x) {
-      return html`${x} => ${this.noteValue(x)}<br/>`;
-    }
-    function mynrpn(x) {
-      return html`${x} => ${this.nrpnValue(x)}<br/>`;
-    }
     switch (control) {
 
     case 'displayMidi':
       if ( ! this.midiSource) return html``;
       return html`
-	<div class="group" title="Midi activity">
-	Devices: ${this.midiNames.join(', ')}<br/>
-	Notes: ${this.midiNotes.join(', ')}<br/>
-	Controls: ${this.midiControls.join(', ')}
-	</div>
-	`;
+<uh-folder control="displayMidi" value="${this.displayMidi}" .ctl=${cwkeyerProperties.displayMidi}  @uh-click=${(e) => this.controlToggleNew(e)}>
+  <div class="group" title="Midi activity">
+     <p>Devices: ${this.midiNames.join(', ')}</p>
+     <p>Notes: ${this.midiNotes.join(', ')}</p>
+     <p>Controls: ${this.midiControls.join(', ')}</p>
+  </div>
+</uh-folder>
+	    `;
+
+    case 'displayDevice':
+      return html`
+<uh-folder control="displayDevice" value="${this.displayDevice}" .ctl=${cwkeyerProperties.displayDevice}  @uh-click=${(e) => this.controlToggleNew(e)}>
+  <div class="group" title="Device activity">
+    <p>Notes: ${this.deviceNotes.join(', ')}</p>
+    <p>Controls: ${this.deviceCtrls.join(', ')}</p>
+    <p>NRPNs: ${this.deviceNrpns.join(', ')}</p>
+  </div>
+</uh-folder>
+      `;
 
     case 'displayNotes':
       return html`
-	<div class="group" title="Hasak midi notes">
-	${this.notes.map(x => mynote(x))}
-	</div>
-	`;
+<div class="group" title="Device notes">
+  ${this.deviceNotes.map(x => html`<p>${x} -> ${this.device.notevalue(x)}</p>`)}
+</div>
+	    `;
       
+    case 'displayCtrls':
+      return html`
+<div class="group" title="Device controls">
+  ${this.deviceCtrls.map(x => html`<p>${x} -> ${this.device.ctrlvalue(x)}</p>`)}
+</div>
+	`;
+
     case 'displayNrpns':
       return html`
-	<div class="group" title="Hasak controls">
-	${this.nrpns.map(x => mynrpn(x))}
-	</div>
-	`;
-
-    case 'displayAudio':
-      //      let after = html`
-      //	<div class="group" title="Audio controls">
-      //        <div class="keyboard" tabindex="0" @keydown=${this.ttyKeydown} @focus=${this.onfocus} @blur=${this.onblur}>${this.content}</div>
-      //        <div class="panel">
-      //	  ${this.controlRender('running')}
-      //	  <button @click=${this.clear}><span>Clear</span></button>
-      //	  <button @click=${this.cancel}><span>Cancel</span></button>
-      //	</div>
-      //	 ${this.controlRender('displaySettings')}
-      //	 ${this.controlRender('displayScope')}
-      //	 ${this.controlRender('displayStatus')}
-      //	</div>`
-      return html`${this.keyer === null ? html`
-	<div class="group" title="Start audio controls">
-	</div>` : html`
-	<div class="group" title="Audio controls">
-	</div>`}`;
-      
-    case 'displayTouchStraight': return html``; // FIX.ME
-
-    case 'displayTouchPaddle': return html``; // FIX.ME
-
-    case 'displayKeyboardSettings': 
-      return html`
-	${this.controlRender('keyerSpeed')},
-	${this.controlRender('keyerLevel')},
-	${this.controlRender('keyerTone')},
-	${this.controlRender('displayAdvancedKeyboardSettings')}
-	`;
-
-    case 'displayAdvancedKeyboardSettings':
-      return html`
-	${this.controlRender('weight')},
-	${this.controlRender('ratio')},
-	${this.controlRender('compensation')}
-	<br/>
-	${this.controlRender('riseTime')},
-	${this.controlRender('fallTime')}
-	<br/>
-	${this.controlRender('shape')}
-      `;
-
-    case 'displayManualSettings':
-      return html`
-	<div class="group" title="Paddle options.">Paddles:
-	  ${this.controlRender('paddleKeyer')}
-	  ${this.controlRender('paddleSwapped')}
-	</div><br/>
-	<div class="group" title="Keyboard keys used for manual keying.">Keyboard:
-	  ${this.controlRender('straightKey')}
-	  ${this.controlRender('leftPaddleKey')}
-	  ${this.controlRender('rightPaddleKey')}
-        </div><br/>
-	<div class="group ${this.midiAvailable?'':' hidden'}" title="MIDI device notes used for manual keying.">MIDI:	
-	  ${this.controlRender('straightMidi')}
-	  ${this.controlRender('leftPaddleMidi')}
-	  ${this.controlRender('rightPaddleMidi')}
-        </div><br/>
-	${this.controlRender('inputSpeed')}
-	${this.controlRender('inputLevel')}
-	${this.controlRender('inputTone')}
-	${this.controlRender('displayAdvancedManualSettings')}
-      `;
-
-    case 'displayAdvancedManualSettings':
-      return html`
-	${this.controlRender('inputWeight')},
-	${this.controlRender('inputRatio')},
-	${this.controlRender('inputCompensation')}
-	<br/>
-	${this.controlRender('inputRise')},
-	${this.controlRender('inputFall')}
-	<br/>
-	${this.controlRender('inputShape')}
-      `;
-
-    case 'displayMiscSettings':
-      return html`
-	${this.controlRender('requestedSampleRate')}
-	<br/>
-	<label>Reset default values: 
-	  <button @click=${() => this.propertySetDefaultValues(true)}>Reset</button>
-	</label>
-	`;
-
-    case 'displaySettings':
-      return html`
-	${this.controlRender('displayKeyboardSettings')}
-	${this.controlRender('displayManualSettings')}
-	${this.controlRender('displayMiscSettings')}
-	`;
-
-    case 'displayScope':
-      return html`
-	<div class="scope"><canvas @resize=${this.scopeResize}></canvas></div>
-	${this.controlRender('scopeRunning')}
-	${this.controlRender('scopeTrigger')}
-	${this.controlRender('scopeTriggerChannel')}
-	${this.controlRender('scopeHold')}
-	<br/>
-	${this.controlRender('scopeTimeScale')}
-	<br/>
-	<b>ch1</b> 
-	${this.controlRender('scopeSource1')}
-	${this.controlRender('scopeVerticalScale1')}
-	${this.controlRender('scopeVerticalOffset1')}
-	<br/>
-	<b>ch2</b>
-	${this.controlRender('scopeSource2')}
-	${this.controlRender('scopeVerticalScale2')}
-	${this.controlRender('scopeVerticalOffset2')}
-	<br/>
-	<b>ch3</b>
-	${this.controlRender('scopeSource3')}
-	${this.controlRender('scopeVerticalScale3')}
-	${this.controlRender('scopeVerticalOffset3')}
-	<br/>
-	<b>ch4</b>
-	${this.controlRender('scopeSource4')}
-	${this.controlRender('scopeVerticalScale4')}
-	${this.controlRender('scopeVerticalOffset4')}
-	`;
-
-    case 'displayStatus':
-      return html`
-	State: ${this.state}<br/>
-	Sample rate: ${this.sampleRate}<br/>
-	Current time: ${this.currentTime.toFixed(3)}<br/>
-	Base latency: ${this.baseLatency.toFixed(3)}<br/>
-	Midi available: ${this.midiAvailable}<br/>`;
-      
-    case 'displayAbout':
-      return html`
-	`;
-
-    case 'displayLicense':
-      return html`
-	`;
-
-    case 'displayColophon':
-      return html`
-	<p>
-	  cwkeyer-js was written with emacs on a laptop running Ubuntu using the development guides
-	  from open-wc.org.
-	</p><p>
-	  The immediate impetus was the Steve (kf7o) Haynal's CWKeyer project, https://github.com/softerhardware/CWKeyer.
-	</p><p>
-	  A lot of background can be found in <a href="https://github.com/recri/keyer">keyer</a>,
-	  a collection of software defined radio software built using Jack, Tcl, and C.
-	</p><p>
-	  The polymer project, the PWA starter kit, open-wc, lit-element, lit-html, web audio, web MIDI provided the
-	  web development tools.
-	</p><p>
-	  The source for <a href="https://github.com/recri/cwkeyer-js">cwkeyer-js</a>
-	</p>
+<div class="group" title="Device non-registered parameters">
+  ${this.deviceNrpns.map(x => html`<p>${x} -> ${this.device.nrpnvalue(x)}</p>`)}
+</div>
 	`;
     default: 
       return html`<h1>There is no ${control} case in displayRender<h1>`;
@@ -753,7 +367,7 @@ export class CWKeyerJs extends LitElement {
 
   // render a user interface control element
   controlRender(control) {
-    const ctl = getProperty(control);
+    const ctl = cwkeyerProperties[control];
     if ( ! ctl) return html`<h1>No controlRender for ${control}</h1>`;
     switch (ctl.type) {
       // folder is a label button which shows or hides content
@@ -767,7 +381,7 @@ export class CWKeyerJs extends LitElement {
 	<div class="${pclass}" title="${title}">
 	  <button class="h${level}" @click=${() => this.controlToggle(control)}>
 	    ${this[control] ? shownSymbol : hiddenSymbol} ${label}
-	  </button}>
+	  </button>
 	</div>
 	<div class="${dclass}">${this.displayRender(control)}</div>
       `;
@@ -860,7 +474,7 @@ export class CWKeyerJs extends LitElement {
 	`;
     }
     default:
-      return html`<h1>No controlRender for ${control} with type ${ctl.type}`;
+      return html`<h1>No controlRender for ${control} with type ${ctl.type}</h1>`;
     }
   }
   
@@ -869,19 +483,14 @@ export class CWKeyerJs extends LitElement {
     // 	${this.controlRender('displayAudio')}
     return html`
 <main>
-  <div class="logo">${keyerLogo}</div>
+  <div class="logo">${cwkeyerLogo}</div>
   <div><h3>cwkeyer-js</h3></div>
   <div class="panel">
     <uh-options control="deviceSelect" value="${this.deviceSelect}" .options="${this.deviceSelectOptions}"
-        .ctl=${getProperty('deviceSelect')} @uh-change=${(e) => this.controlSelectNew(e)}>
+        .ctl=${cwkeyerProperties.deviceSelect} @uh-change=${(e) => this.controlSelectNew(e)}>
     </uh-options>
   </div>
   ${this.displayKeyer(this.device.type)}
-  <uh-folder control="displayTest1" value="${this.displayTest1}" .ctl=${getProperty('displayTest1')} @uh-click=${(e) => this.controlToggleNew(e)}>
-    <p>this.device: ${this.device.label}</p>
-    <p>this.devices as labels: ${Object.values(this.devices).map(dev => dev.label).join(', ')}</p>
-    <p>this.deviceSelectOptions: ${Object.values(this.deviceSelectOptions).join(', ')}</p>
-  </uh-folder>
   <uh-folder control="displayAbout" value="${this.displayAbout}" .ctl=${cwkeyerProperties.displayAbout}
       @uh-click=${(e) => this.controlToggleNew(e)}>
     <p>
@@ -916,7 +525,6 @@ export class CWKeyerJs extends LitElement {
     </p><p>
       Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
     </p><p>
-    <p>
       MIT License
     </p><p>
       Copyright (c) 2022 Roger E Critchlow Jr, Charlestown, MA, USA
@@ -958,8 +566,8 @@ export class CWKeyerJs extends LitElement {
     </p>
   </uh-folder>
   <uh-folder control="displayTest" value="${this.displayTest}" 
-      .ctl=${getProperty('displayTest')} @uh-click=${(e) => this.controlToggleNew(e)}>
-    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${getProperty('displayTest2')} @uh-click=${(e) => this.controlToggleNew(e)}>
+      .ctl=${cwkeyerProperties.displayTest} @uh-click=${(e) => this.controlToggleNew(e)}>
+    <uh-folder control="displayTest2" value="${this.displayTest2}" .ctl=${cwkeyerProperties.displayTest2} @uh-click=${(e) => this.controlToggleNew(e)}>
       <p>A bunch of test that should come and go with clicks</p>
     </uh-folder>
   </uh-folder>

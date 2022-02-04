@@ -188,9 +188,9 @@ export const hasakDescriptors = {
     get() { return this.getnrpn(39) },
     set(v) { return this.setnrpn(39, v) }
   },
-  adcEnable: { // KYRP_MIX_HDW_R3
-    get() { return this.getnrpn(133) },
-    set(v) { return this.setnrpn(133, v) }
+  adcEnable: { // KYRP_ADC_ENABLE
+    get() { return this.getnrpn(45) },
+    set(v) { return this.setnrpn(45, v) }
   },
   adcControls: { // KYRV_ADC_*
     get() { return ["None","Volume","Speed","Level","Tone"] }
