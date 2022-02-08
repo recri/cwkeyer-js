@@ -16,6 +16,9 @@ test-default:
 test-hasak:
 	./make-descriptors.js hasak
 
+test-methods:
+	./make-descriptors.js methods
+
 ../src/hasakProperties.js: $(HASAK)/config.h $(HASAK)/doc/nrpn.tcl
 	(cd $(HASAK) && ./doc/nrpn.tcl)> ../src/hasakProperties.js
 

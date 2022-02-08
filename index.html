@@ -13,7 +13,15 @@
       margin: 0;
       padding: 0;
       font-family: sans-serif;
+       /* you can change colors here, but Chrome overrides color on buttons and inputs 
+	* according to some internal light/dark theme signal that is mysterious.
+	* Have to replace button and input to fix the problem.
+	* You can change the font size, too, and it will percolate throughout the
+	* app, but this setting matches well the default input and button font-size.
+	*/
       background-color: #ededed;
+      color: black;
+      font-size: calc(10px + 2vmin);
     }
   </style>
   <title>cwkeyer-js</title>

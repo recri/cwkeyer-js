@@ -208,7 +208,7 @@ export class CWKeyerMidi extends CWKeyerEvent {
   refresh() {
     if (navigator.requestMIDIAccess) {
       navigator
-        .requestMIDIAccess({ sysex: false })
+        .requestMIDIAccess()
         .then((...args) => this.onMIDISuccess(...args), (...args) => this.onMIDIFailure(...args));
     } else {
       console.log("no navigator.requestMIDIAccess found");

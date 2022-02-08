@@ -60,25 +60,29 @@ export class CWKeyerBase extends CWKeyerEvent {
     this._channel = chan;
     switch (cmd & 0xf0) {
     case 0x90: 			// note on, or maybe off
-      this._notes[msg[1]] = msg[2] === 0 ? false : msg[2];
+      // notify first, then set
       this.emit('note', true, msg[1], msg[2]);
+      this._notes[msg[1]] = msg[2] === 0 ? false : msg[2];
       break;
     case 0x80: 			// note off
-      this._notes[msg[1]] = false; 
+      // notify first, then set
       this.emit('note', false, msg[1], msg[2]);
+      this._notes[msg[1]] = false; 
       break;
     case 0xB0: {		// control change
       const [, ctrl, data] = msg
+      // notify first, then set
+      this.emit('ctrl', ctrl, this._ctrls[ctrl])
       this._ctrls[ctrl] = data;
       if (ctrl === 38) {
 	const nrpnData = (this._ctrls[6]<<7) | (data&127); 
 	const nrpn = (this._ctrls[99]<<7) | this._ctrls[98]
-	this._nrpns[nrpn] = nrpnData;
+	// notify first, then set
 	this.emit('nrpn', nrpn, nrpnData);
+	this._nrpns[nrpn] = nrpnData;
 	// console.log(`emitted nrpn ${nrpn} ${nrpnData}`);
 	break;
       }
-      this.emit('ctrl', ctrl, this._ctrls[ctrl])
       break;
     }
     default:
@@ -95,17 +99,29 @@ export class CWKeyerBase extends CWKeyerEvent {
   
   get channels() { return this._channels }
 
-  get nrpns() { return Object.keys(this._nrpns) }
+  get notes() { return Object.keys(this._notes) }
+  
+  /* eslint-disable class-methods-use-this */
+  notename(note) { return `${note}` }
+  /* eslint-enable class-methods-use-this */
+  
+  notevalue(note) { return this._notes[note] }
 
   get ctrls() { return Object.keys(this._ctrls) }
   
-  get notes() { return Object.keys(this._notes) }
+  /* eslint-disable class-methods-use-this */
+  ctrlname(ctrl) { return `${ctrl}` }
+  /* eslint-enable class-methods-use-this */
   
-  nrpnvalue(nrpn) { return this._nrpns[nrpn] }
-
   ctrlvalue(ctrl) { return this._ctrls[ctrl] }
   
-  notevalue(note) { return this._notes[note] }
+  get nrpns() { return Object.keys(this._nrpns) }
+
+  /* eslint-disable class-methods-use-this */
+  nrpnname(nrpn) { return `${nrpn}` }
+  /* eslint-enable class-methods-use-this */
+  
+  nrpnvalue(nrpn) { return this._nrpns[nrpn] }
 
   sendmidi(message) { this.emit('midi:send', this.name, message); }
 

@@ -10,6 +10,22 @@ import { hasakProperties } from '../src/hasakProperties.js'
 
 const argv = process.argv.slice(1)
 
+function cwkeyerMethods() {
+  function get(k) {		// ,v
+    return `  get ${k}() { return this.device.${k} }`
+  }
+  function set(k) {		// ,v
+    return `    set ${k}(v) { this.device.${k} = v }`
+  }
+  function getsetetc(k,v) {
+    return v.getOnly ? get(k,v) : [get(k,v), set(k,v)].join('\n\n')
+  }
+  return Object.entries(cwkeyerProperties)
+    .map(([k,v]) => [k, v && cwkeyerProperties[v] ? cwkeyerProperties[v] : v]) // when v is an index into properties, follow it
+    .filter(([,v]) => v.delegate) // if not delegated, ignore
+    .map(([k,v]) => `  ${getsetetc(k,v)}`) // generate a property descriptor
+}
+
 function cwkeyerGenerate() {
   function get(k) {		// ,v
     return `    get() { return this.device.${k} }`
@@ -36,10 +52,20 @@ function defaultGenerate() {
   function getsetetc(k,v) {
     return v.getOnly ? get(k,v) : [get(k,v), set(k,v)].join(',\n')
   }
+  function getinit(v) {
+    if (v && v.lit && v.lit.type) {
+      if (v.lit.type === String)
+	return  `''`
+      if (v.lit.type === Number)
+	return `0`
+      if (v.lit.type === Array)
+	return `[0]`
+    }
+    return `0`
+  }
   return Object.entries(cwkeyerProperties)
-    .map(([k,v]) => [k, v && cwkeyerProperties[v] ? cwkeyerProperties[v] : v]) // when v is an index into properties, follow it
     .filter(([,v]) => v.delegate) // if not delegated, ignore
-    .map(([k,v]) => `  _${k}: { value: 0 },\n  ${k}: {\n${getsetetc(k,v)}\n  }`)	 // generate a property descriptor
+    .map(([k,v]) => `  _${k}: { value: ${getinit(v)}, writable: true },\n  ${k}: {\n${getsetetc(k,v)}\n  }`)
 }
 
 function hasakGenerate() {
@@ -51,17 +77,14 @@ function hasakGenerate() {
       // console.error(`findHname maps ${pname} into ${hprops[pname]}`)
       return hprops[pname]
     }
-    if (pname.startsWith("voice") && pname !== 'voice' && pname !== 'voices') {
-      const pname2 = `keyer${pname.slice(5)}`
-      if (pprops[pname2] && hprops[pname2]) {
-	// console.error(`findHname maps ${pname} into ${pname2} and into ${hprops[pname2]}`)
-	return hprops[pname2]
-      }
-    }
     return null;
   }
 
-  function findUnitConverters(pname, hname, punit, hunit) {
+  function findUnitConverters(pname, hname, punit, hunit, plittype, hrange) {
+    if (plittype === Boolean && hrange === '0 1') {
+      console.error(`findUnitConverter making Boolean<->Number`)
+      return [(x) => `Boolean(${x})`, (x) => `Number(${x})`]
+    }
     if (punit === hunit) {
       return [(x) => `${x}`, (x) => `${x}`]
     }
@@ -69,10 +92,14 @@ function hasakGenerate() {
       return [(x) => `signextend14(${x})`, (x) => `mask14(${x})`]
     }
     if (punit === 'dB' && hunit === 'dB/4') {
+      console.error('found a db/4 unit');
       return [(x) => `signextend14(${x})/4`, (x) => `mask14(Math.round(4*${x}))`]
     }
+    if (punit === 'dB' && hunit === 'dB/10') {
+      return [(x) => `signextend14(${x})/10`, (x) => `mask14(Math.round(10*${x}))`]
+    }
     if (punit === 'ms' && hunit === 'sample') {
-      return [(x) => `1000*${x}/48000`, (x) => `mask14(Math.round(48000*${x}/1000))`]
+      return [(x) => `(1000*${x}/48000).toFixed(2)`, (x) => `mask14(Math.round(48000*${x}/1000))`]
     }
     if (punit === 'Hz' && hunit === 'Hz/10') {
       return [(x) => `${x}/10`, (x) => `Math.floor(10*${x})`]
@@ -88,8 +115,19 @@ function hasakGenerate() {
     // map the property name into a hasak property name
     const hname = findHname(pname, pvalue)
     if ( ! hname ) {
-      console.error(`${pname} has no hasakProperty map`)
-      return `    // no hasakProperty map\n`
+      switch (pname) {
+      case 'voice':
+      case 'mixer':
+      case 'code':
+	return `    get() { return this._${pname} },\n    set(v) { this._${pname} = v }`
+      case 'voices':
+      case 'mixers':
+      case 'codes':
+	return `    get() { return this._${pname} }`
+      default:
+	console.error(`${pname} has no hasakProperty map`)
+	return `    // no hasakProperty map\n`
+      }
     }
     const hvalue = hasakProperties[hname]; // Hasak property descriptor
     if ( ! hvalue ) {
@@ -122,31 +160,16 @@ function hasakGenerate() {
       console.error(`${hname} in pname ${pname} has nrpn ${nrpn}`)
       return `    // ${hname} has no nrpn\n`
     }
-
+    
     const punit = pvalue.unit		// units in CWKeyerJs
     const hunit = hvalue.unit		// units in nrpn
-    const [getunit, setunit] = findUnitConverters(pname, hname, punit, hunit)
+    const plittype = pvalue.lit.type
+    const hrange = hvalue.range		// range of values
+    const [getunit, setunit] = findUnitConverters(pname, hname, punit, hunit, plittype, hrange) 
     const etc = []
-    if (pname.match(/^voice/)) {
-      etc.push(`    get() { return ${getunit(`this.getvoxnrpn(this._voice, ${nrpn})`)} }`)
-      if ( ! pname.getOnly) {
-	etc.push(`    set(v) { return this.setvoxnrpn(this._voice, ${nrpn}, ${setunit(`v`)}) }`)
-      }
-    } else if (pname.match(/^mixer/)) {
-      etc.push(`    get() { return ${getunit(`this.getmixnrpn(this._mixer, ${nrpn})`)} }`)
-      if ( ! pname.getOnly) {
-	etc.push(`    set(v) { return this.setmixnrpn(this._mixer, ${nrpn}, ${setunit(`v`)}) }`)
-      }
-    } else if (pname.match(/^code/)) {
-      etc.push(`    get() { return ${getunit(`this.getcodenrpn(this._code, ${nrpn})`)} }`)
-      if ( ! pname.getOnly) {
-	etc.push(`    set(v) { return this.setcodenrpn(this._code, ${nrpn}, ${setunit(`v`)}) }`)
-      }
-    } else {
-      etc.push(`    get() { return ${getunit(`this.getnrpn(${nrpn})`)} }`)
-      if ( ! pname.getOnly) {
-	etc.push(`    set(v) { return this.setnrpn(${nrpn}, ${setunit(`v`)}) }`)
-      }
+    etc.push(`    get() { return ${getunit(`this.getnrpn(${nrpn})`)} }`)
+    if ( ! pname.getOnly) {
+      etc.push(`    set(v) { return this.setnrpn(${nrpn}, ${setunit(`v`)}) }`)
     }
     return `${etc.join(',\n')}`
   }
@@ -156,18 +179,28 @@ function hasakGenerate() {
     .map(([k,v]) => `  ${k}: { // ${findHname(k,v)}\n${getsetetc(k,v)}\n  }`)	 // generate a property descriptor
 }
 
+
 console.log(`// do not edit, generated by ../scripts/make-descriptors.js ${argv[1]}`)
 switch (argv[1]) {
+
+case 'methods':
+  console.log(`
+export const cwkeyerMethods = {
+${cwkeyerMethods().join('\n\n')}
+};`); break;
+  
 case 'cwkeyer':
   console.log(`
 export const cwkeyerDescriptors = {
   ${cwkeyerGenerate().join(',\n')}
 };`); break;
+
 case 'default':
   console.log(`
 export const defaultDescriptors = {
   ${defaultGenerate().join(',\n')}
 };`); break;
+
 case 'hasak':
   console.log(`
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<",'>>',"~"] }] */
@@ -190,8 +223,10 @@ function mask14(val) { return val&0x3fff }
 export const hasakDescriptors = {
   ${hasakGenerate().join(',\n')}
 };`); break;
+
 default:
   console.error(`unknown target ${argv[1]}`);
   process.exit(1)
+
 }
 console.log(`// do not edit, generated by ../scripts/make-descriptors.js ${argv[1]}`)

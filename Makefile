@@ -1,3 +1,8 @@
+all:: preprocess lint
+
+preprocess::
+	(cd scripts && make)
+
 lint::
 	npm run lint
 start::

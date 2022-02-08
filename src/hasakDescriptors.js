@@ -19,272 +19,310 @@ function mask14(val) { return val&0x3fff }
   
 export const hasakDescriptors = {
     masterVolume: { // KYRP_VOLUME
-    get() { return signextend14(this.getnrpn(1))/4 },
-    set(v) { return this.setnrpn(1, mask14(Math.round(4*v))) }
+    get() { return signextend14(this.getnrpn(3))/10 },
+    set(v) { return this.setnrpn(3, mask14(Math.round(10*v))) }
   },
   inputSelect: { // KYRP_INPUT_SELECT
-    get() { return this.getnrpn(2) },
-    set(v) { return this.setnrpn(2, v) }
+    get() { return this.getnrpn(4) },
+    set(v) { return this.setnrpn(4, v) }
   },
   inputSelects: { // KYRV_INPUT_*
     get() { return ["Mic","LineIn"] }
   },
   inputLevel: { // KYRP_INPUT_LEVEL
-    get() { return signextend14(this.getnrpn(3))/4 },
-    set(v) { return this.setnrpn(3, mask14(Math.round(4*v))) }
+    get() { return signextend14(this.getnrpn(5))/10 },
+    set(v) { return this.setnrpn(5, mask14(Math.round(10*v))) }
   },
   buttonLevel0: { // KYRP_BUTTON_0
-    get() { return this.getnrpn(4) },
-    set(v) { return this.setnrpn(4, v) }
+    get() { return signextend14(this.getnrpn(6)) },
+    set(v) { return this.setnrpn(6, mask14(v)) }
   },
   buttonLevel1: { // KYRP_BUTTON_1
-    get() { return this.getnrpn(5) },
-    set(v) { return this.setnrpn(5, v) }
+    get() { return signextend14(this.getnrpn(7)) },
+    set(v) { return this.setnrpn(7, mask14(v)) }
   },
   buttonLevel2: { // KYRP_BUTTON_2
-    get() { return this.getnrpn(6) },
-    set(v) { return this.setnrpn(6, v) }
+    get() { return signextend14(this.getnrpn(8)) },
+    set(v) { return this.setnrpn(8, mask14(v)) }
   },
   buttonLevel3: { // KYRP_BUTTON_3
-    get() { return this.getnrpn(7) },
-    set(v) { return this.setnrpn(7, v) }
+    get() { return signextend14(this.getnrpn(9)) },
+    set(v) { return this.setnrpn(9, mask14(v)) }
   },
   buttonLevel4: { // KYRP_BUTTON_4
-    get() { return this.getnrpn(8) },
-    set(v) { return this.setnrpn(8, v) }
+    get() { return signextend14(this.getnrpn(10)) },
+    set(v) { return this.setnrpn(10, mask14(v)) }
   },
   externalPTTRequire: { // KYRP_PTT_ENABLE
-    get() { return this.getnrpn(9) },
-    set(v) { return this.setnrpn(9, v) }
+    get() { return Boolean(this.getnrpn(11)) },
+    set(v) { return this.setnrpn(11, Number(v)) }
   },
   iqModeSelect: { // KYRP_IQ_ENABLE
-    get() { return this.getnrpn(10) },
-    set(v) { return this.setnrpn(10, v) }
+    get() { return this.getnrpn(12) },
+    set(v) { return this.setnrpn(12, v) }
   },
   iqModeSelects: { // KYRV_IQ_*
     get() { return ["None","LSB","USB"] }
   },
   iqAdjustPhase: { // KYRP_IQ_ADJUST
-    get() { return signextend14(this.getnrpn(11)) },
-    set(v) { return this.setnrpn(11, mask14(v)) }
+    get() { return signextend14(this.getnrpn(13)) },
+    set(v) { return this.setnrpn(13, mask14(v)) }
   },
   iqAdjustBalance: { // KYRP_IQ_BALANCE
-    get() { return signextend14(this.getnrpn(14)) },
-    set(v) { return this.setnrpn(14, mask14(v)) }
+    get() { return signextend14(this.getnrpn(16)) },
+    set(v) { return this.setnrpn(16, mask14(v)) }
   },
   txEnable: { // KYRP_TX_ENABLE
-    get() { return this.getnrpn(12) },
-    set(v) { return this.setnrpn(12, v) }
+    get() { return Boolean(this.getnrpn(14)) },
+    set(v) { return this.setnrpn(14, Number(v)) }
   },
   sidetoneEnable: { // KYRP_ST_ENABLE
-    get() { return this.getnrpn(13) },
-    set(v) { return this.setnrpn(13, v) }
+    get() { return Boolean(this.getnrpn(15)) },
+    set(v) { return this.setnrpn(15, Number(v)) }
   },
   sidetonePan: { // KYRP_ST_PAN
-    get() { return signextend14(this.getnrpn(15)) },
-    set(v) { return this.setnrpn(15, mask14(v)) }
+    get() { return signextend14(this.getnrpn(17)) },
+    set(v) { return this.setnrpn(17, mask14(v)) }
   },
   outputEnable: { // KYRP_OUT_ENABLE
-    get() { return this.getnrpn(16) },
-    set(v) { return this.setnrpn(16, v) }
+    get() { return this.getnrpn(18) },
+    set(v) { return this.setnrpn(18, v) }
+  },
+  remoteKey: { // KYRP_REMOTE_KEY
+    get() { return Boolean(this.getnrpn(19)) },
+    set(v) { return this.setnrpn(19, Number(v)) }
   },
   debouncePeriod: { // KYRP_DEBOUNCE
-    get() { return 1000*this.getnrpn(17)/48000 },
-    set(v) { return this.setnrpn(17, mask14(Math.round(48000*v/1000))) }
-  },
-  pttHeadTime: { // KYRP_HEAD_TIME
-    get() { return 1000*this.getnrpn(19)/48000 },
-    set(v) { return this.setnrpn(19, mask14(Math.round(48000*v/1000))) }
-  },
-  pttTailTime: { // KYRP_TAIL_TIME
-    get() { return 1000*this.getnrpn(20)/48000 },
+    get() { return (1000*this.getnrpn(20)/48000).toFixed(2) },
     set(v) { return this.setnrpn(20, mask14(Math.round(48000*v/1000))) }
   },
-  pttHangTime: { // KYRP_HANG_TIME
-    get() { return this.getnrpn(21) },
-    set(v) { return this.setnrpn(21, v) }
+  pttHeadTime: { // KYRP_HEAD_TIME
+    get() { return (1000*this.getnrpn(21)/48000).toFixed(2) },
+    set(v) { return this.setnrpn(21, mask14(Math.round(48000*v/1000))) }
   },
-  keyerRiseTime: { // KYRP_RISE_TIME
-    get() { return 1000*this.getnrpn(22)/48000 },
+  pttTailTime: { // KYRP_TAIL_TIME
+    get() { return (1000*this.getnrpn(22)/48000).toFixed(2) },
     set(v) { return this.setnrpn(22, mask14(Math.round(48000*v/1000))) }
   },
+  pttHangTime: { // KYRP_HANG_TIME
+    get() { return this.getnrpn(23) },
+    set(v) { return this.setnrpn(23, v) }
+  },
+  keyerRiseTime: { // KYRP_RISE_TIME
+    get() { return (1000*this.getnrpn(24)/48000).toFixed(2) },
+    set(v) { return this.setnrpn(24, mask14(Math.round(48000*v/1000))) }
+  },
   keyerFallTime: { // KYRP_FALL_TIME
-    get() { return 1000*this.getnrpn(23)/48000 },
-    set(v) { return this.setnrpn(23, mask14(Math.round(48000*v/1000))) }
+    get() { return (1000*this.getnrpn(25)/48000).toFixed(2) },
+    set(v) { return this.setnrpn(25, mask14(Math.round(48000*v/1000))) }
   },
   keyerRiseRamp: { // KYRP_RISE_RAMP
-    get() { return this.getnrpn(24) },
-    set(v) { return this.setnrpn(24, v) }
+    get() { return this.getnrpn(26) },
+    set(v) { return this.setnrpn(26, v) }
   },
   keyerFallRamp: { // KYRP_FALL_RAMP
-    get() { return this.getnrpn(25) },
-    set(v) { return this.setnrpn(25, v) }
+    get() { return this.getnrpn(27) },
+    set(v) { return this.setnrpn(27, v) }
   },
   keyerRamps: { // KYRV_RAMP_*
     get() { return ["Hann","Blackman Harris","Linear"] }
   },
   paddleMode: { // KYRP_PAD_MODE
-    get() { return this.getnrpn(26) },
-    set(v) { return this.setnrpn(26, v) }
+    get() { return this.getnrpn(28) },
+    set(v) { return this.setnrpn(28, v) }
   },
   paddleModes: { // KYRV_MODE_*
     get() { return ["A","B","S"] }
   },
   paddleSwapped: { // KYRP_PAD_SWAP
-    get() { return this.getnrpn(27) },
-    set(v) { return this.setnrpn(27, v) }
+    get() { return Boolean(this.getnrpn(29)) },
+    set(v) { return this.setnrpn(29, Number(v)) }
   },
   paddleAdapter: { // KYRP_PAD_ADAPT
-    get() { return this.getnrpn(28) },
-    set(v) { return this.setnrpn(28, v) }
+    get() { return this.getnrpn(30) },
+    set(v) { return this.setnrpn(30, v) }
   },
   paddleAdapters: { // KYRV_ADAPT_*
     get() { return ["Normal","Ultimatic","Single"] }
   },
   autoLetterSpace: { // KYRP_AUTO_ILS
-    get() { return this.getnrpn(29) },
-    set(v) { return this.setnrpn(29, v) }
+    get() { return Boolean(this.getnrpn(31)) },
+    set(v) { return this.setnrpn(31, Number(v)) }
   },
   autoWordSpace: { // KYRP_AUTO_IWS
-    get() { return this.getnrpn(30) },
-    set(v) { return this.setnrpn(30, v) }
+    get() { return Boolean(this.getnrpn(32)) },
+    set(v) { return this.setnrpn(32, Number(v)) }
   },
   paddleKeyer: { // KYRP_PAD_KEYER
-    get() { return this.getnrpn(31) },
-    set(v) { return this.setnrpn(31, v) }
+    get() { return this.getnrpn(33) },
+    set(v) { return this.setnrpn(33, v) }
   },
   paddleKeyers: { // KYRV_KEYER_*
     get() { return ["ad5dz","k1el","nd7pa","vk6ph"] }
   },
   channelCC: { // KYRP_CHAN_CC
-    get() { return this.getnrpn(32) },
-    set(v) { return this.setnrpn(32, v) }
-  },
-  channelNote: { // KYRP_CHAN_NOTE
-    get() { return this.getnrpn(33) },
-    set(v) { return this.setnrpn(33, v) }
-  },
-  noteLeftPaddle: { // KYRP_NOTE_L_PAD
     get() { return this.getnrpn(34) },
     set(v) { return this.setnrpn(34, v) }
   },
-  noteRightPaddle: { // KYRP_NOTE_R_PAD
+  channelNote: { // KYRP_CHAN_NOTE
     get() { return this.getnrpn(35) },
     set(v) { return this.setnrpn(35, v) }
   },
-  noteStraightKey: { // KYRP_NOTE_S_KEY
+  noteLeftPaddle: { // KYRP_NOTE_L_PAD
     get() { return this.getnrpn(36) },
     set(v) { return this.setnrpn(36, v) }
   },
-  noteExternalPTT: { // KYRP_NOTE_EXT_PTT
+  noteRightPaddle: { // KYRP_NOTE_R_PAD
     get() { return this.getnrpn(37) },
     set(v) { return this.setnrpn(37, v) }
   },
-  noteKeyOut: { // KYRP_NOTE_KEY_OUT
+  noteStraightKey: { // KYRP_NOTE_S_KEY
     get() { return this.getnrpn(38) },
     set(v) { return this.setnrpn(38, v) }
   },
-  notePTTOut: { // KYRP_NOTE_PTT_OUT
+  noteExternalPTT: { // KYRP_NOTE_EXT_PTT
     get() { return this.getnrpn(39) },
     set(v) { return this.setnrpn(39, v) }
   },
+  noteKeyOut: { // KYRP_NOTE_KEY_OUT
+    get() { return this.getnrpn(40) },
+    set(v) { return this.setnrpn(40, v) }
+  },
+  notePTTOut: { // KYRP_NOTE_PTT_OUT
+    get() { return this.getnrpn(41) },
+    set(v) { return this.setnrpn(41, v) }
+  },
+  noteTune: { // KYRP_NOTE_TUNE
+    get() { return this.getnrpn(42) },
+    set(v) { return this.setnrpn(42, v) }
+  },
   adcEnable: { // KYRP_ADC_ENABLE
-    get() { return this.getnrpn(45) },
-    set(v) { return this.setnrpn(45, v) }
+    get() { return Boolean(this.getnrpn(48)) },
+    set(v) { return this.setnrpn(48, Number(v)) }
   },
   adcControls: { // KYRV_ADC_*
     get() { return ["None","Volume","Speed","Level","Tone"] }
   },
   adc0Control: { // KYRP_ADC0_CONTROL
-    get() { return this.getnrpn(40) },
-    set(v) { return this.setnrpn(40, v) }
-  },
-  adc1Control: { // KYRP_ADC1_CONTROL
-    get() { return this.getnrpn(41) },
-    set(v) { return this.setnrpn(41, v) }
-  },
-  adc2Control: { // KYRP_ADC2_CONTROL
-    get() { return this.getnrpn(42) },
-    set(v) { return this.setnrpn(42, v) }
-  },
-  adc3Control: { // KYRP_ADC4_CONTROL
-    get() { return this.getnrpn(44) },
-    set(v) { return this.setnrpn(44, v) }
-  },
-  adc4Control: { // KYRP_ADC3_CONTROL
     get() { return this.getnrpn(43) },
     set(v) { return this.setnrpn(43, v) }
   },
+  adc1Control: { // KYRP_ADC1_CONTROL
+    get() { return this.getnrpn(44) },
+    set(v) { return this.setnrpn(44, v) }
+  },
+  adc2Control: { // KYRP_ADC2_CONTROL
+    get() { return this.getnrpn(45) },
+    set(v) { return this.setnrpn(45, v) }
+  },
+  adc3Control: { // KYRP_ADC4_CONTROL
+    get() { return this.getnrpn(47) },
+    set(v) { return this.setnrpn(47, v) }
+  },
+  adc4Control: { // KYRP_ADC3_CONTROL
+    get() { return this.getnrpn(46) },
+    set(v) { return this.setnrpn(46, v) }
+  },
   keyerTone: { // KYRP_TONE
-    get() { return this.getnrpn(134)/10 },
-    set(v) { return this.setnrpn(134, Math.floor(10*v)) }
+    get() { return this.getnrpn(137)/10 },
+    set(v) { return this.setnrpn(137, Math.floor(10*v)) }
   },
   keyerLevel: { // KYRP_LEVEL
-    get() { return signextend14(this.getnrpn(135))/4 },
-    set(v) { return this.setnrpn(135, mask14(Math.round(4*v))) }
+    get() { return signextend14(this.getnrpn(138))/10 },
+    set(v) { return this.setnrpn(138, mask14(Math.round(10*v))) }
   },
   keyerSpeed: { // KYRP_SPEED
-    get() { return this.getnrpn(136) },
-    set(v) { return this.setnrpn(136, v) }
-  },
-  keyerWeight: { // KYRP_WEIGHT
-    get() { return this.getnrpn(137) },
-    set(v) { return this.setnrpn(137, v) }
-  },
-  keyerRatio: { // KYRP_RATIO
-    get() { return this.getnrpn(138) },
-    set(v) { return this.setnrpn(138, v) }
-  },
-  keyerFarnsworth: { // KYRP_FARNS
     get() { return this.getnrpn(139) },
     set(v) { return this.setnrpn(139, v) }
   },
+  keyerWeight: { // KYRP_WEIGHT
+    get() { return this.getnrpn(140) },
+    set(v) { return this.setnrpn(140, v) }
+  },
+  keyerRatio: { // KYRP_RATIO
+    get() { return this.getnrpn(141) },
+    set(v) { return this.setnrpn(141, v) }
+  },
+  keyerFarnsworth: { // KYRP_FARNS
+    get() { return this.getnrpn(142) },
+    set(v) { return this.setnrpn(142, v) }
+  },
   keyerCompensation: { // KYRP_COMP
-    get() { return 1000*this.getnrpn(140)/48000 },
-    set(v) { return this.setnrpn(140, mask14(Math.round(48000*v/1000))) }
+    get() { return (1000*this.getnrpn(143)/48000).toFixed(2) },
+    set(v) { return this.setnrpn(143, mask14(Math.round(48000*v/1000))) }
   },
   keyerSpeedFraction: { // KYRP_SPEED_FRAC
-    get() { return this.getnrpn(141)/128 },
-    set(v) { return this.setnrpn(141, Math.floor(128*v)) }
+    get() { return this.getnrpn(144)/128 },
+    set(v) { return this.setnrpn(144, Math.floor(128*v)) }
   },
-  voice: { // KYRP_VOICE
-    get() { return this.getvoxnrpn(this._voice, 18) },
-    set(v) { return this.setvoxnrpn(this._voice, 18, v) }
+  keyerIdentifier: { // KYRP_ID_KEYER
+    get() { return this.getnrpn(1) },
+    set(v) { return this.setnrpn(1, v) }
   },
-  voices: { // KYRV_VOX_*
-    get() { return ["None","Tune","Key","Paddle","Winkey","Keyer","Button"] }
+  keyerVersion: { // KYRP_ID_VERSION
+    get() { return this.getnrpn(2) },
+    set(v) { return this.setnrpn(2, v) }
   },
-  voiceTone: { // KYRP_TONE
-    get() { return this.getvoxnrpn(this._voice, 134)/10 },
-    set(v) { return this.setvoxnrpn(this._voice, 134, Math.floor(10*v)) }
+  nrpnSize: { // KYRP_NRPN_SIZE
+    get() { return this.getnrpn(3000) },
+    set(v) { return this.setnrpn(3000, v) }
   },
-  voiceLevel: { // KYRP_LEVEL
-    get() { return signextend14(this.getvoxnrpn(this._voice, 135))/4 },
-    set(v) { return this.setvoxnrpn(this._voice, 135, mask14(Math.round(4*v))) }
+  messageSize: { // KYRP_MSG_SIZE
+    get() { return this.getnrpn(3001) },
+    set(v) { return this.setnrpn(3001, v) }
   },
-  voiceSpeed: { // KYRP_SPEED
-    get() { return this.getvoxnrpn(this._voice, 136) },
-    set(v) { return this.setvoxnrpn(this._voice, 136, v) }
+  sampleRate: { // KYRP_SAMPLE_RATE
+    get() { return this.getnrpn(3002) },
+    set(v) { return this.setnrpn(3002, v) }
   },
-  voiceWeight: { // KYRP_WEIGHT
-    get() { return this.getvoxnrpn(this._voice, 137) },
-    set(v) { return this.setvoxnrpn(this._voice, 137, v) }
+  eepromSize: { // KYRP_EEPROM_LENGTH
+    get() { return this.getnrpn(3003) },
+    set(v) { return this.setnrpn(3003, v) }
   },
-  voiceRatio: { // KYRP_RATIO
-    get() { return this.getvoxnrpn(this._voice, 138) },
-    set(v) { return this.setvoxnrpn(this._voice, 138, v) }
+  identifyCPU: { // KYRP_ID_CPU
+    get() { return this.getnrpn(3004) },
+    set(v) { return this.setnrpn(3004, v) }
   },
-  voiceFarnsworth: { // KYRP_FARNS
-    get() { return this.getvoxnrpn(this._voice, 139) },
-    set(v) { return this.setvoxnrpn(this._voice, 139, v) }
+  identifyCodec: { // KYRP_ID_CODEC
+    get() { return this.getnrpn(3005) },
+    set(v) { return this.setnrpn(3005, v) }
   },
-  voiceCompensation: { // KYRP_COMP
-    get() { return 1000*this.getvoxnrpn(this._voice, 140)/48000 },
-    set(v) { return this.setvoxnrpn(this._voice, 140, mask14(Math.round(48000*v/1000))) }
+  nothing: { // KYRP_NOTHING
+    // KYRP_NOTHING has no nrpn
+
   },
-  voiceSpeedFraction: { // KYRP_SPEED_FRAC
-    get() { return this.getvoxnrpn(this._voice, 141)/128 },
-    set(v) { return this.setvoxnrpn(this._voice, 141, Math.floor(128*v)) }
+  echoAll: { // KYRP_ECHO_ALL
+    get() { return this.getnrpn(2003) },
+    set(v) { return this.setnrpn(2003, v) }
+  },
+  voice: { // null
+    get() { return this._voice },
+    set(v) { this._voice = v }
+  },
+  voices: { // null
+    get() { return this._voices }
+  },
+  mixer: { // null
+    get() { return this._mixer },
+    set(v) { this._mixer = v }
+  },
+  mixers: { // null
+    get() { return this._mixers }
+  },
+  mixerValue: { // null
+    // no hasakProperty map
+
+  },
+  code: { // null
+    get() { return this._code },
+    set(v) { this._code = v }
+  },
+  codes: { // null
+    get() { return this._codes }
+  },
+  codeValue: { // null
+    // no hasakProperty map
+
   }
 };
 // do not edit, generated by ../scripts/make-descriptors.js hasak

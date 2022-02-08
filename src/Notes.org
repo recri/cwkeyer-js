@@ -1,3 +1,25 @@
+[ ] Sigh, back in CSS hell again.
+[x] Button values need to be sign extended.  Gave them pp8191 unit
+[ ] ms fields too wide in PTT timing
+[ ] Cache sendnrpn to debounce, use lit lifecycle callback to trigger cache flush
+[ ] specify no accessor on lit-elements with constructed accessors,
+	and go ahead and define them from cwkeyerDescriptors
+[ ] prebuild cwkeyerLitProperties
+[ ] use uh-* control attribute to fetch .ctl property and .options property
+[ ] Options lists should return {value: x, label: y, title: z} for each option
+[ ] Rethink voice, mixer, and code handling
+[ ] One line folders, everything on a line with the title
+[ ] Adjust the font sizes.
+[ ] folder vs block vs inline-block is provided by the html``
+	the type element in cwkeyerProperties is obsolete
+[ ] controlRender is probably irrelevant
+[ ] can I recurse into render() with a control argument and eliminate
+	displayRender entirely?  Yes.
+[ ] can I provide get() and set(v) definitions via getProperties()?
+[ ] can I set title="" on select options and get them displayed?
+[ ] can I get the folder labels out of the way of the controls
+[ ] can I get the folder labels to display hierarchically
+------------------------------------------------------------------------
 * Hah, got it, I can take a list of 'keyer properties' consisting of name and type
 	and programmatically define getter and setter methods for each property.
 
