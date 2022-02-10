@@ -139,24 +139,8 @@ export class CWKeyerHasak extends CWKeyerBase {
   // this allows access to the oldvalue for the lit-element requestUpdate
   needUpdate(nrpn) { // , value
     const np = hasakProperties[hasakProperties[nrpn]]
-    if (np && np.property) this.requestUpdate(np.property, this.getnrpn(nrpn));
+    if (np && np.property) this.requestUpdate(np.property);
   }  
-
-  get KYRP_ID_KEYER() { return this.nrpnvalue(hasakProperties.KYRP_ID_VERSION.nrpn); }
-
-  get KYRP_ID_VERSION() { return this.nrpnvalue(hasakProperties.KYRP_ID_VERSION.nrpn); }
-
-  get KYRP_NRPN_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_NRPN_SIZE.nrpn); }
-
-  get KYRP_MSG_SIZE() { return this.nrpnvalue(hasakProperties.KYRP_MSG_SIZE.nrpn); }
-
-  get KYRP_SAMPLE_RATE() { return this.nrpnvalue(hasakProperties.KYRP_SAMPLE_RATE.nrpn); }
-
-  get KYRP_EEPROM_LENGTH() { return this.nrpnvalue(hasakProperties.KYRP_EEPROM_LENGTH.nrpn); }
-
-  get KYRP_ID_CPU() { return this.nrpnvalue(hasakProperties.KYRP_ID_CPU.nrpn); }
-
-  get KYRP_ID_CODEC() { return this.nrpnvalue(hasakProperties.KYRP_ID_CODEC.nrpn); }
 
   tickle() {
     // console.log(`requesting info from ${this.name}`);

@@ -4,28 +4,1714 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "src/CwkeyerJs.js",
+      "path": "scripts/echo.js",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "scripts/make-descriptors.js",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerBase.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CwkeyerJs",
+          "name": "CWKeyerBase",
+          "members": [
+            {
+              "kind": "method",
+              "name": "activate",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "msg"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "name"
+            },
+            {
+              "kind": "field",
+              "name": "type"
+            },
+            {
+              "kind": "field",
+              "name": "label"
+            },
+            {
+              "kind": "field",
+              "name": "channels"
+            },
+            {
+              "kind": "field",
+              "name": "notes"
+            },
+            {
+              "kind": "method",
+              "name": "notename",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "notevalue",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "ctrls"
+            },
+            {
+              "kind": "method",
+              "name": "ctrlname",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "ctrlvalue",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "nrpns"
+            },
+            {
+              "kind": "method",
+              "name": "nrpnname",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "nrpnvalue",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "sendmidi",
+              "parameters": [
+                {
+                  "name": "message"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "_name",
+              "default": "name"
+            },
+            {
+              "kind": "field",
+              "name": "_type",
+              "default": "type"
+            },
+            {
+              "kind": "field",
+              "name": "_active",
+              "default": "active"
+            },
+            {
+              "kind": "field",
+              "name": "_channels",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "_channel",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "_notes",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "_ctrls",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "_nrpns",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentTime",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "CWKeyerEvent",
+            "module": "/src/CWKeyerEvent.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerBase",
+          "declaration": {
+            "name": "CWKeyerBase",
+            "module": "src/CWKeyerBase.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerDefault.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerDefault",
+          "superclass": {
+            "name": "CWKeyerBase",
+            "module": "/src/CWKeyerBase.js"
+          },
+          "members": [
+            {
+              "kind": "method",
+              "name": "activate",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "msg"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "channels",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "notes",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notename",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notevalue",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ctrls",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlname",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlvalue",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nrpns",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nrpnname",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nrpnvalue",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sendmidi",
+              "parameters": [
+                {
+                  "name": "message"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_name",
+              "default": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_type",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_active",
+              "default": "active",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channels",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channel",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_notes",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_ctrls",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_nrpns",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentTime",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerDefault",
+          "declaration": {
+            "name": "CWKeyerDefault",
+            "module": "src/CWKeyerDefault.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerEvent.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerEvent",
+          "members": [
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "currentTime"
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate"
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency"
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events"
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback"
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered"
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer."
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer."
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext"
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerEvent",
+          "declaration": {
+            "name": "CWKeyerEvent",
+            "module": "src/CWKeyerEvent.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerHasak.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerHasak",
+          "members": [
+            {
+              "kind": "method",
+              "name": "nrpnname",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "mixerValue"
+            },
+            {
+              "kind": "field",
+              "name": "codeValue"
+            },
+            {
+              "kind": "method",
+              "name": "activate",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "needUpdate",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "tickle"
+            },
+            {
+              "kind": "method",
+              "name": "sendnrpn",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                },
+                {
+                  "name": "val"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setnrpn",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                },
+                {
+                  "name": "v"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getnrpn",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setvoxnrpn",
+              "parameters": [
+                {
+                  "name": "voice"
+                },
+                {
+                  "name": "nrpn"
+                },
+                {
+                  "name": "v"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getvoxnrpn",
+              "parameters": [
+                {
+                  "name": "voice"
+                },
+                {
+                  "name": "nrpn"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "msg"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "channels",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "notes",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notename",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notevalue",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ctrls",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlname",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlvalue",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nrpns",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nrpnvalue",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sendmidi",
+              "parameters": [
+                {
+                  "name": "message"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_name",
+              "default": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_type",
+              "default": "type",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_active",
+              "default": "active",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channels",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channel",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_notes",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_ctrls",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_nrpns",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentTime",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "CWKeyerBase",
+            "module": "/src/CWKeyerBase.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerHasak",
+          "declaration": {
+            "name": "CWKeyerHasak",
+            "module": "src/CWKeyerHasak.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerJs.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerJs",
           "members": [
             {
               "kind": "field",
-              "name": "title",
-              "type": {
-                "text": "string"
-              },
-              "default": "'My app'",
-              "privacy": "public",
-              "attribute": "title"
-            }
-          ],
-          "attributes": [
+              "name": "deviceSelect"
+            },
             {
-              "name": "title",
-              "fieldName": "title"
+              "kind": "field",
+              "name": "deviceSelectOptions"
+            },
+            {
+              "kind": "field",
+              "name": "midiNames"
+            },
+            {
+              "kind": "field",
+              "name": "midiInputs"
+            },
+            {
+              "kind": "field",
+              "name": "midiOutputs"
+            },
+            {
+              "kind": "field",
+              "name": "midiAvailable"
+            },
+            {
+              "kind": "field",
+              "name": "midiNotes"
+            },
+            {
+              "kind": "field",
+              "name": "midiControls"
+            },
+            {
+              "kind": "field",
+              "name": "deviceNotes"
+            },
+            {
+              "kind": "method",
+              "name": "deviceNoteName",
+              "parameters": [
+                {
+                  "name": "x"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "deviceCtrls"
+            },
+            {
+              "kind": "method",
+              "name": "deviceCtrlName",
+              "parameters": [
+                {
+                  "name": "x"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "midiNotesUpdate"
+            },
+            {
+              "kind": "method",
+              "name": "midiControlsUpdate"
+            },
+            {
+              "kind": "method",
+              "name": "midiNamesUpdate"
+            },
+            {
+              "kind": "method",
+              "name": "keyerUpdate",
+              "parameters": [
+                {
+                  "name": "dev"
+                },
+                {
+                  "name": "control"
+                },
+                {
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onmidisend",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "data"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "data"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "audioContext",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "controlUpdate",
+              "parameters": [
+                {
+                  "name": "control"
+                },
+                {
+                  "name": "oldv"
+                },
+                {
+                  "name": "newv"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "controlToggle",
+              "parameters": [
+                {
+                  "name": "control"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "controlSelect",
+              "parameters": [
+                {
+                  "name": "control"
+                },
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "controlSelectNew",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "controlToggleNew",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "controlRender",
+              "parameters": [
+                {
+                  "name": "control"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "keyerUpdateHandler",
+              "default": "(dev, control, value) => this.keyerUpdate(dev, control, value)"
+            },
+            {
+              "kind": "field",
+              "name": "onMidiSendHandler",
+              "default": "(dev, message) => this.onmidisend(dev, message)"
+            },
+            {
+              "kind": "field",
+              "name": "midiNotesUpdateHandler",
+              "default": "() => this.midiNotesUpdate()"
+            },
+            {
+              "kind": "field",
+              "name": "midiControlsUpdateHandler",
+              "default": "() => this.midiControlsUpdate()"
+            },
+            {
+              "kind": "field",
+              "name": "midiNamesUpdateHandler",
+              "default": "() => this.midiNamesUpdate()"
+            },
+            {
+              "kind": "field",
+              "name": "midiMessageHandler",
+              "default": "(name, data) => this.onmidimessage(name, data)"
+            },
+            {
+              "kind": "field",
+              "name": "device",
+              "default": "new CWKeyerDefault(this.audioContext, 'none')"
+            },
+            {
+              "kind": "field",
+              "name": "devices",
+              "type": {
+                "text": "object"
+              },
+              "default": "{ none: this.device }"
+            },
+            {
+              "kind": "field",
+              "name": "midiSource",
+              "default": "new CWKeyerMidi(null)"
+            },
+            {
+              "kind": "field",
+              "name": "displayMidi",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayHasak",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayTwinkey",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayDefault",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayAbout",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayLicense",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "displayColophon",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
             }
           ],
           "superclass": {
@@ -39,10 +1725,1319 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CwkeyerJs",
+          "name": "CWKeyerJs",
           "declaration": {
-            "name": "CwkeyerJs",
-            "module": "src/CwkeyerJs.js"
+            "name": "CWKeyerJs",
+            "module": "src/CWKeyerJs.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerMidi.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerMidi",
+          "members": [
+            {
+              "kind": "method",
+              "name": "cacheNote",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "cacheControl",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "shortenname",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "recordOutput",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "recordInput",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "id"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "shorten",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "lengthen",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "names"
+            },
+            {
+              "kind": "field",
+              "name": "rawnames"
+            },
+            {
+              "kind": "field",
+              "name": "inputs"
+            },
+            {
+              "kind": "field",
+              "name": "outputs"
+            },
+            {
+              "kind": "field",
+              "name": "notes"
+            },
+            {
+              "kind": "field",
+              "name": "controls"
+            },
+            {
+              "kind": "method",
+              "name": "output",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "input",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "rebind"
+            },
+            {
+              "kind": "method",
+              "name": "onMIDISend",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "data"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onStateChange"
+            },
+            {
+              "kind": "method",
+              "name": "onMIDISuccess",
+              "parameters": [
+                {
+                  "name": "midiAccess"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onMIDIFailure"
+            },
+            {
+              "kind": "method",
+              "name": "refresh"
+            },
+            {
+              "kind": "field",
+              "name": "midiAvailable",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "midiAccess",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "notesCache",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "notesList",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "controlsCache",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "controlsList",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "_shorten",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "_lengthen",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "outputMap",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "inputMap",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentTime",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "CWKeyerEvent",
+            "module": "/src/CWKeyerEvent.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerMidi",
+          "declaration": {
+            "name": "CWKeyerMidi",
+            "module": "src/CWKeyerMidi.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/CWKeyerTwinkey.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CWKeyerTwinkey",
+          "members": [
+            {
+              "kind": "method",
+              "name": "onmidimessage",
+              "parameters": [
+                {
+                  "name": "msg"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_type",
+              "default": "'twinkey'",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              },
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "activate",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "channels",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "notes",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notename",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "notevalue",
+              "parameters": [
+                {
+                  "name": "note"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ctrls",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlname",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "ctrlvalue",
+              "parameters": [
+                {
+                  "name": "ctrl"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nrpns",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nrpnname",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "nrpnvalue",
+              "parameters": [
+                {
+                  "name": "nrpn"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "sendmidi",
+              "parameters": [
+                {
+                  "name": "message"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_name",
+              "default": "name",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_active",
+              "default": "active",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channels",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_channel",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_notes",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_ctrls",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_nrpns",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "inheritedFrom": {
+                "name": "CWKeyerBase",
+                "module": "src/CWKeyerBase.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "updateAudioContext",
+              "parameters": [
+                {
+                  "name": "audioContext"
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "currentTime",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sampleRate",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "baseLatency",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "on",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "on: listen to events",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "off",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "Off: stop listening to event / specific callback",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "emit",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "args"
+                }
+              ],
+              "description": "Emit: send event, callbacks will be triggered",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "after",
+              "parameters": [
+                {
+                  "name": "dtime"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "After: fire an event at some seconds into the future.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "when",
+              "parameters": [
+                {
+                  "name": "time"
+                },
+                {
+                  "name": "func"
+                }
+              ],
+              "description": "When: fire an event at a specified time.\nusing the web audio sample timer.",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "context",
+              "default": "audioContext",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]",
+              "inheritedFrom": {
+                "name": "CWKeyerEvent",
+                "module": "src/CWKeyerEvent.js"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "CWKeyerDefault",
+            "module": "/src/CWKeyerDefault.js"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CWKeyerTwinkey",
+          "declaration": {
+            "name": "CWKeyerTwinkey",
+            "module": "src/CWKeyerTwinkey.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/UhComponents.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhFolder",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_click",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-click",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "fieldName": "value"
+            },
+            {
+              "name": "control",
+              "fieldName": "control"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-folder",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhSlider",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_input",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-input",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "fieldName": "value"
+            },
+            {
+              "name": "control",
+              "fieldName": "control"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-slider",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhSpinner",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_input",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-input",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "fieldName": "value"
+            },
+            {
+              "name": "control",
+              "fieldName": "control"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-spinner",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhOptions",
+          "members": [
+            {
+              "kind": "method",
+              "name": "renderOption",
+              "parameters": [
+                {
+                  "name": "x"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_change",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "privacy": "public",
+              "attribute": "options"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-change",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "control",
+              "fieldName": "control"
+            },
+            {
+              "name": "value",
+              "fieldName": "value"
+            },
+            {
+              "name": "options",
+              "fieldName": "options"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-options",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhMultiple",
+          "members": [
+            {
+              "kind": "method",
+              "name": "renderOption",
+              "parameters": [
+                {
+                  "name": "x"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_change",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "privacy": "public",
+              "attribute": "options"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-change",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "control",
+              "fieldName": "control"
+            },
+            {
+              "name": "value",
+              "fieldName": "value"
+            },
+            {
+              "name": "options",
+              "fieldName": "options"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-multiple",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhToggle",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_click",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-click",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "control",
+              "fieldName": "control"
+            },
+            {
+              "name": "value",
+              "fieldName": "value"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-toggle",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "UhCheck",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_click",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "control",
+              "privacy": "public",
+              "attribute": "control"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "attribute": "value"
+            }
+          ],
+          "events": [
+            {
+              "name": "uh-click",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "control",
+              "fieldName": "control"
+            },
+            {
+              "name": "value",
+              "fieldName": "value"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "uh-check",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-folder",
+          "declaration": {
+            "name": "UhFolder",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-slider",
+          "declaration": {
+            "name": "UhSlider",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-spinner",
+          "declaration": {
+            "name": "UhSpinner",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-options",
+          "declaration": {
+            "name": "UhOptions",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-multiple",
+          "declaration": {
+            "name": "UhMultiple",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-toggle",
+          "declaration": {
+            "name": "UhToggle",
+            "module": "src/UhComponents.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "uh-check",
+          "declaration": {
+            "name": "UhCheck",
+            "module": "src/UhComponents.js"
           }
         }
       ]
@@ -56,8 +3051,334 @@
           "kind": "custom-element-definition",
           "name": "cwkeyer-js",
           "declaration": {
-            "name": "CwkeyerJs",
-            "module": "/src/CwkeyerJs.js"
+            "name": "CWKeyerJs",
+            "module": "/src/CWKeyerJs.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyer-logo.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "cwkeyerLogo",
+          "default": "html`\n  <svg width=\"512px\" height=\"128px\" viewBox=\"0 192 512 128\"\n    version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n    <g id=\"Page-1\" stroke=\"#1d62a7\" stroke-width=\"16\" fill=\"none\" fill-rule=\"evenodd\">\n      <line x1=\"384\" y1=\"224\" x2=\"448\" y2=\"224\" id=\"knob\"></line>\n      <line x1=\"64\" y1=\"288\" x2=\"320\" y2=\"288\" id=\"base\" ></line>\n      <polyline points=\"64,224 320,224 371.2,274 422.4,274\" id=\"key\"></polyline>\n      <ellipse cx=\"148.5\" cy=\"224\" rx=\"16\" ry=\"16\" fill=\"#1d62a7\" stroke=\"#ffffff\" stroke-width=\"1\" id=\"hinge\"></ellipse>\n    </g>\n  </svg>\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "cwkeyerLogo",
+          "declaration": {
+            "name": "cwkeyerLogo",
+            "module": "src/cwkeyer-logo.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyerCSS.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "cwkeyerStyles",
+          "default": "css`\n      :host {\n        min-height: 100vh;\n        width: 100%;\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: flex-start;\n        font-size: calc(10px + 2vmin);\n        color: black;\n        margin: 0;\n        text-align: center;\n      }\n      .h1 { font-size: 2em; margin: .33em 0; }\n      .h2 { font-size: 1.5em; margin: .38em 0; }\n      .h3 { font-size: 1.17em; margin: .42em 0; }\n      .h5 { font-size: .83em; margin: .75em 0; }\n      .h6 { font-size: .75em; margin: .84em 0; }\n      .h1, .h2, .h3, .h4, .h5, .h6 { \n\tfont-weight: bolder;\n\twidth: 60%;\n\ttext-align: left;\n      }\n      main {\n        flex-grow: 1;\n      }\n      .logo > svg {\n        margin-left: 5%;\n        max-width: 90%;\n        margin-top: 16px;\n      }\n      div.hidden, div.group.hidden {\n\tdisplay: none;\n      }\n      button, select, input {\n        font-size: calc(10px + 2vmin);\n      }\n      input[type=\"number\"][size=\"5\"] {\n\t width: 3.25em;\n      }\n      input[type=\"number\"][size=\"4\"] {\n\t width: 2.5em;\n      }\n      input[type=\"number\"][size=\"3\"] {\n\t width: 2em;\n      }\n      div.panel {\n\tmargin: auto;\n\twidth: 90%;\n      }\n      div.subpanel {\n\tmargin: auto;\n\twidth: 100%;\n      }\n     \n      .app-footer {\n        font-size: calc(12px + 0.5vmin);\n        align-items: center;\n      }\n\n      .app-footer a {\n        margin-left: 5px;\n      }\n    `"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "cwkeyerStyles",
+          "declaration": {
+            "name": "cwkeyerStyles",
+            "module": "src/cwkeyerCSS.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyerConstants.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "shownSymbol",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u23f7'"
+        },
+        {
+          "kind": "variable",
+          "name": "hiddenSymbol",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u23f5'"
+        },
+        {
+          "kind": "variable",
+          "name": "playSymbol",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u23f5'"
+        },
+        {
+          "kind": "variable",
+          "name": "pauseSymbol",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u23f8'"
+        },
+        {
+          "kind": "variable",
+          "name": "uncheckedCheckBox",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u2610'"
+        },
+        {
+          "kind": "variable",
+          "name": "checkedCheckBox",
+          "type": {
+            "text": "string"
+          },
+          "default": "'\\u2611'"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "shownSymbol",
+          "declaration": {
+            "name": "shownSymbol",
+            "module": "src/cwkeyerConstants.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hiddenSymbol",
+          "declaration": {
+            "name": "hiddenSymbol",
+            "module": "src/cwkeyerConstants.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "playSymbol",
+          "declaration": {
+            "name": "playSymbol",
+            "module": "src/cwkeyerConstants.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "pauseSymbol",
+          "declaration": {
+            "name": "pauseSymbol",
+            "module": "src/cwkeyerConstants.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "uncheckedCheckBox",
+          "declaration": {
+            "name": "uncheckedCheckBox",
+            "module": "src/cwkeyerConstants.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "checkedCheckBox",
+          "declaration": {
+            "name": "checkedCheckBox",
+            "module": "src/cwkeyerConstants.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyerDescriptors.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "cwkeyerDescriptors",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n    masterVolume: {\n    get() { return this.device.masterVolume },\n    set(v) { this.device.masterVolume = v }\n  },\n  inputSelect: {\n    get() { return this.device.inputSelect },\n    set(v) { this.device.inputSelect = v }\n  },\n  inputSelects: {\n    get() { return this.device.inputSelects }\n  },\n  inputLevel: {\n    get() { return this.device.inputLevel },\n    set(v) { this.device.inputLevel = v }\n  },\n  buttonLevel0: {\n    get() { return this.device.buttonLevel0 },\n    set(v) { this.device.buttonLevel0 = v }\n  },\n  buttonLevel1: {\n    get() { return this.device.buttonLevel1 },\n    set(v) { this.device.buttonLevel1 = v }\n  },\n  buttonLevel2: {\n    get() { return this.device.buttonLevel2 },\n    set(v) { this.device.buttonLevel2 = v }\n  },\n  buttonLevel3: {\n    get() { return this.device.buttonLevel3 },\n    set(v) { this.device.buttonLevel3 = v }\n  },\n  buttonLevel4: {\n    get() { return this.device.buttonLevel4 },\n    set(v) { this.device.buttonLevel4 = v }\n  },\n  externalPTTRequire: {\n    get() { return this.device.externalPTTRequire },\n    set(v) { this.device.externalPTTRequire = v }\n  },\n  iqModeSelect: {\n    get() { return this.device.iqModeSelect },\n    set(v) { this.device.iqModeSelect = v }\n  },\n  iqModeSelects: {\n    get() { return this.device.iqModeSelects }\n  },\n  iqAdjustPhase: {\n    get() { return this.device.iqAdjustPhase },\n    set(v) { this.device.iqAdjustPhase = v }\n  },\n  iqAdjustBalance: {\n    get() { return this.device.iqAdjustBalance },\n    set(v) { this.device.iqAdjustBalance = v }\n  },\n  txEnable: {\n    get() { return this.device.txEnable },\n    set(v) { this.device.txEnable = v }\n  },\n  sidetoneEnable: {\n    get() { return this.device.sidetoneEnable },\n    set(v) { this.device.sidetoneEnable = v }\n  },\n  sidetonePan: {\n    get() { return this.device.sidetonePan },\n    set(v) { this.device.sidetonePan = v }\n  },\n  outputEnable: {\n    get() { return this.device.outputEnable },\n    set(v) { this.device.outputEnable = v }\n  },\n  remoteKey: {\n    get() { return this.device.remoteKey },\n    set(v) { this.device.remoteKey = v }\n  },\n  debouncePeriod: {\n    get() { return this.device.debouncePeriod },\n    set(v) { this.device.debouncePeriod = v }\n  },\n  pttHeadTime: {\n    get() { return this.device.pttHeadTime },\n    set(v) { this.device.pttHeadTime = v }\n  },\n  pttTailTime: {\n    get() { return this.device.pttTailTime },\n    set(v) { this.device.pttTailTime = v }\n  },\n  pttHangTime: {\n    get() { return this.device.pttHangTime },\n    set(v) { this.device.pttHangTime = v }\n  },\n  keyerRiseTime: {\n    get() { return this.device.keyerRiseTime },\n    set(v) { this.device.keyerRiseTime = v }\n  },\n  keyerFallTime: {\n    get() { return this.device.keyerFallTime },\n    set(v) { this.device.keyerFallTime = v }\n  },\n  keyerRiseRamp: {\n    get() { return this.device.keyerRiseRamp },\n    set(v) { this.device.keyerRiseRamp = v }\n  },\n  keyerFallRamp: {\n    get() { return this.device.keyerFallRamp },\n    set(v) { this.device.keyerFallRamp = v }\n  },\n  keyerRamps: {\n    get() { return this.device.keyerRamps }\n  },\n  paddleMode: {\n    get() { return this.device.paddleMode },\n    set(v) { this.device.paddleMode = v }\n  },\n  paddleModes: {\n    get() { return this.device.paddleModes }\n  },\n  paddleSwapped: {\n    get() { return this.device.paddleSwapped },\n    set(v) { this.device.paddleSwapped = v }\n  },\n  paddleAdapter: {\n    get() { return this.device.paddleAdapter },\n    set(v) { this.device.paddleAdapter = v }\n  },\n  paddleAdapters: {\n    get() { return this.device.paddleAdapters }\n  },\n  autoLetterSpace: {\n    get() { return this.device.autoLetterSpace },\n    set(v) { this.device.autoLetterSpace = v }\n  },\n  autoWordSpace: {\n    get() { return this.device.autoWordSpace },\n    set(v) { this.device.autoWordSpace = v }\n  },\n  paddleKeyer: {\n    get() { return this.device.paddleKeyer },\n    set(v) { this.device.paddleKeyer = v }\n  },\n  paddleKeyers: {\n    get() { return this.device.paddleKeyers }\n  },\n  channelCC: {\n    get() { return this.device.channelCC },\n    set(v) { this.device.channelCC = v }\n  },\n  channelNote: {\n    get() { return this.device.channelNote },\n    set(v) { this.device.channelNote = v }\n  },\n  channelNrpn: {\n    get() { return this.device.channelNrpn },\n    set(v) { this.device.channelNrpn = v }\n  },\n  noteKeyOut: {\n    get() { return this.device.noteKeyOut },\n    set(v) { this.device.noteKeyOut = v }\n  },\n  notePTTOut: {\n    get() { return this.device.notePTTOut },\n    set(v) { this.device.notePTTOut = v }\n  },\n  noteTune: {\n    get() { return this.device.noteTune },\n    set(v) { this.device.noteTune = v }\n  },\n  noteLeftPaddle: {\n    get() { return this.device.noteLeftPaddle },\n    set(v) { this.device.noteLeftPaddle = v }\n  },\n  noteRightPaddle: {\n    get() { return this.device.noteRightPaddle },\n    set(v) { this.device.noteRightPaddle = v }\n  },\n  noteStraightKey: {\n    get() { return this.device.noteStraightKey },\n    set(v) { this.device.noteStraightKey = v }\n  },\n  noteExternalPTT: {\n    get() { return this.device.noteExternalPTT },\n    set(v) { this.device.noteExternalPTT = v }\n  },\n  noteEnable: {\n    get() { return this.device.noteEnable },\n    set(v) { this.device.noteEnable = v }\n  },\n  noteEnables: {\n    get() { return this.device.noteEnables }\n  },\n  adcEnable: {\n    get() { return this.device.adcEnable },\n    set(v) { this.device.adcEnable = v }\n  },\n  adcControls: {\n    get() { return this.device.adcControls }\n  },\n  adc0Control: {\n    get() { return this.device.adc0Control },\n    set(v) { this.device.adc0Control = v }\n  },\n  adc1Control: {\n    get() { return this.device.adc1Control },\n    set(v) { this.device.adc1Control = v }\n  },\n  adc2Control: {\n    get() { return this.device.adc2Control },\n    set(v) { this.device.adc2Control = v }\n  },\n  adc3Control: {\n    get() { return this.device.adc3Control },\n    set(v) { this.device.adc3Control = v }\n  },\n  adc4Control: {\n    get() { return this.device.adc4Control },\n    set(v) { this.device.adc4Control = v }\n  },\n  keyerTone: {\n    get() { return this.device.keyerTone },\n    set(v) { this.device.keyerTone = v }\n  },\n  keyerLevel: {\n    get() { return this.device.keyerLevel },\n    set(v) { this.device.keyerLevel = v }\n  },\n  keyerSpeed: {\n    get() { return this.device.keyerSpeed },\n    set(v) { this.device.keyerSpeed = v }\n  },\n  keyerWeight: {\n    get() { return this.device.keyerWeight },\n    set(v) { this.device.keyerWeight = v }\n  },\n  keyerRatio: {\n    get() { return this.device.keyerRatio },\n    set(v) { this.device.keyerRatio = v }\n  },\n  keyerFarnsworth: {\n    get() { return this.device.keyerFarnsworth },\n    set(v) { this.device.keyerFarnsworth = v }\n  },\n  keyerCompensation: {\n    get() { return this.device.keyerCompensation },\n    set(v) { this.device.keyerCompensation = v }\n  },\n  keyerSpeedFraction: {\n    get() { return this.device.keyerSpeedFraction },\n    set(v) { this.device.keyerSpeedFraction = v }\n  },\n  keyerIdentifier: {\n    get() { return this.device.keyerIdentifier }\n  },\n  keyerVersion: {\n    get() { return this.device.keyerVersion }\n  },\n  nrpnSize: {\n    get() { return this.device.nrpnSize }\n  },\n  messageSize: {\n    get() { return this.device.messageSize }\n  },\n  sampleRate: {\n    get() { return this.device.sampleRate }\n  },\n  eepromSize: {\n    get() { return this.device.eepromSize }\n  },\n  identifyCPU: {\n    get() { return this.device.identifyCPU }\n  },\n  identifyCodec: {\n    get() { return this.device.identifyCodec }\n  },\n  nothing: {\n    get() { return this.device.nothing }\n  },\n  echoAll: {\n    get() { return this.device.echoAll }\n  },\n  voice: {\n    get() { return this.device.voice },\n    set(v) { this.device.voice = v }\n  },\n  voices: {\n    get() { return this.device.voices }\n  },\n  mixer: {\n    get() { return this.device.mixer },\n    set(v) { this.device.mixer = v }\n  },\n  mixers: {\n    get() { return this.device.mixers }\n  },\n  mixerValue: {\n    get() { return this.device.mixerValue },\n    set(v) { this.device.mixerValue = v }\n  },\n  code: {\n    get() { return this.device.code },\n    set(v) { this.device.code = v }\n  },\n  codes: {\n    get() { return this.device.codes }\n  },\n  codeValue: {\n    get() { return this.device.codeValue },\n    set(v) { this.device.codeValue = v }\n  }\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "cwkeyerDescriptors",
+          "declaration": {
+            "name": "cwkeyerDescriptors",
+            "module": "src/cwkeyerDescriptors.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyerProperties.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "cwkeyerProperties",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n\n  // CWKeyer* properties, delegated to this.device\n  masterVolume: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: -26, label: 'Vol', min: -50, max: 10, step: 0.1, unit: 'dB', size: 5, title: 'The master volume.', delegate: true },\n  inputSelect: { lit: { type: String, noAccessor: true }, type: 'options', value: 'mic', label: 'Input', options: 'inputSelects', title: 'The codec input source.', delegate: true },\n  inputSelects: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  inputLevel: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: -26, label: 'In Lvl', min: -50, max: 10, step: 0.1, unit: 'dB', size: 5, title: 'The input level.', delegate: true },\n  buttonLevel0: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'B0 Lvl', min: -8092, max: 8191, step: 1, unit: '', size: 6, title: 'The adc level for headset bias with no button pressed.', delegate: true },\n  buttonLevel1: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'B1 Lvl', min: -8092, max: 8191, step: 1, unit: '', size: 6, title: 'The adc level for headset bias with center or only button pressed.', delegate: true },\n  buttonLevel2: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'B2 Lvl', min: -8092, max: 8191, step: 1, unit: '', size: 6, title: 'The adc level for headset bias with up button pressed.',    delegate: true },\n  buttonLevel3: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'B3 Lvl', min: -8092, max: 8191, step: 1, unit: '', size: 6, title: 'The adc level for headset bias with down button pressed.', delegate: true },\n  buttonLevel4: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'B4 Lvl', min: -8092, max: 8191, step: 1, unit: '', size: 6, title: 'The adc level for headset bias with attention button pressed.', delegate: true },\n  externalPTTRequire: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'ExtPTT', on: 'true', off: 'false', title: 'Should the external PTT be required for transmit.', delegate: true },\n  iqModeSelect: { lit: { type: String, noAccessor: true }, type: 'options', label: 'IQ mode', options: 'iqSelects', title: 'IQ generation mode', delegate: true },\n  iqModeSelects: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  iqAdjustPhase: { lit: { type: Number, noAccessor: true }, type: 'spinner', label: 'IQ Phase', min: -8092, max: 8191, step: 1, unit: '', size: 5, title: 'The adjustment to the phase of I and Q away from 90 degrees.', delegate: true },\n  iqAdjustBalance: { lit: { type: Number, noAccessor: true }, type: 'spinner', label: 'IQ Balance', min: -8092, max: 8191, step: 1, unit: '', size: 5,    title: 'The adjustment to the balance of I and Q away from equality.', delegate: true },\n  txEnable: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'TX En', on: 'true', off: 'false', title: 'Should transmit be enabled.', delegate: true },\n  sidetoneEnable: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'ST En', on: 'true', off: 'false', title: 'Should sidetone be generated.', delegate: true },\n  sidetonePan: { lit: { type: Number, noAccessor: true }, type: 'spinner', label: 'ST Pan', min: -8092, max: 8191, step: 1, unit: '', size: 5, title: 'The left-right positioning of the sidetone.', delegate: true },\n  outputEnable: { lit: { type: Number, noAccessor: true }, type: 'bitmap', value: 0, label: 'Out En', title: 'Should the output channel be mixed to output.', delegate: true },\n  remoteKey: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'Rem', on: 'true', off: 'false', title: 'Should remote keying Tune be enabled.', delegate: true },\n  debouncePeriod: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'Deb', min: 0, max: 10, step: 0.1, unit: 'ms', size: 6, title: 'The time an input transition is clamped before allowing a new transition.', delegate: true },\n  // ptt timing\n  pttHeadTime: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 4, label: 'Head', min: 0, max: 300, step: 0.1, unit: 'ms', size: 5, title: 'The time the PTT signal must lead the KEY signal.', delegate: true },\n  pttTailTime: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 4, label: 'Tail', min: 0, max: 300, step: 0.1, unit: 'ms', size: 5, title: 'The time the PTT signal should linger after KEY signal.', delegate: true },\n  pttHangTime: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 4, label: 'Hang', min: 0, max: 127, step: 1, unit: 'dit', size: 4, title: 'The time the PTT signal should linger after KEY signal.', delegate: true },\n  // keying envelope\n  keyerRiseTime: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 5, label: 'Rise', min: 0.1, max: 10, step: 0.1, unit: 'ms', size: 5, title: 'The rise time of keyed elements.', delegate: true },\n  keyerFallTime: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 5, label: 'Fall', min: 0.1, max: 10, step: 0.1, unit: 'ms', size: 5, title: 'The fall time of the keyed signal.', delegate: true },\n  keyerRiseRamp: { lit: { type: String, noAccessor: true }, type: 'options', value: 'hann', label: '', options: 'keyerRamps', title: 'The ramp for the key envelope rise.', delegate: true },\n  keyerFallRamp: { lit: { type: String, noAccessor: true }, type: 'options', value: 'rectangular', label: '', options: 'envelopes', title: 'The ramp for the key envelope fall.', delegate: true },\n  keyerRamps: { lit: { type: Array, noAccessor: true }, type: 'value', delegate: true, getOnly: true },\n  // paddle keyer\n  paddleMode: { lit: { type: String, noAccessor: true}, type: 'options', value: 'A', label: 'Mode', options: 'paddleModes', title: 'The iambic mode of the paddle keyer.', delegate: true },\n  paddleModes: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  paddleSwapped: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'Swapped', on: 'true', off: 'false', title: 'Should the paddles be swapped.', delegate: true },\n  paddleAdapter: { lit: { type: String, noAccessor: true}, type: 'options', value: 'A', label: 'Adapt', options: 'paddleAdapters', title: 'The input adapter of the paddle keyer.', delegate: true },\n  paddleAdapters: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  autoLetterSpace: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'Auto ILS', on: 'true', off: 'false', title: 'Should inter-letter spaces be generated.', delegate: true },\n  autoWordSpace: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: false, label: 'Auto IWS', on: 'true', off: 'false', title: 'Should inter-word spaces be generated.', delegate: true },\n  paddleKeyer: { lit: { type: String, noAccessor: true }, type: 'options', value: 'nd7pa-b', label: 'Keyer', options: 'paddleKeyers', title: 'The keyer that translates paddle events into key events.', delegate: true },\n  paddleKeyers: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  // MIDI channels\n  channelCC: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, label: 'Chan Ctrl', min: 0, max: 16, step: 1, unit: '', size: 2, title: 'The MIDI channel for Control Change messages.', delegate: true },\n  channelNote: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, label: 'Chan Note', min: 0, max: 16, step: 1, unit: '', size: 2, title: 'The MIDI channel for Note On/Off messages.', delegate: true },\n  channelNrpn: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, label: 'Chan NRPN', min: 0, max: 16, step: 1, unit: '', size: 2, title: 'The MIDI channel for NRPN messages.', delegate: true },\n  // MIDI notes\n  noteKeyOut: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'Key Out', title: 'The MIDI note for the key out signal.', delegate: true },\n  notePTTOut: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'PTT Out', title: 'The MIDI note for the PTT out signal.', delegate: true },\n  noteTune: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'PTT Out', title: 'The MIDI note for the TUNE signal.', delegate: true },\n  noteLeftPaddle: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'L Pad', title: 'The MIDI note for the left paddle.', delegate: true },\n  noteRightPaddle: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'R Pad', title: 'The MIDI note for the right paddle.', delegate: true },\n  noteStraightKey: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'S Key', title: 'The MIDI note for the straight key.', delegate: true },\n  noteExternalPTT: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 1, min: 0, max: 128, step: 1, unit: '', size: 4, label: 'X PTT', title: 'The MIDI note for the external PTT switch.', delegate: true },\n  noteEnable: { lit: { type: Array, noAccessor: true }, type: 'multiple', value: 7, min: 0, max: 127, step: 1, unit: '', size: 4, label: 'Note Enable', title: 'Bitmap to enable notes.', delegate: true },\n  noteEnables: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  // ADC pin bindings\n  adcEnable: { lit: { type: Boolean, noAccessor: true }, type: 'toggle', value: true, label: 'Pots EN', title: 'Enable potentiometer controls (should be a bitmap).', delegate: true },\n  adcControls: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  adc0Control: { label: 'adc0', title: 'The property that adc0 controls.', lit: { type: String, noAccessor: true }, unit: '', type: 'options', options: 'adcControls', delegate: true },\n  adc1Control: { label: 'adc1', title: 'The property that adc1 controls.', lit: { type: String, noAccessor: true }, unit: '', type: 'options', options: 'adcControls', delegate: true },\n  adc2Control: { label: 'adc2', title: 'The property that adc2 controls.', lit: { type: String, noAccessor: true }, unit: '', type: 'options', options: 'adcControls', delegate: true },\n  adc3Control: { label: 'adc3', title: 'The property that adc3 controls.', lit: { type: String, noAccessor: true }, unit: '', type: 'options', options: 'adcControls', delegate: true },\n  adc4Control: { label: 'adc4', title: 'The property that adc4 controls.', lit: { type: String, noAccessor: true }, unit: '', type: 'options', options: 'adcControls', delegate: true },\n\n  // morse code table goes here\n  // figure out an array accessor\n\n  // ouput mixer array goes here\n  // figure out an array accessor\n\n  // default keyer\n  keyerTone: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 700, label: '', min: 250, max: 2000, step: 1, unit: 'Hz', size: 5, title: 'The frequency of the keyer sidetone.', delegate: true },\n  keyerLevel: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: -26, label: 'ST Vol', min: -50, max: 10, step: 0.1, unit: 'dB', size: 5, title: 'The volume of keyer sidetone.', delegate: true },\n  keyerSpeed: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 20, label: '', min: 0, max: 16383, step: 1, unit: 'WPM', size: 4, title: 'The speed of the keyer in words/minute (WPM).', delegate: true },\n  keyerWeight: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 50, label: 'Weight', min: 25, max: 75, step: 1, unit: '%', size: 4, title: 'The relative weight of marks and spaces in percent deviation from 50.', delegate: true },\n  keyerRatio: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 50, label: 'Ratio', min: 25, max: 75, step: 1, unit: '%', size: 4, title: 'The relative length of dits and dahs in percent deviation from 50.', delegate: true },\n  keyerFarnsworth: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'Farns', min: 0, max: 16383, step: 1, unit: 'WPM', size: 4, title: 'The Farnsworth speed of the keyer in words/minute (WPM).', delegate: true },\n  keyerCompensation: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'Compensation', min: -15, max: 15, step: 0.1, unit: 'ms', size: 5, title: 'An absolute correction to element length.', delegate: true },\n  keyerSpeedFraction: { lit: { type: Number, noAccessor: true }, type: 'spinner', value: 0, label: 'Fraction', min: 0, max: 127, step: 1, unit: 'WPM/128', size: 4, title: 'The fractional speed of the characters in words/minute (WPM).', delegate: true },\n  // keyer information\n  keyerIdentifier: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  keyerVersion: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  nrpnSize: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  messageSize: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  sampleRate: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  eepromSize: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  identifyCPU: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  identifyCodec: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  nothing: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  // keyer command echoes\n  echoAll: { lit: { type: Number, noAccessor: true }, type: 'value', delegate: true, getOnly: true, },\n  // these aren't right, yet, need an index, a list of valid indices, and a get/set for the value at the specified index\n  // voices have a second parameter which specifies the aspect of the voice, think about it some more.\n  // voice selection\n  voice: { lit: { type: String, noAccessor: true }, type: 'options', value: 'none', label: 'Voice', options: 'voices', title: 'Keyer voice to configure.', delegate: true },\n  voices: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n\n  // mixer selection\n  mixer: { lit: { type: String, noAccessor: true }, type: 'options', value: 'none', label: 'Voice', options: 'voices', title: 'Mixer channel to configure.', delegate: true },\n  mixers: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  mixerValue: { lit: { type: Number, noAccessor: true }, delegate: true }, \n\n  // morse code table selection\n  code: { lit: { type: String, noAccessor: true }, type: 'options', value: 'none', label: 'Voice', options: 'voices', title: 'Morse code table entry to configure.', delegate: true },\n  codes: { lit: { type: Array, noAccessor: true }, delegate: true, getOnly: true },\n  codeValue: { lit: { type: String, noAccessor: true }, delegate: true },\n\n  // device selection\n  deviceSelect: { lit: {type: String}, type: 'options', value: 'none as default', options: 'deviceSelectOptions', label: 'Select device', title: 'Choose a MIDI keyer device' },\n  deviceOptions: { lit: { type: Array}, getOnly: true },\n\n  // toplevel cwkeyer folders\n  displayDevice:  { lit: {type: Boolean}, type: 'folder', value: true, label: 'Device', level: 2, title: 'Choose the MIDI device to control.' },\n  displayHasak: { lit: {type: Boolean}, type: 'block', value: false, label: 'Keyer controller', level: 2, title: 'Controller panel for Hasak keyer.' },\n  displayTwinky: { lit: {type: Boolean}, type: 'block', value: false, label: 'Teensy Winkey Emulator controller', level: 2, title: 'Controller panel for Teensy Winkey Emulator.' },\n  displayDefault: { lit: {type: Boolean}, type: 'block', value: false, label: 'Default controller', level: 2, title: 'Controller panel for unrecognized device.' },\n  displayAbout: { lit: { type: Boolean}, type: 'folder', value: false, label: 'About', level: 2, title: 'What cwkeyer-js does.' },\n  displayLicense: { lit: { type: Boolean}, type: 'folder', value: false, label: 'License', level: 2, title: 'How cwkeyer-js is licensed.' },\n  displayColophon: { lit: { type: Boolean}, type: 'folder', value: false, label: 'Colophon', level: 2, title: 'How cwkeyer-js was built.' },\n  displayFooter: { lit: { type: Boolean}, type: 'folder', value: false, label: 'Footer', level: 2, title: 'Footer.' },\n\n  // hasak folders\n  hasakFlags: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Flags', level: 3, title: 'Keyer flags.' },\n  hasakBasic: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Basic', level: 3, title: 'Essential controls.' },\n  hasakTiming: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Timing', level: 3, title: 'Keyer timing controls.' },\n  hasakPTT: { lit: {type: Boolean}, type: 'folder', value: true, label: 'PTT', level: 3, title: 'PTT signal timing controls.' },\n  hasakEnvelope: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Envelope', level: 3, title: 'Key envelope signal timing controls.' },\n  hasakPaddle: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Paddle', level: 3, title: 'Paddle keyer controls.' },\n  hasakCodec: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Codec', level: 3, title: 'Codec controls.' },\n  hasakMisc: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Misc', level: 3, title: 'Miscellaneous controls.' },\n  hasakMIDI: { lit: {type: Boolean}, type: 'folder', value: true, label: 'MIDI', level: 3, title: 'MIDI channel and notes.' },\n    hasakMIDIChannels: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Channels', level: 4, title: 'MIDI channel configuration.' },\n    hasakMIDINotes:  { lit: {type: Boolean}, type: 'folder', value: true, label: 'Notes', level: 4, title: 'MIDI note configuration.' },\n  hasakAdc: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Pots', level: 3, title: 'Potentiometer configuration.' },\n  hasakInfo: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Info', level: 3, title: 'Hasak firmware info.' },\n  hasakTLDR: { lit: {type: Boolean}, type: 'folder', value: true, label: 'TL;DR', level: 3, title: 'Too long; don\\'t read.' },\n    hasakVoice: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Voices', level: 4, title: 'Voice specific keyer controls.' },\n    hasakCommands: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Commands', level: 4, title: 'Keyer command execution.' },\n    hasakButton: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Button', level: 4, title: 'Button controls.' },\n    hasakIQ: { lit: {type: Boolean}, type: 'folder', value: true, label: 'IQ', level: 4, title: 'IQ controls.' },\n    hasakStatus: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Status', level: 4, title: 'Keyer status.' },\n    hasakMorse: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Code', level: 4, title: 'Morse code table.' },\n    hasakMixers: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Mixers', level: 4, title: 'Output mixer controls.' },\n  \n  displayMidiDetails: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Midi activity', level: 2, title: 'Active Midi devices, notes, and controls.' },\n  displayDeviceDetails: { lit: {type: Boolean}, type: 'folder', value: true, label: 'Device activity', level: 2, title: 'Active device notes, controls, and parameters.' },\n  displayNoteDetails: { lit: {type: Boolean}, type: 'folder', value: false, label: 'Notes', level: 3, title: 'MIDI Notes.' },\n  displayCtrlDetails: { lit: {type: Boolean}, type: 'folder', value: false, label: 'Ctrls', level: 3, title: 'MIDI Controls.' },\n  displayNrpnDetails: { lit: {type: Boolean}, type: 'folder', value: false, label: 'Notes', level: 3, title: 'MIDI NRPNs (Non-registered parameter numbers).' },\n\n  // read only midi flag\n  midiAvailable: { lit: { type: Boolean } },\n  \n  // read only values supplying options lists\n  // most are constant, midiNotes changes\n  // names changes\n  midiNames: { lit: { type: Array } },\n  midiInputs: { lit: { type: Array } },\n  midiOutputs: { lit: { type: Array } },\n  midiNotes: { lit: { type: Array } },\n  midiControls: { lit: { type: Array } },\n\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "cwkeyerProperties",
+          "declaration": {
+            "name": "cwkeyerProperties",
+            "module": "src/cwkeyerProperties.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cwkeyerStyles.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "cwkeyerRootStyles",
+          "default": "css`\n:host {\n  min-height: 1vh;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-start;\n  /* these three are inherited from ../index.html */\n  /* font-size: calc(10px + 2vmin); */\n  /* color: black; */\n  /* background-color: #ededed; */\n  margin: 0;\n  text-align: center;\n}\nmain {\n  flex-grow: 1;\n}\n.logo > svg {\n  margin-left: 5%;\n  max-width: 90%;\n  margin-top: 16px;\n}\n.app-footer {\n  font-size: calc(12px + 0.5vmin);\n  align-items: center;\n}\n.app-footer a {\n  margin-left: 5px;\n}\n`"
+        },
+        {
+          "kind": "variable",
+          "name": "cwkeyerFolderStyles",
+          "default": "css`\n:host {\n  min-height: 1vh;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-start;\n  margin: 0;\n  text-align: center;\n}\n`"
+        },
+        {
+          "kind": "variable",
+          "name": "cwkeyerComponentStyles",
+          "default": "css`\n:host {\n  min-height: 1vh;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: flex-start;\n  margin: 0;\n  text-align: center;\n}\n`"
+        },
+        {
+          "kind": "variable",
+          "name": "cwkeyerCommonStyles",
+          "default": "css`\n.h1 { font-size: 200%; margin: .33em 0; }\n.h2 { font-size: 150%; margin: .38em 0; }\n.h3 { font-size: 117%; margin: .42em 0; }\n.h5 { font-size: 83%; margin: .75em 0; }\n.h6 { font-size: 75%; margin: .84em 0; }\n.h1, .h2, .h3, .h4, .h5, .h6 { \n  font-weight: bolder;\n  width: 60%;\n  text-align: left;\n}\n\ndiv.column1 { width: 100%; }\ndiv.column2 { width: 50%; }\ndiv.column3 { width: 33%; }\ndiv.column4 {  width: 25%; }\ndiv.column5 { width: 20%; }\ndiv.column6 { width: 16.6%; }\ndiv.column7 { width: 14.2%; }\ndiv.column8 { width: 12.5%; }\ndiv.column9 { width: 11.1%; }\ndiv.column10 { width: 10%; }\n\ndiv.chunk {\n  display: inline-flex;\n  flex-direction: rows;\n  flex-wrap: nowrap;\n}\ndiv.group {\n  display: inline-flex;\n  flex-direction: rows;\n  flex-wrap: wrap;\n}\ndiv.columns {\n  display: inline-flex;\n  flex-direction: columns;\n  flex-wrap: wrap;\n}\ndiv.hidden {\n  display: none;\n}\nbutton, select, input {\n  /* this inherits from someplace else by default\n  /* font-size: calc(10px + 2vmin); */\n  font-size: 95%;\n}\ninput[type=\"number\"][size=\"5\"] {\n  width: 3.25em;\n}\ninput[type=\"number\"][size=\"4\"] {\n  width: 2.5em;\n}\ninput[type=\"number\"][size=\"3\"] {\n  width: 2em;\n}\ndiv.panel {\n  margin: auto;\n  width: 90%;\n}\ndiv.subpanel {\n  margin: auto;\n  width: 100%;\n}\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "cwkeyerRootStyles",
+          "declaration": {
+            "name": "cwkeyerRootStyles",
+            "module": "src/cwkeyerStyles.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "cwkeyerFolderStyles",
+          "declaration": {
+            "name": "cwkeyerFolderStyles",
+            "module": "src/cwkeyerStyles.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "cwkeyerComponentStyles",
+          "declaration": {
+            "name": "cwkeyerComponentStyles",
+            "module": "src/cwkeyerStyles.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "cwkeyerCommonStyles",
+          "declaration": {
+            "name": "cwkeyerCommonStyles",
+            "module": "src/cwkeyerStyles.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/defaultDescriptors.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "defaultDescriptors",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n    _masterVolume: { value: 0, writable: true },\n  masterVolume: {\n    get() { return this._masterVolume },\n    set(v) { this._masterVolume = v }\n  },\n  _inputSelect: { value: '', writable: true },\n  inputSelect: {\n    get() { return this._inputSelect },\n    set(v) { this._inputSelect = v }\n  },\n  _inputSelects: { value: [0], writable: true },\n  inputSelects: {\n    get() { return this._inputSelects }\n  },\n  _inputLevel: { value: 0, writable: true },\n  inputLevel: {\n    get() { return this._inputLevel },\n    set(v) { this._inputLevel = v }\n  },\n  _buttonLevel0: { value: 0, writable: true },\n  buttonLevel0: {\n    get() { return this._buttonLevel0 },\n    set(v) { this._buttonLevel0 = v }\n  },\n  _buttonLevel1: { value: 0, writable: true },\n  buttonLevel1: {\n    get() { return this._buttonLevel1 },\n    set(v) { this._buttonLevel1 = v }\n  },\n  _buttonLevel2: { value: 0, writable: true },\n  buttonLevel2: {\n    get() { return this._buttonLevel2 },\n    set(v) { this._buttonLevel2 = v }\n  },\n  _buttonLevel3: { value: 0, writable: true },\n  buttonLevel3: {\n    get() { return this._buttonLevel3 },\n    set(v) { this._buttonLevel3 = v }\n  },\n  _buttonLevel4: { value: 0, writable: true },\n  buttonLevel4: {\n    get() { return this._buttonLevel4 },\n    set(v) { this._buttonLevel4 = v }\n  },\n  _externalPTTRequire: { value: 0, writable: true },\n  externalPTTRequire: {\n    get() { return this._externalPTTRequire },\n    set(v) { this._externalPTTRequire = v }\n  },\n  _iqModeSelect: { value: '', writable: true },\n  iqModeSelect: {\n    get() { return this._iqModeSelect },\n    set(v) { this._iqModeSelect = v }\n  },\n  _iqModeSelects: { value: [0], writable: true },\n  iqModeSelects: {\n    get() { return this._iqModeSelects }\n  },\n  _iqAdjustPhase: { value: 0, writable: true },\n  iqAdjustPhase: {\n    get() { return this._iqAdjustPhase },\n    set(v) { this._iqAdjustPhase = v }\n  },\n  _iqAdjustBalance: { value: 0, writable: true },\n  iqAdjustBalance: {\n    get() { return this._iqAdjustBalance },\n    set(v) { this._iqAdjustBalance = v }\n  },\n  _txEnable: { value: 0, writable: true },\n  txEnable: {\n    get() { return this._txEnable },\n    set(v) { this._txEnable = v }\n  },\n  _sidetoneEnable: { value: 0, writable: true },\n  sidetoneEnable: {\n    get() { return this._sidetoneEnable },\n    set(v) { this._sidetoneEnable = v }\n  },\n  _sidetonePan: { value: 0, writable: true },\n  sidetonePan: {\n    get() { return this._sidetonePan },\n    set(v) { this._sidetonePan = v }\n  },\n  _outputEnable: { value: 0, writable: true },\n  outputEnable: {\n    get() { return this._outputEnable },\n    set(v) { this._outputEnable = v }\n  },\n  _remoteKey: { value: 0, writable: true },\n  remoteKey: {\n    get() { return this._remoteKey },\n    set(v) { this._remoteKey = v }\n  },\n  _debouncePeriod: { value: 0, writable: true },\n  debouncePeriod: {\n    get() { return this._debouncePeriod },\n    set(v) { this._debouncePeriod = v }\n  },\n  _pttHeadTime: { value: 0, writable: true },\n  pttHeadTime: {\n    get() { return this._pttHeadTime },\n    set(v) { this._pttHeadTime = v }\n  },\n  _pttTailTime: { value: 0, writable: true },\n  pttTailTime: {\n    get() { return this._pttTailTime },\n    set(v) { this._pttTailTime = v }\n  },\n  _pttHangTime: { value: 0, writable: true },\n  pttHangTime: {\n    get() { return this._pttHangTime },\n    set(v) { this._pttHangTime = v }\n  },\n  _keyerRiseTime: { value: 0, writable: true },\n  keyerRiseTime: {\n    get() { return this._keyerRiseTime },\n    set(v) { this._keyerRiseTime = v }\n  },\n  _keyerFallTime: { value: 0, writable: true },\n  keyerFallTime: {\n    get() { return this._keyerFallTime },\n    set(v) { this._keyerFallTime = v }\n  },\n  _keyerRiseRamp: { value: '', writable: true },\n  keyerRiseRamp: {\n    get() { return this._keyerRiseRamp },\n    set(v) { this._keyerRiseRamp = v }\n  },\n  _keyerFallRamp: { value: '', writable: true },\n  keyerFallRamp: {\n    get() { return this._keyerFallRamp },\n    set(v) { this._keyerFallRamp = v }\n  },\n  _keyerRamps: { value: [0], writable: true },\n  keyerRamps: {\n    get() { return this._keyerRamps }\n  },\n  _paddleMode: { value: '', writable: true },\n  paddleMode: {\n    get() { return this._paddleMode },\n    set(v) { this._paddleMode = v }\n  },\n  _paddleModes: { value: [0], writable: true },\n  paddleModes: {\n    get() { return this._paddleModes }\n  },\n  _paddleSwapped: { value: 0, writable: true },\n  paddleSwapped: {\n    get() { return this._paddleSwapped },\n    set(v) { this._paddleSwapped = v }\n  },\n  _paddleAdapter: { value: '', writable: true },\n  paddleAdapter: {\n    get() { return this._paddleAdapter },\n    set(v) { this._paddleAdapter = v }\n  },\n  _paddleAdapters: { value: [0], writable: true },\n  paddleAdapters: {\n    get() { return this._paddleAdapters }\n  },\n  _autoLetterSpace: { value: 0, writable: true },\n  autoLetterSpace: {\n    get() { return this._autoLetterSpace },\n    set(v) { this._autoLetterSpace = v }\n  },\n  _autoWordSpace: { value: 0, writable: true },\n  autoWordSpace: {\n    get() { return this._autoWordSpace },\n    set(v) { this._autoWordSpace = v }\n  },\n  _paddleKeyer: { value: '', writable: true },\n  paddleKeyer: {\n    get() { return this._paddleKeyer },\n    set(v) { this._paddleKeyer = v }\n  },\n  _paddleKeyers: { value: [0], writable: true },\n  paddleKeyers: {\n    get() { return this._paddleKeyers }\n  },\n  _channelCC: { value: 0, writable: true },\n  channelCC: {\n    get() { return this._channelCC },\n    set(v) { this._channelCC = v }\n  },\n  _channelNote: { value: 0, writable: true },\n  channelNote: {\n    get() { return this._channelNote },\n    set(v) { this._channelNote = v }\n  },\n  _channelNrpn: { value: 0, writable: true },\n  channelNrpn: {\n    get() { return this._channelNrpn },\n    set(v) { this._channelNrpn = v }\n  },\n  _noteKeyOut: { value: 0, writable: true },\n  noteKeyOut: {\n    get() { return this._noteKeyOut },\n    set(v) { this._noteKeyOut = v }\n  },\n  _notePTTOut: { value: 0, writable: true },\n  notePTTOut: {\n    get() { return this._notePTTOut },\n    set(v) { this._notePTTOut = v }\n  },\n  _noteTune: { value: 0, writable: true },\n  noteTune: {\n    get() { return this._noteTune },\n    set(v) { this._noteTune = v }\n  },\n  _noteLeftPaddle: { value: 0, writable: true },\n  noteLeftPaddle: {\n    get() { return this._noteLeftPaddle },\n    set(v) { this._noteLeftPaddle = v }\n  },\n  _noteRightPaddle: { value: 0, writable: true },\n  noteRightPaddle: {\n    get() { return this._noteRightPaddle },\n    set(v) { this._noteRightPaddle = v }\n  },\n  _noteStraightKey: { value: 0, writable: true },\n  noteStraightKey: {\n    get() { return this._noteStraightKey },\n    set(v) { this._noteStraightKey = v }\n  },\n  _noteExternalPTT: { value: 0, writable: true },\n  noteExternalPTT: {\n    get() { return this._noteExternalPTT },\n    set(v) { this._noteExternalPTT = v }\n  },\n  _noteEnable: { value: [0], writable: true },\n  noteEnable: {\n    get() { return this._noteEnable },\n    set(v) { this._noteEnable = v }\n  },\n  _noteEnables: { value: [0], writable: true },\n  noteEnables: {\n    get() { return this._noteEnables }\n  },\n  _adcEnable: { value: 0, writable: true },\n  adcEnable: {\n    get() { return this._adcEnable },\n    set(v) { this._adcEnable = v }\n  },\n  _adcControls: { value: [0], writable: true },\n  adcControls: {\n    get() { return this._adcControls }\n  },\n  _adc0Control: { value: '', writable: true },\n  adc0Control: {\n    get() { return this._adc0Control },\n    set(v) { this._adc0Control = v }\n  },\n  _adc1Control: { value: '', writable: true },\n  adc1Control: {\n    get() { return this._adc1Control },\n    set(v) { this._adc1Control = v }\n  },\n  _adc2Control: { value: '', writable: true },\n  adc2Control: {\n    get() { return this._adc2Control },\n    set(v) { this._adc2Control = v }\n  },\n  _adc3Control: { value: '', writable: true },\n  adc3Control: {\n    get() { return this._adc3Control },\n    set(v) { this._adc3Control = v }\n  },\n  _adc4Control: { value: '', writable: true },\n  adc4Control: {\n    get() { return this._adc4Control },\n    set(v) { this._adc4Control = v }\n  },\n  _keyerTone: { value: 0, writable: true },\n  keyerTone: {\n    get() { return this._keyerTone },\n    set(v) { this._keyerTone = v }\n  },\n  _keyerLevel: { value: 0, writable: true },\n  keyerLevel: {\n    get() { return this._keyerLevel },\n    set(v) { this._keyerLevel = v }\n  },\n  _keyerSpeed: { value: 0, writable: true },\n  keyerSpeed: {\n    get() { return this._keyerSpeed },\n    set(v) { this._keyerSpeed = v }\n  },\n  _keyerWeight: { value: 0, writable: true },\n  keyerWeight: {\n    get() { return this._keyerWeight },\n    set(v) { this._keyerWeight = v }\n  },\n  _keyerRatio: { value: 0, writable: true },\n  keyerRatio: {\n    get() { return this._keyerRatio },\n    set(v) { this._keyerRatio = v }\n  },\n  _keyerFarnsworth: { value: 0, writable: true },\n  keyerFarnsworth: {\n    get() { return this._keyerFarnsworth },\n    set(v) { this._keyerFarnsworth = v }\n  },\n  _keyerCompensation: { value: 0, writable: true },\n  keyerCompensation: {\n    get() { return this._keyerCompensation },\n    set(v) { this._keyerCompensation = v }\n  },\n  _keyerSpeedFraction: { value: 0, writable: true },\n  keyerSpeedFraction: {\n    get() { return this._keyerSpeedFraction },\n    set(v) { this._keyerSpeedFraction = v }\n  },\n  _keyerIdentifier: { value: 0, writable: true },\n  keyerIdentifier: {\n    get() { return this._keyerIdentifier }\n  },\n  _keyerVersion: { value: 0, writable: true },\n  keyerVersion: {\n    get() { return this._keyerVersion }\n  },\n  _nrpnSize: { value: 0, writable: true },\n  nrpnSize: {\n    get() { return this._nrpnSize }\n  },\n  _messageSize: { value: 0, writable: true },\n  messageSize: {\n    get() { return this._messageSize }\n  },\n  _sampleRate: { value: 0, writable: true },\n  sampleRate: {\n    get() { return this._sampleRate }\n  },\n  _eepromSize: { value: 0, writable: true },\n  eepromSize: {\n    get() { return this._eepromSize }\n  },\n  _identifyCPU: { value: 0, writable: true },\n  identifyCPU: {\n    get() { return this._identifyCPU }\n  },\n  _identifyCodec: { value: 0, writable: true },\n  identifyCodec: {\n    get() { return this._identifyCodec }\n  },\n  _nothing: { value: 0, writable: true },\n  nothing: {\n    get() { return this._nothing }\n  },\n  _echoAll: { value: 0, writable: true },\n  echoAll: {\n    get() { return this._echoAll }\n  },\n  _voice: { value: '', writable: true },\n  voice: {\n    get() { return this._voice },\n    set(v) { this._voice = v }\n  },\n  _voices: { value: [0], writable: true },\n  voices: {\n    get() { return this._voices }\n  },\n  _mixer: { value: '', writable: true },\n  mixer: {\n    get() { return this._mixer },\n    set(v) { this._mixer = v }\n  },\n  _mixers: { value: [0], writable: true },\n  mixers: {\n    get() { return this._mixers }\n  },\n  _mixerValue: { value: 0, writable: true },\n  mixerValue: {\n    get() { return this._mixerValue },\n    set(v) { this._mixerValue = v }\n  },\n  _code: { value: '', writable: true },\n  code: {\n    get() { return this._code },\n    set(v) { this._code = v }\n  },\n  _codes: { value: [0], writable: true },\n  codes: {\n    get() { return this._codes }\n  },\n  _codeValue: { value: '', writable: true },\n  codeValue: {\n    get() { return this._codeValue },\n    set(v) { this._codeValue = v }\n  }\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "defaultDescriptors",
+          "declaration": {
+            "name": "defaultDescriptors",
+            "module": "src/defaultDescriptors.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/hasakDescriptors.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "hasakDescriptors",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n    masterVolume: { // KYRP_VOLUME\n    get() { return signextend14(this.getnrpn(3))/10 },\n    set(v) { return this.setnrpn(3, mask14(Math.round(10*v))) }\n  },\n  inputSelect: { // KYRP_INPUT_SELECT\n    get() { return this.getnrpn(4) },\n    set(v) { return this.setnrpn(4, v) }\n  },\n  inputSelects: { // KYRV_INPUT_*\n    get() { return [\n{ value: 0, label: \"Mic\", title: \"input select microphone\" },\n{ value: 1, label: \"LineIn\", title: \"input select line in\" }] }\n  },\n  inputLevel: { // KYRP_INPUT_LEVEL\n    get() { return signextend14(this.getnrpn(5))/10 },\n    set(v) { return this.setnrpn(5, mask14(Math.round(10*v))) }\n  },\n  buttonLevel0: { // KYRP_BUTTON_0\n    get() { return signextend14(this.getnrpn(6)) },\n    set(v) { return this.setnrpn(6, mask14(v)) }\n  },\n  buttonLevel1: { // KYRP_BUTTON_1\n    get() { return signextend14(this.getnrpn(7)) },\n    set(v) { return this.setnrpn(7, mask14(v)) }\n  },\n  buttonLevel2: { // KYRP_BUTTON_2\n    get() { return signextend14(this.getnrpn(8)) },\n    set(v) { return this.setnrpn(8, mask14(v)) }\n  },\n  buttonLevel3: { // KYRP_BUTTON_3\n    get() { return signextend14(this.getnrpn(9)) },\n    set(v) { return this.setnrpn(9, mask14(v)) }\n  },\n  buttonLevel4: { // KYRP_BUTTON_4\n    get() { return signextend14(this.getnrpn(10)) },\n    set(v) { return this.setnrpn(10, mask14(v)) }\n  },\n  externalPTTRequire: { // KYRP_PTT_ENABLE\n    get() { return Boolean(this.getnrpn(11)) },\n    set(v) { return this.setnrpn(11, Number(v)) }\n  },\n  iqModeSelect: { // KYRP_IQ_ENABLE\n    get() { return this.getnrpn(12) },\n    set(v) { return this.setnrpn(12, v) }\n  },\n  iqModeSelects: { // KYRV_IQ_*\n    get() { return [\n{ value: 0, label: \"None\", title: \"no IQ\" },\n{ value: 1, label: \"LSB\", title: \"IQ for lower sideband\" },\n{ value: 2, label: \"USB\", title: \"IQ for upper sideband\" }] }\n  },\n  iqAdjustPhase: { // KYRP_IQ_ADJUST\n    get() { return signextend14(this.getnrpn(13)) },\n    set(v) { return this.setnrpn(13, mask14(v)) }\n  },\n  iqAdjustBalance: { // KYRP_IQ_BALANCE\n    get() { return signextend14(this.getnrpn(16)) },\n    set(v) { return this.setnrpn(16, mask14(v)) }\n  },\n  txEnable: { // KYRP_TX_ENABLE\n    get() { return Boolean(this.getnrpn(14)) },\n    set(v) { return this.setnrpn(14, Number(v)) }\n  },\n  sidetoneEnable: { // KYRP_ST_ENABLE\n    get() { return Boolean(this.getnrpn(15)) },\n    set(v) { return this.setnrpn(15, Number(v)) }\n  },\n  sidetonePan: { // KYRP_ST_PAN\n    get() { return signextend14(this.getnrpn(17)) },\n    set(v) { return this.setnrpn(17, mask14(v)) }\n  },\n  outputEnable: { // KYRP_OUT_ENABLE\n    get() { return this.getnrpn(18) },\n    set(v) { return this.setnrpn(18, v) }\n  },\n  remoteKey: { // KYRP_REMOTE_KEY\n    get() { return Boolean(this.getnrpn(19)) },\n    set(v) { return this.setnrpn(19, Number(v)) }\n  },\n  debouncePeriod: { // KYRP_DEBOUNCE\n    get() { return (1000*this.getnrpn(20)/48000).toFixed(1) },\n    set(v) { return this.setnrpn(20, mask14(Math.round(48000*v/1000))) }\n  },\n  pttHeadTime: { // KYRP_HEAD_TIME\n    get() { return (1000*this.getnrpn(21)/48000).toFixed(1) },\n    set(v) { return this.setnrpn(21, mask14(Math.round(48000*v/1000))) }\n  },\n  pttTailTime: { // KYRP_TAIL_TIME\n    get() { return (1000*this.getnrpn(22)/48000).toFixed(1) },\n    set(v) { return this.setnrpn(22, mask14(Math.round(48000*v/1000))) }\n  },\n  pttHangTime: { // KYRP_HANG_TIME\n    get() { return this.getnrpn(23) },\n    set(v) { return this.setnrpn(23, v) }\n  },\n  keyerRiseTime: { // KYRP_RISE_TIME\n    get() { return (1000*this.getnrpn(24)/48000).toFixed(1) },\n    set(v) { return this.setnrpn(24, mask14(Math.round(48000*v/1000))) }\n  },\n  keyerFallTime: { // KYRP_FALL_TIME\n    get() { return (1000*this.getnrpn(25)/48000).toFixed(1) },\n    set(v) { return this.setnrpn(25, mask14(Math.round(48000*v/1000))) }\n  },\n  keyerRiseRamp: { // KYRP_RISE_RAMP\n    get() { return this.getnrpn(26) },\n    set(v) { return this.setnrpn(26, v) }\n  },\n  keyerFallRamp: { // KYRP_FALL_RAMP\n    get() { return this.getnrpn(27) },\n    set(v) { return this.setnrpn(27, v) }\n  },\n  keyerRamps: { // KYRV_RAMP_*\n    get() { return [\n{ value: 0, label: \"Hann\", title: \"ramp from Hann window function, raised cosine\" },\n{ value: 1, label: \"Blackman Harris\", title: \"ramp from Blackman Harris window function\" },\n{ value: 2, label: \"Linear\", title: \"linear ramp, for comparison\" }] }\n  },\n  paddleMode: { // KYRP_PAD_MODE\n    get() { return this.getnrpn(28) },\n    set(v) { return this.setnrpn(28, v) }\n  },\n  paddleModes: { // KYRV_MODE_*\n    get() { return [\n{ value: 0, label: \"A\", title: \"paddle keyer iambic mode A\" },\n{ value: 1, label: \"B\", title: \"paddle keyer iambic mode B\" },\n{ value: 2, label: \"S\", title: \"paddle keyer bug mode\" }] }\n  },\n  paddleSwapped: { // KYRP_PAD_SWAP\n    get() { return Boolean(this.getnrpn(29)) },\n    set(v) { return this.setnrpn(29, Number(v)) }\n  },\n  paddleAdapter: { // KYRP_PAD_ADAPT\n    get() { return this.getnrpn(30) },\n    set(v) { return this.setnrpn(30, v) }\n  },\n  paddleAdapters: { // KYRV_ADAPT_*\n    get() { return [\n{ value: 0, label: \"Normal\", title: \"paddle keyer unmodified\" },\n{ value: 1, label: \"Ultimatic\", title: \"paddle keyer modified to produce ultimatic keyer\" },\n{ value: 2, label: \"Single\", title: \"paddle keyer modified to simulate single lever paddle\" }] }\n  },\n  autoLetterSpace: { // KYRP_AUTO_ILS\n    get() { return Boolean(this.getnrpn(31)) },\n    set(v) { return this.setnrpn(31, Number(v)) }\n  },\n  autoWordSpace: { // KYRP_AUTO_IWS\n    get() { return Boolean(this.getnrpn(32)) },\n    set(v) { return this.setnrpn(32, Number(v)) }\n  },\n  paddleKeyer: { // KYRP_PAD_KEYER\n    get() { return this.getnrpn(33) },\n    set(v) { return this.setnrpn(33, v) }\n  },\n  paddleKeyers: { // KYRV_KEYER_*\n    get() { return [\n{ value: 0, label: \"ad5dz\", title: \"paddle keyer algorithm by ad5dz\" },\n{ value: 1, label: \"k1el\", title: \"paddle keyer algorithm by k1el\" },\n{ value: 2, label: \"nd7pa\", title: \"paddle keyer algorithm by nd7pa\" },\n{ value: 3, label: \"vk6ph\", title: \"paddle keyer algorithm by vk6ph\" }] }\n  },\n  channelCC: { // KYRP_CHAN_CC\n    get() { return this.getnrpn(34) },\n    set(v) { return this.setnrpn(34, v) }\n  },\n  channelNote: { // KYRP_CHAN_NOTE\n    get() { return this.getnrpn(35) },\n    set(v) { return this.setnrpn(35, v) }\n  },\n  channelNrpn: { // KYRP_CHAN_NRPN\n    get() { return this.getnrpn(36) },\n    set(v) { return this.setnrpn(36, v) }\n  },\n  noteKeyOut: { // KYRP_NOTE_KEY_OUT\n    get() { return this.getnrpn(37) },\n    set(v) { return this.setnrpn(37, v) }\n  },\n  notePTTOut: { // KYRP_NOTE_PTT_OUT\n    get() { return this.getnrpn(38) },\n    set(v) { return this.setnrpn(38, v) }\n  },\n  noteTune: { // KYRP_NOTE_TUNE\n    get() { return this.getnrpn(39) },\n    set(v) { return this.setnrpn(39, v) }\n  },\n  noteLeftPaddle: { // KYRP_NOTE_L_PAD\n    get() { return this.getnrpn(40) },\n    set(v) { return this.setnrpn(40, v) }\n  },\n  noteRightPaddle: { // KYRP_NOTE_R_PAD\n    get() { return this.getnrpn(41) },\n    set(v) { return this.setnrpn(41, v) }\n  },\n  noteStraightKey: { // KYRP_NOTE_S_KEY\n    get() { return this.getnrpn(42) },\n    set(v) { return this.setnrpn(42, v) }\n  },\n  noteExternalPTT: { // KYRP_NOTE_EXT_PTT\n    get() { return this.getnrpn(43) },\n    set(v) { return this.setnrpn(43, v) }\n  },\n  noteEnable: { // KYRP_NOTE_ENABLE\n    get() { return this.getnrpn(44) },\n    set(v) { return this.setnrpn(44, v) }\n  },\n  noteEnables: { // KYRV_NOTE_*\n    get() { return [\n{ value: 0, label: \"KeyOut\", title: \"note for key/ptt key output\" },\n{ value: 1, label: \"PttOut\", title: \"note for key/ptt ptt output\" },\n{ value: 2, label: \"Tune\", title: \"note to key tune signal\" },\n{ value: 3, label: \"LPad\", title: \"note for left paddle switch input\" },\n{ value: 4, label: \"RPad\", title: \"note for right paddle switch input\" },\n{ value: 5, label: \"SKey\", title: \"note for straight key switch input\" },\n{ value: 6, label: \"ExtPtt\", title: \"note for external ptt switch input\" }] }\n  },\n  adcEnable: { // KYRP_ADC_ENABLE\n    get() { return Boolean(this.getnrpn(50)) },\n    set(v) { return this.setnrpn(50, Number(v)) }\n  },\n  adcControls: { // KYRV_ADC_*\n    get() { return [\n{ value: 0, label: \"None\", title: \"pot controls nothing\" },\n{ value: 3, label: \"Volume\", title: \"pot controls master volume\" },\n{ value: 140, label: \"Level\", title: \"pot controls sidetone level\" },\n{ value: 139, label: \"Tone\", title: \"pot controls sidetone pitch\" },\n{ value: 141, label: \"Speed\", title: \"pot controls keyer speed\" }] }\n  },\n  adc0Control: { // KYRP_ADC0_CONTROL\n    get() { return this.getnrpn(45) },\n    set(v) { return this.setnrpn(45, v) }\n  },\n  adc1Control: { // KYRP_ADC1_CONTROL\n    get() { return this.getnrpn(46) },\n    set(v) { return this.setnrpn(46, v) }\n  },\n  adc2Control: { // KYRP_ADC2_CONTROL\n    get() { return this.getnrpn(47) },\n    set(v) { return this.setnrpn(47, v) }\n  },\n  adc3Control: { // KYRP_ADC4_CONTROL\n    get() { return this.getnrpn(49) },\n    set(v) { return this.setnrpn(49, v) }\n  },\n  adc4Control: { // KYRP_ADC3_CONTROL\n    get() { return this.getnrpn(48) },\n    set(v) { return this.setnrpn(48, v) }\n  },\n  keyerTone: { // KYRP_TONE\n    get() { return this.getnrpn(139)/10 },\n    set(v) { return this.setnrpn(139, Math.floor(10*v)) }\n  },\n  keyerLevel: { // KYRP_LEVEL\n    get() { return signextend14(this.getnrpn(140))/10 },\n    set(v) { return this.setnrpn(140, mask14(Math.round(10*v))) }\n  },\n  keyerSpeed: { // KYRP_SPEED\n    get() { return this.getnrpn(141) },\n    set(v) { return this.setnrpn(141, v) }\n  },\n  keyerWeight: { // KYRP_WEIGHT\n    get() { return this.getnrpn(142) },\n    set(v) { return this.setnrpn(142, v) }\n  },\n  keyerRatio: { // KYRP_RATIO\n    get() { return this.getnrpn(143) },\n    set(v) { return this.setnrpn(143, v) }\n  },\n  keyerFarnsworth: { // KYRP_FARNS\n    get() { return this.getnrpn(144) },\n    set(v) { return this.setnrpn(144, v) }\n  },\n  keyerCompensation: { // KYRP_COMP\n    get() { return (1000*signextend14(this.getnrpn(145))/48000).toFixed(1) },\n    set(v) { return this.setnrpn(145, mask14(Math.round(48000*v/1000))) }\n  },\n  keyerSpeedFraction: { // KYRP_SPEED_FRAC\n    get() { return this.getnrpn(146) },\n    set(v) { return this.setnrpn(146, v) }\n  },\n  keyerIdentifier: { // KYRP_ID_KEYER\n    get() { return this.getnrpn(1) }\n  },\n  keyerVersion: { // KYRP_ID_VERSION\n    get() { return this.getnrpn(2) }\n  },\n  nrpnSize: { // KYRP_NRPN_SIZE\n    get() { return this.getnrpn(3000) }\n  },\n  messageSize: { // KYRP_MSG_SIZE\n    get() { return this.getnrpn(3001) }\n  },\n  sampleRate: { // KYRP_SAMPLE_RATE\n    get() { return this.getnrpn(3002) }\n  },\n  eepromSize: { // KYRP_EEPROM_LENGTH\n    get() { return this.getnrpn(3003) }\n  },\n  identifyCPU: { // KYRP_ID_CPU\n    get() { return this.getnrpn(3004) }\n  },\n  identifyCodec: { // KYRP_ID_CODEC\n    get() { return this.getnrpn(3005) }\n  },\n  nothing: { // KYRP_NOTHING\n    // KYRP_NOTHING has no nrpn\n\n  },\n  echoAll: { // KYRP_ECHO_ALL\n    get() { return this.getnrpn(2003) }\n  },\n  voice: { // null\n    get() { return this._voice },\n    set(v) { this._voice = v }\n  },\n  voices: { // null\n    get() { return this._voices }\n  },\n  mixer: { // null\n    get() { return this._mixer },\n    set(v) { this._mixer = v }\n  },\n  mixers: { // null\n    get() { return this._mixers }\n  },\n  mixerValue: { // null\n    // no hasakProperty map\n\n  },\n  code: { // null\n    get() { return this._code },\n    set(v) { this._code = v }\n  },\n  codes: { // null\n    get() { return this._codes }\n  },\n  codeValue: { // null\n    // no hasakProperty map\n\n  }\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hasakDescriptors",
+          "declaration": {
+            "name": "hasakDescriptors",
+            "module": "src/hasakDescriptors.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/hasakProperties.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "hasakProperties",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n    \"KYRC_VERSION\": {nrpn: 100, type: \"def\", title: \"version number of the NRPN set implemented\"},\n    \"KYR_N_VOX\": {nrpn: 6, type: \"def\", title: \"number of keyer voices\"},\n    \"KYR_VOX_NONE\": {nrpn: 0, type: \"def\", title: \"no active voice, default parameters for other voices\"},\n    \"KYR_VOX_TUNE\": {nrpn: 1, type: \"def\", title: \"tune switch\"},\n    \"KYR_VOX_S_KEY\": {nrpn: 2, type: \"def\", title: \"Straight Key\"},\n    \"KYR_VOX_PAD\": {nrpn: 3, type: \"def\", title: \"Paddle\"},\n    \"KYR_VOX_WINK\": {nrpn: 4, type: \"def\", title: \"Winkey Key\"},\n    \"KYR_VOX_KYR\": {nrpn: 5, type: \"def\", title: \"Kyr Key\"},\n    \"KYR_VOX_BUT\": {nrpn: 6, type: \"def\", title: \"headset button straight key\"},\n    \"KYR_CC_MSB\": {nrpn: 6, type: \"def\", title: \"MIDI control change Data Entry (MSB)\"},\n    \"KYR_CC_LSB\": {nrpn: 38, type: \"def\", title: \"MIDI control change Data Entry (LSB)\"},\n    \"KYR_CC_NRPN_LSB\": {nrpn: 98, type: \"def\", title: \"MIDI control change Non-registered Parameter (LSB)\"},\n    \"KYR_CC_NRPN_MSB\": {nrpn: 99, type: \"def\", title: \"MIDI control change Non-registered Parameter (MSB)\"},\n    \"KYRV_NOT_SET\": {nrpn: -1, type: \"val\", title: \"16 bit not set value\"},\n    \"KYRV_MASK\": {nrpn: 16383, type: \"val\", title: \"14 bit mask\"},\n    \"KYRP_FIRST\": {nrpn: 0, type: \"rel\", title: \"base of nrpns\"},\n    \"KYRP_NOTHING\": {nrpn: 0, type: \"par\", title: \"nothng parameter value, zero is not a valid parameter\", property: \"nothing\"},\n    \"KYRP_ID_KEYER\": {nrpn: 1, type: \"cmd\", title: \"keyer unique identfier\", property: \"keyerIdentifier\"},\n    \"KYRP_ID_VERSION\": {nrpn: 2, type: \"cmd\", title: \"keyer version identfier\", property: \"keyerVersion\"},\n    \"KYRP_CODEC\": {nrpn: 3, type: \"rel\", title: \"base of codec nrpns\"},\n    \"KYRP_VOLUME\": {nrpn: 3, type: \"par\", label: \"Vol\", title: \"output volume\", unit: \"dB/10\", range: \"-128 24\", property: \"masterVolume\"},\n    \"KYRP_INPUT_SELECT\": {nrpn: 4, type: \"par\", label: \"InSel\", title: \"input select\", values: \"KYRV_INPUT_*\", property: \"inputSelect\"},\n    \"KYRV_INPUT_*\": {name: \"KYRV_INPUT_*\", type: \"opts\", property: \"inputSelects\", opts: \"KYRV_INPUT_MIC KYRV_INPUT_LINE\"},\n    \"KYRV_INPUT_MIC\": {nrpn: 0, type: \"val\", label: \"Mic\", title: \"input select microphone\", property: \"inputSelects\"},\n    \"KYRV_INPUT_LINE\": {nrpn: 1, type: \"val\", label: \"LineIn\", title: \"input select line in\", property: \"inputSelects\"},\n    \"KYRP_INPUT_LEVEL\": {nrpn: 5, type: \"par\", label: \"InLvl\", title: \"input level\", range: \"-128 24\", unit: \"dB/10\", property: \"inputLevel\"},\n    \"KYRP_SOFT\": {nrpn: 6, type: \"rel\", title: \"base of soft params\"},\n    \"KYRP_BUTTON_0\": {nrpn: 6, type: \"par\", label: \"But0\", title: \"headset button 0 - none pressed\", range: \"-8192 8191\", unit: \"pp8191\", property: \"buttonLevel0\"},\n    \"KYRP_BUTTON_1\": {nrpn: 7, type: \"par\", label: \"But1\", title: \"headset button 1 - center or only pressed\", range: \"-8192 8191\", unit: \"pp8191\", property: \"buttonLevel1\"},\n    \"KYRP_BUTTON_2\": {nrpn: 8, type: \"par\", label: \"But2\", title: \"headset button 2 - up pressed\", range: \"-8192 8191\", unit: \"pp8191\", property: \"buttonLevel2\"},\n    \"KYRP_BUTTON_3\": {nrpn: 9, type: \"par\", label: \"But3\", title: \"headset button 3 - down pressed\", range: \"-8192 8191\", unit: \"pp8191\", property: \"buttonLevel3\"},\n    \"KYRP_BUTTON_4\": {nrpn: 10, type: \"par\", label: \"But4\", title: \"headset button 4 - hey pressed\", range: \"-8192 8191\", unit: \"pp8191\", property: \"buttonLevel4\"},\n    \"KYRP_PTT_ENABLE\": {nrpn: 11, type: \"par\", label: \"PTTReq\", title: \"require EXT_PTT to transmit\", range: \"0 1\", ignore: \"1\", property: \"externalPTTRequire\"},\n    \"KYRP_IQ_ENABLE\": {nrpn: 12, type: \"par\", label: \"IQ mode\", title: \"Mode of IQ sample generation\", values: \"KYRV_IQ_*\", property: \"iqModeSelect\"},\n    \"KYRV_IQ_*\": {name: \"KYRV_IQ_*\", type: \"opts\", property: \"iqModeSelects\", opts: \"KYRV_IQ_NONE KYRV_IQ_LSB KYRV_IQ_USB\"},\n    \"KYRV_IQ_NONE\": {nrpn: 0, type: \"val\", label: \"None\", title: \"no IQ\", property: \"iqModes\"},\n    \"KYRV_IQ_LSB\": {nrpn: 1, type: \"val\", label: \"LSB\", title: \"IQ for lower sideband\", property: \"iqModes\"},\n    \"KYRV_IQ_USB\": {nrpn: 2, type: \"val\", label: \"USB\", title: \"IQ for upper sideband\", property: \"iqModes\"},\n    \"KYRP_IQ_ADJUST\": {nrpn: 13, type: \"par\", label: \"IQAdj\", title: \"adjustment to IQ phase\", range: \"-8192 8191\", unit: \"pp8191\", ignore: \"1\", property: \"iqAdjustPhase\"},\n    \"KYRP_TX_ENABLE\": {nrpn: 14, type: \"par\", label: \"TXEn\", title: \"soft enable TX\", range: \"0 1\", property: \"txEnable\"},\n    \"KYRP_ST_ENABLE\": {nrpn: 15, type: \"par\", label: \"STEn\", title: \"enable sidetone generation\", range: \"0 1\", property: \"sidetoneEnable\"},\n    \"KYRP_IQ_BALANCE\": {nrpn: 16, type: \"par\", label: \"IQBal\", title: \"adjustment to IQ balance\", range: \"-8192 8191\", unit: \"pp8191\", ignore: \"1\", property: \"iqAdjustBalance\"},\n    \"KYRP_ST_PAN\": {nrpn: 17, type: \"par\", label: \"STPan\", title: \"sidetone pan left or right\", range: \"-8192 8191\", unit: \"pp8191\", ignore: \"1\", property: \"sidetonePan\"},\n    \"KYRP_OUT_ENABLE\": {nrpn: 18, type: \"par\", label: \"OutMix\", title: \"output mixer enable bits\", range: \"0 4095\", property: \"outputEnable\"},\n    \"KYRP_REMOTE_KEY\": {nrpn: 19, type: \"par\", label: \"Remote\", title: \"enable direct remote control of tune by midi note\", range: \"0 1\", property: \"remoteKey\"},\n    \"KYRP_COMM\": {nrpn: 20, type: \"rel\", title: \"keyer parameters shared across voices\"},\n    \"KYRP_DEBOUNCE\": {nrpn: 20, type: \"par\", label: \"Deb\", title: \"debounce period\", range: \"0 16383\", unit: \"sample\", property: \"debouncePeriod\"},\n    \"KYRP_PTT\": {nrpn: 21, type: \"rel\", title: \"PTT timing parameters\"},\n    \"KYRP_HEAD_TIME\": {nrpn: 21, type: \"par\", label: \"PTTHead\", title: \"time ptt should lead key, key delay\", range: \"0 16383\", unit: \"sample\", property: \"pttHeadTime\"},\n    \"KYRP_TAIL_TIME\": {nrpn: 22, type: \"par\", label: \"PTTTail\", title: \"time ptt should linger after key\", range: \"0 16383\", unit: \"sample\", property: \"pttTailTime\"},\n    \"KYRP_HANG_TIME\": {nrpn: 23, type: \"par\", label: \"PTTHang\", title: \"time in dits ptt should linger after key\", range: \"0 127\", unit: \"dit\", property: \"pttHangTime\"},\n    \"KYRP_RAMP\": {nrpn: 24, type: \"rel\", title: \"base of the keyer ramp parameters\"},\n    \"KYRP_RISE_TIME\": {nrpn: 24, type: \"par\", title: \"key rise ramp length\", range: \"0 16383\", unit: \"sample\", property: \"keyerRiseTime\"},\n    \"KYRP_FALL_TIME\": {nrpn: 25, type: \"par\", title: \"key fall ramp length\", range: \"0 16383\", unit: \"sample\", property: \"keyerFallTime\"},\n    \"KYRP_RISE_RAMP\": {nrpn: 26, type: \"par\", title: \"key rise ramp\", values: \"KYRV_RAMP_*\", default: \"KYRV_RAMP_HANN\", property: \"keyerRiseRamp\", valuesProperty: \"keyerRamps\"},\n    \"KYRV_RAMP_*\": {name: \"KYRV_RAMP_*\", type: \"opts\", property: \"keyerRamps\", opts: \"KYRV_RAMP_HANN KYRV_RAMP_BLACKMAN_HARRIS KYRV_RAMP_LINEAR\"},\n    \"KYRP_FALL_RAMP\": {nrpn: 27, type: \"par\", title: \"key fall ramp\", values: \"KYRV_RAMP_*\", default: \"KYRV_RAMP_HANN\", property: \"keyerFallRamp\", valuesProperty: \"keyerRamps\"},\n    \"KYRV_RAMP_HANN\": {nrpn: 0, type: \"val\", label: \"Hann\", title: \"ramp from Hann window function, raised cosine\", property: \"keyerRamps\"},\n    \"KYRV_RAMP_BLACKMAN_HARRIS\": {nrpn: 1, type: \"val\", label: \"Blackman Harris\", title: \"ramp from Blackman Harris window function\", property: \"keyerRamps\"},\n    \"KYRV_RAMP_LINEAR\": {nrpn: 2, type: \"val\", label: \"Linear\", title: \"linear ramp, for comparison\", property: \"keyerRamps\"},\n    \"KYRP_PAD\": {nrpn: 28, type: \"rel\", title: \"base of paddle keyer parameters\"},\n    \"KYRP_PAD_MODE\": {nrpn: 28, type: \"par\", title: \"iambic keyer mode A/B/S\", values: \"KYRV_MODE_*\", default: \"KYRV_MODE_A\", property: \"paddleMode\"},\n    \"KYRV_MODE_*\": {name: \"KYRV_MODE_*\", type: \"opts\", property: \"paddleModes\", opts: \"KYRV_MODE_A KYRV_MODE_B KYRV_MODE_S\"},\n    \"KYRV_MODE_A\": {nrpn: 0, type: \"val\", label: \"A\", title: \"paddle keyer iambic mode A\"},\n    \"KYRV_MODE_B\": {nrpn: 1, type: \"val\", label: \"B\", title: \"paddle keyer iambic mode B\"},\n    \"KYRV_MODE_S\": {nrpn: 2, type: \"val\", label: \"S\", title: \"paddle keyer bug mode\"},\n    \"KYRP_PAD_SWAP\": {nrpn: 29, type: \"par\", title: \"swap paddles\", range: \"0 1\", default: \"0\", property: \"paddleSwapped\"},\n    \"KYRP_PAD_ADAPT\": {nrpn: 30, type: \"par\", title: \"paddle adapter normal/ultimatic/single lever\", values: \"KYRV_ADAPT_*\", default: \"KYRV_ADAPT_NORMAL\", property: \"paddleAdapter\"},\n    \"KYRV_ADAPT_*\": {name: \"KYRV_ADAPT_*\", type: \"opts\", property: \"paddleAdapters\", opts: \"KYRV_ADAPT_NORMAL KYRV_ADAPT_ULTIMATIC KYRV_ADAPT_SINGLE\"},\n    \"KYRV_ADAPT_NORMAL\": {nrpn: 0, type: \"val\", label: \"Normal\", title: \"paddle keyer unmodified\"},\n    \"KYRV_ADAPT_ULTIMATIC\": {nrpn: 1, type: \"val\", label: \"Ultimatic\", title: \"paddle keyer modified to produce ultimatic keyer\"},\n    \"KYRV_ADAPT_SINGLE\": {nrpn: 2, type: \"val\", label: \"Single\", title: \"paddle keyer modified to simulate single lever paddle\"},\n    \"KYRP_AUTO_ILS\": {nrpn: 31, type: \"par\", title: \"automatic letter space timing\", range: \"0 1\", default: \"1\", property: \"autoLetterSpace\"},\n    \"KYRP_AUTO_IWS\": {nrpn: 32, type: \"par\", title: \"automatic word space timing\", range: \"0 1\", default: \"0\", property: \"autoWordSpace\"},\n    \"KYRP_PAD_KEYER\": {nrpn: 33, type: \"par\", title: \"paddle keyer implementation\", values: \"KYRV_KEYER_*\", default: \"KYRV_KEYER_VK6PH\", property: \"paddleKeyer\"},\n    \"KYRV_KEYER_*\": {name: \"KYRV_KEYER_*\", type: \"opts\", property: \"paddleKeyers\", opts: \"KYRV_KEYER_AD5DZ KYRV_KEYER_K1EL KYRV_KEYER_ND7PA KYRV_KEYER_VK6PH\"},\n    \"KYRV_KEYER_AD5DZ\": {nrpn: 0, type: \"val\", label: \"ad5dz\", title: \"paddle keyer algorithm by ad5dz\", property: \"paddleKeyers\"},\n    \"KYRV_KEYER_K1EL\": {nrpn: 1, type: \"val\", label: \"k1el\", title: \"paddle keyer algorithm by k1el\", property: \"paddleKeyers\"},\n    \"KYRV_KEYER_ND7PA\": {nrpn: 2, type: \"val\", label: \"nd7pa\", title: \"paddle keyer algorithm by nd7pa\", property: \"paddleKeyers\"},\n    \"KYRV_KEYER_VK6PH\": {nrpn: 3, type: \"val\", label: \"vk6ph\", title: \"paddle keyer algorithm by vk6ph\", property: \"paddleKeyers\"},\n    \"KYRP_CHAN\": {nrpn: 34, type: \"rel\", title: \"base of midi channels\"},\n    \"KYRP_CHAN_CC\": {nrpn: 34, type: \"par\", title: \"midi channel for simple controls\", unit: \"\", range: \"0 16\", property: \"channelCC\"},\n    \"KYRP_CHAN_NOTE\": {nrpn: 35, type: \"par\", title: \"midi channel for notes\", unit: \"\", range: \"0 16\", property: \"channelNote\"},\n    \"KYRP_CHAN_NRPN\": {nrpn: 36, type: \"par\", title: \"midi channel for NRPN format controls\", unit: \"\", range: \"0 16\", property: \"channelNrpn\"},\n    \"KYRV_CHAN_INVALID\": {nrpn: 0, type: \"val\", title: \"invalid channel, used to disable midi channel\"},\n    \"KYRP_NOTE\": {nrpn: 37, type: \"rel\", title: \"base of midi notes\"},\n    \"KYRP_NOTE_KEY_OUT\": {nrpn: 37, type: \"par\", title: \"note for key output signal\", unit: \"\", range: \"0 128\", property: \"noteKeyOut\"},\n    \"KYRP_NOTE_PTT_OUT\": {nrpn: 38, type: \"par\", title: \"note for ptt output signal\", unit: \"\", range: \"0 128\", property: \"notePTTOut\"},\n    \"KYRP_NOTE_TUNE\": {nrpn: 39, type: \"par\", title: \"note to key tune signal input\", unit: \"\", range: \"0 128\", property: \"noteTune\"},\n    \"KYRP_NOTE_L_PAD\": {nrpn: 40, type: \"par\", title: \"note for left paddle switch\", unit: \"\", range: \"0 128\", property: \"noteLeftPaddle\"},\n    \"KYRP_NOTE_R_PAD\": {nrpn: 41, type: \"par\", title: \"note for right paddle switch\", unit: \"\", range: \"0 128\", property: \"noteRightPaddle\"},\n    \"KYRP_NOTE_S_KEY\": {nrpn: 42, type: \"par\", title: \"note for straight key switch\", unit: \"\", range: \"0 128\", property: \"noteStraightKey\"},\n    \"KYRP_NOTE_EXT_PTT\": {nrpn: 43, type: \"par\", title: \"note for external ptt switch\", unit: \"\", range: \"0 128\", property: \"noteExternalPTT\"},\n    \"KYRP_NOTE_ENABLE\": {nrpn: 44, type: \"par\", title: \"bit mask which enables notes to be sent over usbMIDI\", values: \"KYRV_NOTE_*\", property: \"noteEnable\", valuesProperty: \"noteEnables\"},\n    \"KYRV_NOTE_*\": {name: \"KYRV_NOTE_*\", type: \"opts\", property: \"noteEnables\", opts: \"KYRV_NOTE_KEY_OUT KYRV_NOTE_PTT_OUT KYRV_NOTE_TUNE KYRV_NOTE_L_PAD KYRV_NOTE_R_PAD KYRV_NOTE_S_KEY KYRV_NOTE_EXT_PTT\"},\n    \"KYRV_NOTE_KEY_OUT\": {nrpn: 0, type: \"val\", label: \"KeyOut\", title: \"note for key/ptt key output\", property: \"noteEnables\"},\n    \"KYRV_NOTE_PTT_OUT\": {nrpn: 1, type: \"val\", label: \"PttOut\", title: \"note for key/ptt ptt output\", property: \"noteEnables\"},\n    \"KYRV_NOTE_TUNE\": {nrpn: 2, type: \"val\", label: \"Tune\", title: \"note to key tune signal\", property: \"noteEnables\"},\n    \"KYRV_NOTE_L_PAD\": {nrpn: 3, type: \"val\", label: \"LPad\", title: \"note for left paddle switch input\", property: \"noteEnables\"},\n    \"KYRV_NOTE_R_PAD\": {nrpn: 4, type: \"val\", label: \"RPad\", title: \"note for right paddle switch input\", property: \"noteEnables\"},\n    \"KYRV_NOTE_S_KEY\": {nrpn: 5, type: \"val\", label: \"SKey\", title: \"note for straight key switch input\", property: \"noteEnables\"},\n    \"KYRV_NOTE_EXT_PTT\": {nrpn: 6, type: \"val\", label: \"ExtPtt\", title: \"note for external ptt switch input\", property: \"noteEnables\"},\n    \"KYRP_PINS\": {nrpn: 45, type: \"rel\", title: \"base of hardware pin assignments\"},\n    \"KYRP_ADC0_CONTROL\": {nrpn: 45, type: \"par\", title: \"property for adc0 = A0\", unit: \"\", values: \"KYRV_ADC_*\", property: \"adc0Control\", valuesProperty: \"adcControls\"},\n    \"KYRV_ADC_*\": {name: \"KYRV_ADC_*\", type: \"opts\", property: \"adcControls\", opts: \"KYRV_ADC_NOTHING KYRV_ADC_VOLUME KYRV_ADC_LEVEL KYRV_ADC_TONE KYRV_ADC_SPEED\"},\n    \"KYRP_ADC1_CONTROL\": {nrpn: 46, type: \"par\", title: \"property for adc1 = A1 (master volume on the CWKeyer)\", unit: \"\", values: \"KYRV_ADC_*\", property: \"adc1Control\", valuesProperty: \"adcControls\"},\n    \"KYRP_ADC2_CONTROL\": {nrpn: 47, type: \"par\", title: \"property for adc2 = A2 (sidetone volume on the CWKeyer)\", unit: \"\", values: \"KYRV_ADC_*\", property: \"adc2Control\", valuesProperty: \"adcControls\"},\n    \"KYRP_ADC3_CONTROL\": {nrpn: 48, type: \"par\", title: \"property for adc3 = A3 (sidetone frequency on the CWKeyer\", unit: \"\", values: \"KYRV_ADC_*\", property: \"adc4Control\", valuesProperty: \"adcControls\"},\n    \"KYRP_ADC4_CONTROL\": {nrpn: 49, type: \"par\", title: \"property for adc4 = A8 (speed on the CWKeyer)\", unit: \"\", values: \"KYRV_ADC_*\", property: \"adc3Control\", valuesProperty: \"adcControls\"},\n    \"KYRP_ADC_ENABLE\": {nrpn: 50, type: \"par\", title: \"enable adc channels\", label: \"ADCEn\", range: \"0 1\", property: \"adcEnable\"},\n    \"KYRP_MORSE\": {nrpn: 51, type: \"rel\", title: \"morse code table base\"},\n    \"KYRP_MIXER\": {nrpn: 115, type: \"rel\", title: \"base of output mixer block\"},\n    \"KYRP_KEYER\": {nrpn: 139, type: \"rel\", title: \"base of vox specialized keyer parameters\"},\n    \"KYRP_TONE\": {nrpn: 139, type: \"par\", title: \"sidetone and IQ oscillator frequency\", range: \"0 16383\", unit: \"Hz/10\", property: \"keyerTone\"},\n    \"KYRP_LEVEL\": {nrpn: 140, type: \"par\", title: \"sidetone level\", range: \"-128 24\", default: \"0\", unit: \"dB/10\", property: \"keyerLevel\"},\n    \"KYRP_SPEED\": {nrpn: 141, type: \"par\", title: \"keyer speed control\", range: \"0 16384\", unit: \"WPM\", property: \"keyerSpeed\"},\n    \"KYRP_WEIGHT\": {nrpn: 142, type: \"par\", title: \"keyer mark/space weight\", range: \"25 75\", unit: \"%\", default: \"50\", property: \"keyerWeight\"},\n    \"KYRP_RATIO\": {nrpn: 143, type: \"par\", title: \"keyer dit/dah ratio\", range: \"25 75\", unit: \"%\", default: \"50\", property: \"keyerRatio\"},\n    \"KYRP_FARNS\": {nrpn: 144, type: \"par\", title: \"Farnsworth keying speed\", range: \"0 127\", default: \"0\", unit: \"WPM\", property: \"keyerFarnsworth\"},\n    \"KYRP_COMP\": {nrpn: 145, type: \"par\", title: \"keyer compensation\", range: \"-8192 8191\", default: \"0\", unit: \"sample\", property: \"keyerCompensation\"},\n    \"KYRP_SPEED_FRAC\": {nrpn: 146, type: \"par\", title: \"keyer speed fraction\", range: \"0 127\", default: \"0\", unit: \"WPM/128\", property: \"keyerSpeedFraction\"},\n    \"KYRP_KEYER_LAST\": {nrpn: 147, type: \"rel\", title: \"end of keyer block\"},\n    \"KYRP_VOX_OFFSET\": {nrpn: 8, type: \"rel\", title: \"size of keyer parameter block\"},\n    \"KYRP_VOX_NONE\": {nrpn: 139, type: \"rel\", title: \"base of default keyer parameters\"},\n    \"KYRP_VOX_TUNE\": {nrpn: 147, type: \"rel\", title: \"base of tune keyer parameters\"},\n    \"KYRP_VOX_S_KEY\": {nrpn: 155, type: \"rel\", title: \"base of straight key parameters\"},\n    \"KYRP_VOX_PAD\": {nrpn: 163, type: \"rel\", title: \"base of paddle keyer parameters\"},\n    \"KYRP_VOX_WINK\": {nrpn: 171, type: \"rel\", title: \"base of text from winkey parameters\"},\n    \"KYRP_VOX_KYR\": {nrpn: 179, type: \"rel\", title: \"base of text from hasak parameters\"},\n    \"KYRP_VOX_BUT\": {nrpn: 187, type: \"rel\", title: \"base of headset button keyer parameters\"},\n    \"KYRV_ADC_NOTHING\": {nrpn: 0, type: \"val\", label: \"None\", title: \"pot controls nothing\", property: \"adcControls\"},\n    \"KYRV_ADC_VOLUME\": {nrpn: 3, type: \"val\", label: \"Volume\", title: \"pot controls master volume\", property: \"adcControls\"},\n    \"KYRV_ADC_LEVEL\": {nrpn: 140, type: \"val\", label: \"Level\", title: \"pot controls sidetone level\", property: \"adcControls\"},\n    \"KYRV_ADC_TONE\": {nrpn: 139, type: \"val\", label: \"Tone\", title: \"pot controls sidetone pitch\", property: \"adcControls\"},\n    \"KYRV_ADC_SPEED\": {nrpn: 141, type: \"val\", label: \"Speed\", title: \"pot controls keyer speed\", property: \"adcControls\"},\n    \"KYRP_LAST\": {nrpn: 195, type: \"rel\", title: \"one past end of stored keyer parameters\"},\n    \"KYRP_EXEC\": {nrpn: 2000, type: \"rel\", title: \"base of command nrpns\"},\n    \"KYRP_WRITE_EEPROM\": {nrpn: 2000, type: \"cmd\", label: \"Write EEPROM\", title: \"write nrpn+msgs to eeprom\", property: \"writeEEPROM\"},\n    \"KYRP_READ_EEPROM\": {nrpn: 2001, type: \"cmd\", label: \"Read EEPROM\", title: \"read nrpn+msgs from eeprom\", property: \"loadEEPROM\"},\n    \"KYRP_SET_DEFAULT\": {nrpn: 2002, type: \"cmd\", label: \"Reset to default\", title: \"load nrpn with default values\", property: \"loadDefaults\"},\n    \"KYRP_ECHO_ALL\": {nrpn: 2003, type: \"cmd\", label: \"Echo all\", title: \"echo all set nrpns to midi\", property: \"echoAll\"},\n    \"KYRP_SEND_WINK\": {nrpn: 2004, type: \"cmd\", label: \"Send to Winkey\", title: \"send character value to wink vox\", property: \"sendWinkey\"},\n    \"KYRP_SEND_KYR\": {nrpn: 2005, type: \"cmd\", label: \"Send to Keyer\", title: \"send character value to kyr vox\", property: \"sendKeyer\"},\n    \"KYRP_MSG_INDEX\": {nrpn: 2006, type: \"cmd\", label: \"Message byte index\", title: \"set index into msgs\", property: \"messageIndex\"},\n    \"KYRP_MSG_WRITE\": {nrpn: 2007, type: \"cmd\", label: \"Message write byte\", title: \"set msgs[index++] to value\", property: \"messageWrite\"},\n    \"KYRP_MSG_READ\": {nrpn: 2008, type: \"cmd\", label: \"Message reqd byte\", title: \"read msgs[index++] and echo the value\", property: \"messageRead\"},\n    \"KYRP_INFO\": {nrpn: 3000, type: \"rel\", title: \"base of information nrpns\"},\n    \"KYRP_NRPN_SIZE\": {nrpn: 3000, type: \"inf\", title: \"size of nrpn array\", property: \"nrpnSize\"},\n    \"KYRP_MSG_SIZE\": {nrpn: 3001, type: \"inf\", title: \"send the size of msgs array\", property: \"messageSize\"},\n    \"KYRP_SAMPLE_RATE\": {nrpn: 3002, type: \"inf\", title: \"sample rate of audio library\", unit: \"sps/100\", property: \"sampleRate\"},\n    \"KYRP_EEPROM_LENGTH\": {nrpn: 3003, type: \"inf\", title: \"result of EEPROM.length()\", unit: \"bytes\", property: \"eepromSize\"},\n    \"KYRP_ID_CPU\": {nrpn: 3004, type: \"inf\", title: \"which teensy microprocessor are we running\", property: \"identifyCPU\"},\n    \"KYRP_ID_CODEC\": {nrpn: 3005, type: \"inf\", title: \"which codec are we running\", property: \"identifyCodec\"},\n    nothing: \"KYRP_NOTHING\",\n    keyerIdentifier: \"KYRP_ID_KEYER\",\n    keyerVersion: \"KYRP_ID_VERSION\",\n    masterVolume: \"KYRP_VOLUME\",\n    inputSelect: \"KYRP_INPUT_SELECT\",\n    inputSelects: \"KYRV_INPUT_*\",\n    inputLevel: \"KYRP_INPUT_LEVEL\",\n    buttonLevel0: \"KYRP_BUTTON_0\",\n    buttonLevel1: \"KYRP_BUTTON_1\",\n    buttonLevel2: \"KYRP_BUTTON_2\",\n    buttonLevel3: \"KYRP_BUTTON_3\",\n    buttonLevel4: \"KYRP_BUTTON_4\",\n    externalPTTRequire: \"KYRP_PTT_ENABLE\",\n    iqModeSelect: \"KYRP_IQ_ENABLE\",\n    iqModeSelects: \"KYRV_IQ_*\",\n    iqAdjustPhase: \"KYRP_IQ_ADJUST\",\n    txEnable: \"KYRP_TX_ENABLE\",\n    sidetoneEnable: \"KYRP_ST_ENABLE\",\n    iqAdjustBalance: \"KYRP_IQ_BALANCE\",\n    sidetonePan: \"KYRP_ST_PAN\",\n    outputEnable: \"KYRP_OUT_ENABLE\",\n    remoteKey: \"KYRP_REMOTE_KEY\",\n    debouncePeriod: \"KYRP_DEBOUNCE\",\n    pttHeadTime: \"KYRP_HEAD_TIME\",\n    pttTailTime: \"KYRP_TAIL_TIME\",\n    pttHangTime: \"KYRP_HANG_TIME\",\n    keyerRiseTime: \"KYRP_RISE_TIME\",\n    keyerFallTime: \"KYRP_FALL_TIME\",\n    keyerRiseRamp: \"KYRP_RISE_RAMP\",\n    keyerRamps: \"KYRV_RAMP_*\",\n    keyerFallRamp: \"KYRP_FALL_RAMP\",\n    paddleMode: \"KYRP_PAD_MODE\",\n    paddleModes: \"KYRV_MODE_*\",\n    paddleSwapped: \"KYRP_PAD_SWAP\",\n    paddleAdapter: \"KYRP_PAD_ADAPT\",\n    paddleAdapters: \"KYRV_ADAPT_*\",\n    autoLetterSpace: \"KYRP_AUTO_ILS\",\n    autoWordSpace: \"KYRP_AUTO_IWS\",\n    paddleKeyer: \"KYRP_PAD_KEYER\",\n    paddleKeyers: \"KYRV_KEYER_*\",\n    channelCC: \"KYRP_CHAN_CC\",\n    channelNote: \"KYRP_CHAN_NOTE\",\n    channelNrpn: \"KYRP_CHAN_NRPN\",\n    noteKeyOut: \"KYRP_NOTE_KEY_OUT\",\n    notePTTOut: \"KYRP_NOTE_PTT_OUT\",\n    noteTune: \"KYRP_NOTE_TUNE\",\n    noteLeftPaddle: \"KYRP_NOTE_L_PAD\",\n    noteRightPaddle: \"KYRP_NOTE_R_PAD\",\n    noteStraightKey: \"KYRP_NOTE_S_KEY\",\n    noteExternalPTT: \"KYRP_NOTE_EXT_PTT\",\n    noteEnable: \"KYRP_NOTE_ENABLE\",\n    noteEnables: \"KYRV_NOTE_*\",\n    adc0Control: \"KYRP_ADC0_CONTROL\",\n    adcControls: \"KYRV_ADC_*\",\n    adc1Control: \"KYRP_ADC1_CONTROL\",\n    adc2Control: \"KYRP_ADC2_CONTROL\",\n    adc4Control: \"KYRP_ADC3_CONTROL\",\n    adc3Control: \"KYRP_ADC4_CONTROL\",\n    adcEnable: \"KYRP_ADC_ENABLE\",\n    keyerTone: \"KYRP_TONE\",\n    keyerLevel: \"KYRP_LEVEL\",\n    keyerSpeed: \"KYRP_SPEED\",\n    keyerWeight: \"KYRP_WEIGHT\",\n    keyerRatio: \"KYRP_RATIO\",\n    keyerFarnsworth: \"KYRP_FARNS\",\n    keyerCompensation: \"KYRP_COMP\",\n    keyerSpeedFraction: \"KYRP_SPEED_FRAC\",\n    writeEEPROM: \"KYRP_WRITE_EEPROM\",\n    loadEEPROM: \"KYRP_READ_EEPROM\",\n    loadDefaults: \"KYRP_SET_DEFAULT\",\n    echoAll: \"KYRP_ECHO_ALL\",\n    sendWinkey: \"KYRP_SEND_WINK\",\n    sendKeyer: \"KYRP_SEND_KYR\",\n    messageIndex: \"KYRP_MSG_INDEX\",\n    messageWrite: \"KYRP_MSG_WRITE\",\n    messageRead: \"KYRP_MSG_READ\",\n    nrpnSize: \"KYRP_NRPN_SIZE\",\n    messageSize: \"KYRP_MSG_SIZE\",\n    sampleRate: \"KYRP_SAMPLE_RATE\",\n    eepromSize: \"KYRP_EEPROM_LENGTH\",\n    identifyCPU: \"KYRP_ID_CPU\",\n    identifyCodec: \"KYRP_ID_CODEC\",\n    0: \"KYRP_NOTHING\",\n    1: \"KYRP_ID_KEYER\",\n    2: \"KYRP_ID_VERSION\",\n    3: \"KYRP_VOLUME\",\n    4: \"KYRP_INPUT_SELECT\",\n    5: \"KYRP_INPUT_LEVEL\",\n    6: \"KYRP_BUTTON_0\",\n    7: \"KYRP_BUTTON_1\",\n    8: \"KYRP_BUTTON_2\",\n    9: \"KYRP_BUTTON_3\",\n    10: \"KYRP_BUTTON_4\",\n    11: \"KYRP_PTT_ENABLE\",\n    12: \"KYRP_IQ_ENABLE\",\n    13: \"KYRP_IQ_ADJUST\",\n    14: \"KYRP_TX_ENABLE\",\n    15: \"KYRP_ST_ENABLE\",\n    16: \"KYRP_IQ_BALANCE\",\n    17: \"KYRP_ST_PAN\",\n    18: \"KYRP_OUT_ENABLE\",\n    19: \"KYRP_REMOTE_KEY\",\n    20: \"KYRP_DEBOUNCE\",\n    21: \"KYRP_HEAD_TIME\",\n    22: \"KYRP_TAIL_TIME\",\n    23: \"KYRP_HANG_TIME\",\n    24: \"KYRP_RISE_TIME\",\n    25: \"KYRP_FALL_TIME\",\n    26: \"KYRP_RISE_RAMP\",\n    27: \"KYRP_FALL_RAMP\",\n    28: \"KYRP_PAD_MODE\",\n    29: \"KYRP_PAD_SWAP\",\n    30: \"KYRP_PAD_ADAPT\",\n    31: \"KYRP_AUTO_ILS\",\n    32: \"KYRP_AUTO_IWS\",\n    33: \"KYRP_PAD_KEYER\",\n    34: \"KYRP_CHAN_CC\",\n    35: \"KYRP_CHAN_NOTE\",\n    36: \"KYRP_CHAN_NRPN\",\n    37: \"KYRP_NOTE_KEY_OUT\",\n    38: \"KYRP_NOTE_PTT_OUT\",\n    39: \"KYRP_NOTE_TUNE\",\n    40: \"KYRP_NOTE_L_PAD\",\n    41: \"KYRP_NOTE_R_PAD\",\n    42: \"KYRP_NOTE_S_KEY\",\n    43: \"KYRP_NOTE_EXT_PTT\",\n    44: \"KYRP_NOTE_ENABLE\",\n    45: \"KYRP_ADC0_CONTROL\",\n    46: \"KYRP_ADC1_CONTROL\",\n    47: \"KYRP_ADC2_CONTROL\",\n    48: \"KYRP_ADC3_CONTROL\",\n    49: \"KYRP_ADC4_CONTROL\",\n    50: \"KYRP_ADC_ENABLE\",\n    139: \"KYRP_TONE\",\n    140: \"KYRP_LEVEL\",\n    141: \"KYRP_SPEED\",\n    142: \"KYRP_WEIGHT\",\n    143: \"KYRP_RATIO\",\n    144: \"KYRP_FARNS\",\n    145: \"KYRP_COMP\",\n    146: \"KYRP_SPEED_FRAC\",\n    2000: \"KYRP_WRITE_EEPROM\",\n    2001: \"KYRP_READ_EEPROM\",\n    2002: \"KYRP_SET_DEFAULT\",\n    2003: \"KYRP_ECHO_ALL\",\n    2004: \"KYRP_SEND_WINK\",\n    2005: \"KYRP_SEND_KYR\",\n    2006: \"KYRP_MSG_INDEX\",\n    2007: \"KYRP_MSG_WRITE\",\n    2008: \"KYRP_MSG_READ\",\n    3000: \"KYRP_NRPN_SIZE\",\n    3001: \"KYRP_MSG_SIZE\",\n    3002: \"KYRP_SAMPLE_RATE\",\n    3003: \"KYRP_EEPROM_LENGTH\",\n    3004: \"KYRP_ID_CPU\",\n    3005: \"KYRP_ID_CODEC\"\n}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hasakProperties",
+          "declaration": {
+            "name": "hasakProperties",
+            "module": "src/hasakProperties.js"
           }
         }
       ]

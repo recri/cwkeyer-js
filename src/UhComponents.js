@@ -176,8 +176,11 @@ customElements.define('uh-spinner', UhSpinner);
 // an option list value input
 // the list of options is passed as a property, 
 // ie .options=${list}, not options="${list}"
+// .options is either [ String, ... ], where the strings are the values and the labels,
+//  or [ { value: 0, label: "Option label", title: "Option title string" }, ...]
 //
 class UhOptions extends LitElement {
+
   static get styles() { return css`${cwkeyerComponentStyles}\n${cwkeyerCommonStyles}` }
 
   static get properties() {
@@ -193,6 +196,15 @@ class UhOptions extends LitElement {
     this.ctl = cwkeyerProperties[this.control]
   }
 
+  renderOption(x) {
+    if ( ! x) 
+      return html``
+    if (x.label)
+      return html`<option .value=${x.value} ?selected=${x.value === this.value} title="${x.title}">${x.label}</option>`;
+    return html`<option .value=${x} ?selected=${x === this.value} title="no title for option ${x}">${x}</option>`
+  }
+
+
   render() {
     return html`
 <label for="${this.control}" title="${this.ctl.title}">
@@ -201,7 +213,7 @@ class UhOptions extends LitElement {
       name="${this.control}"
       .value=${this.value} 
       @change=${(e) => this._change(e)}>
-    ${(this.options || ['empty']).map(x => html`<option .value=${x} ?selected=${x === this.value} title="this is a title string for option ${x}">${x}</option>`)}
+    ${(this.options || ['empty']).map(x => this.renderOption(x))}
   </select>
 </label>`
   }
@@ -213,6 +225,53 @@ class UhOptions extends LitElement {
 }
 
 customElements.define('uh-options', UhOptions);
+
+class UhMultiple extends LitElement {
+
+  static get styles() { return css`${cwkeyerComponentStyles}\n${cwkeyerCommonStyles}` }
+
+  static get properties() {
+    return {
+      control: { type: String },
+      value: { type: String },
+      options: { type: Array }
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.ctl = cwkeyerProperties[this.control]
+  }
+
+  renderOption(x) {
+    if ( ! x) 
+      return html``
+    if (x.label)
+      return html`<option .value=${x.value} ?selected=${x.value === this.value} title="${x.title}">${x.label}</option>`;
+    return html`<option .value=${x} ?selected=${x === this.value} title="no title for option ${x}">${x}</option>`
+  }
+
+
+  render() {
+    return html`
+<label for="${this.control}" title="${this.ctl.title} multiple">
+  ${this.ctl.label}
+  <select
+      name="${this.control}"
+      .value=${this.value} 
+      @change=${(e) => this._change(e)}>
+    ${(this.options || ['empty']).map(x => this.renderOption(x))}
+  </select>
+</label>`
+  }
+
+  _change(e) {
+    this.dispatchEvent(new CustomEvent('uh-change', { detail: { control: this.control, event: e } }));
+  }
+
+}
+
+customElements.define('uh-multiple', UhMultiple);
 
 //
 // a play/pause toggle input

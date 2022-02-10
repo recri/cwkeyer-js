@@ -37,7 +37,6 @@ function cwkeyerGenerate() {
     return v.getOnly ? get(k,v) : [get(k,v), set(k,v)].join(',\n')
   }
   return Object.entries(cwkeyerProperties)
-    .map(([k,v]) => [k, v && cwkeyerProperties[v] ? cwkeyerProperties[v] : v]) // when v is an index into properties, follow it
     .filter(([,v]) => v.delegate) // if not delegated, ignore
     .map(([k,v]) => `  ${k}: {\n${getsetetc(k,v)}\n  }`) // generate a property descriptor
 }
@@ -82,7 +81,7 @@ function hasakGenerate() {
 
   function findUnitConverters(pname, hname, punit, hunit, plittype, hrange) {
     if (plittype === Boolean && hrange === '0 1') {
-      console.error(`findUnitConverter making Boolean<->Number`)
+      // console.error(`findUnitConverter making Boolean<->Number`)
       return [(x) => `Boolean(${x})`, (x) => `Number(${x})`]
     }
     if (punit === hunit) {
@@ -99,13 +98,15 @@ function hasakGenerate() {
       return [(x) => `signextend14(${x})/10`, (x) => `mask14(Math.round(10*${x}))`]
     }
     if (punit === 'ms' && hunit === 'sample') {
-      return [(x) => `(1000*${x}/48000).toFixed(2)`, (x) => `mask14(Math.round(48000*${x}/1000))`]
+      if (hrange === '-8192 8191')
+	return [(x) => `(1000*signextend14(${x})/48000).toFixed(1)`, (x) => `mask14(Math.round(48000*${x}/1000))`]
+      return [(x) => `(1000*${x}/48000).toFixed(1)`, (x) => `mask14(Math.round(48000*${x}/1000))`]
     }
     if (punit === 'Hz' && hunit === 'Hz/10') {
       return [(x) => `${x}/10`, (x) => `Math.floor(10*${x})`]
     }
     if (punit === 'WPM' && hunit === 'WPM/128') {
-      return [(x) => `${x}/128`, (x) => `Math.floor(128*${x})`]
+      return [(x) => `${x}`, (x) => `${x})`]
     }
     console.error(`no unit handler for ${pname} as ${punit} and ${hname} as ${hunit}`)
     return [(x) => `${x}`, (x) => `${x}`]
@@ -137,7 +138,9 @@ function hasakGenerate() {
     const {nrpn} = hvalue
     if ( ! nrpn) {
       if (hvalue.opts) {
-	const vopts = []
+	const vopts = []	// the list of constructed option objects
+	const vlabels = {}	// the labels for the constructed option objects
+	const vnrpns = {}	// the nrpn values for the constructed option objects
 	for (const vname of hvalue.opts.split(' ')) {
 	  const vvalue = hprops[vname]
 	  if ( ! vvalue) {
@@ -149,13 +152,31 @@ function hasakGenerate() {
 	    console.error(`vname ${vname} has no label, in pname ${pname} hname ${hname}`);
 	    return `    // value property has no label\n`
 	  }
-	  vopts.push(`"${vlabel}"`)
+	  const vtitle = vvalue.title
+	  if ( ! vtitle) {
+	    console.error(`vname ${vname} has no title, in pname ${pname} hname ${hname}`);
+	    return `    // value property has no title\n`
+	  }
+	  const vnrpn = vvalue.nrpn
+	  if ( ! vnrpn && vnrpn !== 0) {
+	    console.error(`vname ${vname} has no nrpn, in pname ${pname} hname ${hname}`);
+	    return `    // value property has no nrpn\n`
+	  }
+	  if (vlabels[vlabel]) {
+	    console.error(`vname ${vname} has a label ${vlabel} which matches a previous option, in pname ${pname} hname ${hname}`);
+	    return `    // value property has duplicate label\n`
+	  }
+	  if (vnrpns[vnrpn]) {
+	    console.error(`vname ${vname} has a nrpn ${vnrpn} which matches a previous option, in pname ${pname} hname ${hname}`);
+	    return `    // value property has duplicate nrpn\n`
+	  }
+	  vopts.push(`{ value: ${vnrpn}, label: "${vlabel}", title: "${vtitle}" }`)
 	}
 	if ( ! pvalue.getOnly) {
 	  console.error(`value getter ${pname} is not marked getOnly`)
 	  return `    // values getter not getOnly\n`
 	}
-	return `    get() { return [${vopts.join(',')}] }`
+	return `    get() { return [\n${vopts.join(',\n')}] }`
       }
       console.error(`${hname} in pname ${pname} has nrpn ${nrpn}`)
       return `    // ${hname} has no nrpn\n`
@@ -168,13 +189,12 @@ function hasakGenerate() {
     const [getunit, setunit] = findUnitConverters(pname, hname, punit, hunit, plittype, hrange) 
     const etc = []
     etc.push(`    get() { return ${getunit(`this.getnrpn(${nrpn})`)} }`)
-    if ( ! pname.getOnly) {
+    if ( ! pvalue.getOnly) {
       etc.push(`    set(v) { return this.setnrpn(${nrpn}, ${setunit(`v`)}) }`)
     }
     return `${etc.join(',\n')}`
   }
   return Object.entries(pprops)
-    .map(([k,v]) => [k, v && pprops[v] ? pprops[v] : v]) // when v is an index into properties, follow it
     .filter(([,v]) => v.delegate)				 // if not delegated, ignore
     .map(([k,v]) => `  ${k}: { // ${findHname(k,v)}\n${getsetetc(k,v)}\n  }`)	 // generate a property descriptor
 }
@@ -189,19 +209,19 @@ export const cwkeyerMethods = {
 ${cwkeyerMethods().join('\n\n')}
 };`); break;
   
-case 'cwkeyer':
+case 'cwkeyerDescriptors':
   console.log(`
 export const cwkeyerDescriptors = {
   ${cwkeyerGenerate().join(',\n')}
 };`); break;
 
-case 'default':
+case 'defaultDescriptors':
   console.log(`
 export const defaultDescriptors = {
   ${defaultGenerate().join(',\n')}
 };`); break;
 
-case 'hasak':
+case 'hasakDescriptors':
   console.log(`
 /* eslint no-bitwise: ["error", { "allow": ["&","|","<<",'>>',"~"] }] */
 // sign extend an arbitrary number of bits

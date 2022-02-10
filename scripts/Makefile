@@ -7,26 +7,26 @@ all: ../src/cwkeyerDescriptors.js ../src/defaultDescriptors.js ../src/hasakDescr
 clean:
 	rm -f ../src/cwkeyerDescriptors.js ../src/defaultDescriptors.js ../src/hasakDescriptors.js
 
-test-cwkeyer:
-	./make-descriptors.js cwkeyer
+test-cwkeyer-descriptors:
+	./make-descriptors.js cwkeyerDescriptors
 
-test-default:
-	 ./make-descriptors.js default
+test-default-descriptors:
+	 ./make-descriptors.js defaultDescriptors
 
-test-hasak:
-	./make-descriptors.js hasak
+test-hasak-descriptors:
+	./make-descriptors.js hasakDescriptors
 
-test-methods:
-	./make-descriptors.js methods
+test-cwkeyer-methods:
+	./make-descriptors.js cwkeyerMethods
 
 ../src/hasakProperties.js: $(HASAK)/config.h $(HASAK)/doc/nrpn.tcl
 	(cd $(HASAK) && ./doc/nrpn.tcl)> ../src/hasakProperties.js
 
 ../src/cwkeyerDescriptors.js: ../src/cwkeyerProperties.js ./make-descriptors.js
-	./make-descriptors.js cwkeyer > ../src/cwkeyerDescriptors.js
+	./make-descriptors.js cwkeyerDescriptors > ../src/cwkeyerDescriptors.js
 
 ../src/defaultDescriptors.js: ../src/cwkeyerProperties.js ./make-descriptors.js
-	./make-descriptors.js default > ../src/defaultDescriptors.js
+	./make-descriptors.js defaultDescriptors > ../src/defaultDescriptors.js
 
 ../src/hasakDescriptors.js: ../src/cwkeyerProperties.js ../src/hasakProperties.js ./make-descriptors.js
-	./make-descriptors.js hasak > ../src/hasakDescriptors.js
+	./make-descriptors.js hasakDescriptors > ../src/hasakDescriptors.js
