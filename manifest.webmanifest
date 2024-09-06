@@ -1,0 +1,29 @@
+{
+  "name": "cwkeyer-js",
+  "short_name": "cwkeyer-js",
+  "description": "Morse Code Keyer Controller",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#1d62a7",
+  "background_color": "#1d62a7",
+  "icons": [
+    {
+      "src": "/assets/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }      
+  ]
+}
